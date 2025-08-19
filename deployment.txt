@@ -1,0 +1,32 @@
+Step 1:
+Clone the repo.
+cd repo
+
+Step 2(Inside VM):
+sudo apt update
+sudo usermod -aG sudo githubrunner
+sudo chown githubrunner:githubrunner /home/githubrunner/proplex-admin-v2-main
+passwd githubrunner     #admin
+su - githubrunner
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo apt install nginx
+sudo apt install vim
+sudo apt update
+node -v && npm -v
+cd proplex-admin-v2-main/
+npm install
+npm run build
+sudo mkdir -p /var/www/proplex-admin
+sudo cp -r dist/* /var/www/proplex-admin/
+sudo vim /etc/nginx/sites-available/proplex-admin         #modify fields as per need.
+sudo ln -s /etc/nginx/sites-available/proplex-admin /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+curl admin.proplex.app
+
+Step 3(Setting up github actions):
+Go to Settings -> Actions -> Runners
+screen -S runnerscript
+sudo apt install screen
+screen -S runner_script

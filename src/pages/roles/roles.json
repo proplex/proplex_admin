@@ -1,0 +1,29 @@
+
+[
+    {
+      "id": 1,
+      "roleName": "Admin",
+      "numberOfUsers": 10
+    },
+    {
+      "id": 2,
+      "roleName": "Editor",
+      "numberOfUsers": 25
+    },
+    {
+      "id": 3,
+      "roleName": "Viewer",
+      "numberOfUsers": 50
+    },
+    {
+      "id": 4,
+      "roleName": "Contributor",
+      "numberOfUsers": 15
+    },
+    {
+      "id": 5,
+      "roleName": "Manager",
+      "numberOfUsers": 5
+    }
+  ]
+  

@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "partnerName": "Tech Corp",
+      "image": "https://via.placeholder.com/150?text=Tech+Corp+Logo",
+      "action": "Edit"
+    },
+    {
+      "id": 2,
+      "partnerName": "Innovate Inc",
+      "image": "https://via.placeholder.com/150?text=Innovate+Inc+Logo",
+      "action": "Edit"
+    },
+    {
+      "id": 3,
+      "partnerName": "FutureWorks",
+      "image": "https://via.placeholder.com/150?text=FutureWorks+Logo",
+      "action": "Edit"
+    },
+    {
+      "id": 4,
+      "partnerName": "AlphaTech",
+      "image": "https://via.placeholder.com/150?text=AlphaTech+Logo",
+      "action": "Edit"
+    },
+    {
+      "id": 5,
+      "partnerName": "NextGen Solutions",
+      "image": "https://via.placeholder.com/150?text=NextGen+Solutions+Logo",
+      "action": "Edit"
+    }
+  ]
+  
