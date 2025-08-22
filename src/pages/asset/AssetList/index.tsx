@@ -46,7 +46,7 @@ const pageVariants = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)",
+      ease: [0.22, 1, 0.36, 1],
       staggerChildren: 0.1
     }
   },
@@ -72,7 +72,7 @@ const itemVariants = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)"
+      ease: [0.22, 1, 0.36, 1]
     }
   }
 };
@@ -87,7 +87,7 @@ const headerVariants = {
     x: 0,
     transition: {
       duration: 0.6,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)"
+      ease: [0.22, 1, 0.36, 1]
     }
   }
 };
@@ -104,7 +104,7 @@ const searchVariants = {
     x: 0,
     transition: {
       duration: 0.5,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)",
+      ease: [0.22, 1, 0.36, 1],
       delay: 0.2
     }
   }
@@ -122,7 +122,7 @@ const buttonVariants = {
     x: 0,
     transition: {
       duration: 0.5,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)",
+      ease: [0.22, 1, 0.36, 1],
       delay: 0.3
     }
   },
@@ -151,7 +151,7 @@ const tableVariants = {
     y: 0,
     transition: {
       duration: 0.7,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)",
+      ease: [0.22, 1, 0.36, 1],
       delay: 0.4
     }
   }
@@ -169,7 +169,7 @@ const statsVariants = {
     y: 0,
     transition: {
       duration: 0.5,
-      ease: "cubicBezier(0.22, 1, 0.36, 1)",
+      ease: [0.22, 1, 0.36, 1],
       delay: 0.1
     }
   }
