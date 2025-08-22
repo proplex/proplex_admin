@@ -61,11 +61,11 @@ const mainRoutes: RouteConfig[] = [
   },
   {
     path: '/add-asset',
-    component: React.lazy(() => import('@/pages/asset/AddAsset')),
+    component: React.lazy(() => import('@/pages/asset/AddAsset/index').then(module => ({ default: module.Index }))),
   },
   {
     path: '/edit-asset/:id',
-    component: React.lazy(() => import('@/pages/asset/AddAsset/AddAsset')),
+    component: React.lazy(() => import('@/pages/asset/AddAsset/index').then(module => ({ default: module.Index }))),
   },
   {
     path: '/dashboard-asset/:id',
@@ -93,15 +93,19 @@ const mainRoutes: RouteConfig[] = [
   },
   {
     path: '/add-company',
-    component: React.lazy(() => import('@/pages/company/AddCompany')),
+    component: React.lazy(() => import('@/pages/company/AddCompany/index')),
   },
   {
     path: '/edit-company/:id',
-    component: React.lazy(() => import('@/pages/company/AddCompany')),
+    component: React.lazy(() => import('@/pages/company/AddCompany/index')),
   },
   {
     path: '/customers',
     component: React.lazy(() => import('@/pages/customers')),
+  },
+  {
+    path: '/customers/new',
+    component: React.lazy(() => import('@/pages/customer/AddCustomer')),
   },
   {
     path: '/add-customer',
@@ -110,14 +114,6 @@ const mainRoutes: RouteConfig[] = [
   {
     path: '/edit-customer/:id',
     component: React.lazy(() => import('@/pages/customer/AddCustomer')),
-  },
-  {
-    path: 'add-company',
-    component: React.lazy(() => import('@/pages/company/AddCompany')),
-  },
-  {
-    path: 'edit-company/:id',
-    component: React.lazy(() => import('@/pages/company/AddCompany')),
   },
   {
     path: 'employee',
@@ -130,10 +126,6 @@ const mainRoutes: RouteConfig[] = [
   {
     path: 'edit-employee/:id',
     component: React.lazy(() => import('@/pages/employee/AddEmployee')),
-  },
-  {
-    path: 'customers',
-    component: React.lazy(() => import('@/pages/customers')),
   },
   {
     path: 'customer-profile/:id',

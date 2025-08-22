@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, Pencil, Trash2, Trash, ArrowUpDown, TrendingUp, Building2 } from 'lucide-react';
 import { Search as SearchIcon, Plus, Database, Filter, ChevronDown, RefreshCw, Loader2, MoreHorizontal, Calendar, Users, Activity } from 'lucide-react';
-import  navigate  from 'next/navigation';
+import { useNavigate  } from 'react-router-dom';
 // Define types for the company data
 interface Company {
   id: string;
@@ -241,6 +241,7 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 function Index() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [limit] = useState<number>(10);
@@ -398,7 +399,7 @@ function Index() {
                 )}
               </button>
               
-              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group " onClick={() => navigate('/company/new')}>
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group" onClick={() => navigate('/add-company')}>
                 <Plus className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" />
                 Add Company 
               </button>
@@ -622,7 +623,7 @@ function Index() {
                               {searchTerm ? "Try adjusting your search criteria." : "Get started by adding your first company."}
                             </p>
                           </div>
-                          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2">
+                          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2" onClick={() => navigate('/add-company')}>
                             <Plus className="h-4 w-4" />
                             Add Company
                           </button>
