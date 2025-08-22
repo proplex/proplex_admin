@@ -1,68 +1,106 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Eye, Pencil, Trash2, Trash } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { mockCompanies } from '@/data/mockCompanies';
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCell,
-} from '@/components/ui/table';
-import Loading from '@/components/ui/Loading';
-import toast from 'react-hot-toast';
-import Pagination from '@/layout/Pagination';
-import api from '@/lib/httpClient';
+import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Eye, Pencil, Trash2, Trash, ArrowUpDown, TrendingUp, Building2 } from 'lucide-react';
+import { Search as SearchIcon, Plus, Database, Filter, ChevronDown, RefreshCw, Loader2, MoreHorizontal, Calendar, Users, Activity } from 'lucide-react';
+import  navigate  from 'next/navigation';
+// Define types for the company data
+interface Company {
+  id: string;
+  name: string;
+  registrationNumber: string;
+  industry: string;
+  status: 'active' | 'pending' | 'inactive' | 'suspended';
+  created_at: string;
+  total_property: number;
+  revenue: string;
+  employees: number;
+}
 
-import { Search as SearchIcon, Plus, Database, Filter, ChevronDown, RefreshCw, Loader2 } from 'lucide-react';
-import {  useLocation } from 'react-router-dom';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import TableComponent from '@/components/TableComponent';
-import { Input } from '@/components/ui/input';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { fetchCompanies } from '@/store/features/companySlice';
-import CompanyStatus from '@/helpers/CompanyStatus';
-import { convertDateAndTimeToLocal } from '@/helpers/global';
-import { useDebounce } from '@/hooks/useDebounce';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+// Type for status badge config
+type StatusType = 'active' | 'pending' | 'inactive' | 'suspended';
 
-// Animation variants
+interface StatusConfig {
+  bg: string;
+  text: string;
+  border: string;
+  dot: string;
+  glow: string;
+}
+
+// Type for StatCard props
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  trend?: string;
+  color?: 'blue' | 'emerald' | 'amber' | 'purple';
+}
+
+// Mock data for demonstration with proper typing
+const mockCompanies: Omit<Company, 'id'>[] = [
+  {
+    name: 'TechCorp Solutions',
+    registrationNumber: 'TC001',
+    industry: 'Technology',
+    status: 'active',
+    created_at: '2024-01-15T08:30:00Z',
+    total_property: 12,
+    revenue: '2400000', // Storing as number string for easier calculations
+    employees: 45
+  },
+  {
+    name: 'Green Energy Ltd',
+    registrationNumber: 'GE002',
+    industry: 'Energy',
+    status: 'active',
+    created_at: '2024-02-20T10:15:00Z',
+    total_property: 8,
+    revenue: '1800000',
+    employees: 32
+  },
+  {
+    name: 'Digital Ventures',
+    registrationNumber: 'DV003',
+    industry: 'Digital Marketing',
+    status: 'pending',
+    created_at: '2024-03-10T14:22:00Z',
+    total_property: 5,
+    revenue: '950000',
+    employees: 18
+  },
+  {
+    name: 'Manufacturing Co',
+    registrationNumber: 'MC004',
+    industry: 'Manufacturing',
+    status: 'inactive',
+    created_at: '2024-01-05T09:45:00Z',
+    total_property: 15,
+    revenue: '3200000',
+    employees: 78
+  }
+];
+
+// Enhanced animation variants
 const pageVariants = {
   initial: { 
     opacity: 0, 
-    y: 20,
-    scale: 0.98
+    y: 30,
+    scale: 0.95
   },
   animate: { 
     opacity: 1, 
     y: 0,
     scale: 1,
     transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-      staggerChildren: 0.1
-    }
-  },
-  exit: { 
-    opacity: 0, 
-    y: -20,
-    scale: 0.98,
-    transition: {
-      duration: 0.3
+      duration: 0.8,
+      ease: [0.16, 1, 0.3, 1],
+      staggerChildren: 0.15
     }
   }
 };
 
-const itemVariants = {
+const cardVariants = {
   initial: { 
     opacity: 0, 
     y: 20,
@@ -73,110 +111,169 @@ const itemVariants = {
     y: 0,
     scale: 1,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1]
-    }
-  }
-};
-
-const headerVariants = {
-  initial: { 
-    opacity: 0, 
-    x: -30 
-  },
-  animate: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
       duration: 0.6,
-      ease: [0.22, 1, 0.36, 1]
+      ease: [0.16, 1, 0.3, 1]
     }
   }
 };
 
-const searchVariants = {
+const tableRowVariants = {
   initial: { 
     opacity: 0, 
-    scale: 0.8,
-    x: 20
+    x: -20 
   },
-  animate: { 
+  animate: (index: number) => ({ 
     opacity: 1, 
-    scale: 1,
     x: 0,
     transition: {
       duration: 0.5,
-      ease: [0.22, 1, 0.36, 1],
-      delay: 0.2
+      delay: index * 0.1,
+      ease: [0.16, 1, 0.3, 1]
     }
+  }),
+  hover: {
+    scale: 1.02,
+    backgroundColor: 'rgba(59, 130, 246, 0.05)',
+    transition: { duration: 0.2 }
   }
 };
 
-const loadingSpinnerVariants = {
-  animate: {
-    rotate: 360,
-    transition: {
-      duration: 1,
-      repeat: Infinity,
-      ease: "linear"
+const StatusBadge = ({ status }: { status: StatusType }) => {
+  // Ensure status is one of the allowed values
+  const safeStatus: StatusType = (['active', 'pending', 'inactive', 'suspended'] as const).includes(status as any)
+    ? status
+    : 'inactive';
+    
+  const statusConfig: Record<StatusType, StatusConfig> = {
+    active: {
+      bg: 'bg-gradient-to-r from-emerald-50 to-green-100',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200',
+      dot: 'bg-emerald-500',
+      glow: 'shadow-emerald-200/50'
+    },
+    pending: {
+      bg: 'bg-gradient-to-r from-amber-50 to-yellow-100',
+      text: 'text-amber-700',
+      border: 'border-amber-200',
+      dot: 'bg-amber-500',
+      glow: 'shadow-amber-200/50'
+    },
+    inactive: {
+      bg: 'bg-gradient-to-r from-gray-50 to-slate-100',
+      text: 'text-gray-600',
+      border: 'border-gray-200',
+      dot: 'bg-gray-400',
+      glow: 'shadow-gray-200/50'
+    },
+    suspended: {
+      bg: 'bg-gradient-to-r from-red-50 to-rose-100',
+      text: 'text-red-700',
+      border: 'border-red-200',
+      dot: 'bg-red-500',
+      glow: 'shadow-red-200/50'
     }
-  }
+  };
+
+  const config = statusConfig[safeStatus];
+
+  return (
+    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${config.bg} ${config.text} ${config.border} shadow-sm ${config.glow}`}>
+      <div className={`w-2 h-2 rounded-full ${config.dot} animate-pulse`} />
+      <span className="text-sm font-medium capitalize">{status}</span>
+    </div>
+  );
+};
+
+const StatCard: React.FC<StatCardProps> = ({ 
+  title, 
+  value, 
+  subtitle, 
+  icon: Icon, 
+  trend, 
+  color = "blue" 
+}) => {
+  const colorConfig = {
+    blue: {
+      bg: 'bg-gradient-to-br from-blue-500 to-indigo-600',
+      icon: 'text-blue-100',
+      text: 'text-white'
+    },
+    emerald: {
+      bg: 'bg-gradient-to-br from-emerald-500 to-green-600',
+      icon: 'text-emerald-100',
+      text: 'text-white'
+    },
+    amber: {
+      bg: 'bg-gradient-to-br from-amber-500 to-orange-600',
+      icon: 'text-amber-100',
+      text: 'text-white'
+    },
+    purple: {
+      bg: 'bg-gradient-to-br from-purple-500 to-violet-600',
+      icon: 'text-purple-100',
+      text: 'text-white'
+    }
+  };
+
+  const config = colorConfig[color] || colorConfig.blue;
+
+  return (
+    <div className={`${config.bg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105`}>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className={`${config.text} opacity-90 text-sm font-medium mb-1`}>{title}</p>
+          <p className={`${config.text} text-3xl font-bold mb-1`}>{value}</p>
+          {subtitle && <p className={`${config.text} opacity-75 text-sm`}>{subtitle}</p>}
+        </div>
+        <div className={`p-3 rounded-xl bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className={`w-6 h-6 ${config.icon}`} />
+        </div>
+      </div>
+      {trend && (
+        <div className="flex items-center mt-3">
+          <TrendingUp className={`w-4 h-4 ${config.icon} mr-1`} />
+          <span className={`${config.text} text-sm opacity-90`}>{trend}</span>
+        </div>
+      )}
+    </div>
+  );
 };
 
 function Index() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [filters, setFilters] = useState({
-    status: [] as string[],
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [limit] = useState<number>(10);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [filters, setFilters] = useState<{ status: StatusType[] }>({
+    status: [],
   });
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const controls = useAnimation();
+  const [sortBy, setSortBy] = useState<keyof Company>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [companies] = useState<Company[]>(() => 
+    mockCompanies.map((company, index) => ({
+      ...company,
+      id: String(index + 1), // Ensure ID is set
+      // Ensure status is one of the allowed values
+      status: (['active', 'pending', 'inactive', 'suspended'] as const).includes(company.status as any)
+        ? company.status as StatusType
+        : 'inactive' // Default to inactive if status is invalid
+    }))
+  );
 
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    setPage(1); // Reset to first page when searching
-    
-    // Update URL with search term
-    const params = new URLSearchParams(searchParams);
-    if (value) {
-      params.set('search', value);
-    } else {
-      params.delete('search');
-    }
-    setSearchParams(params);
-  };
-  
-  // Handle search form submission
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Trigger search when form is submitted (if needed)
-  };
+  // Calculate stats
+  const totalCompanies = companies.length;
+  const activeCompanies = companies.filter(c => c.status === 'active').length;
+  const pendingCompanies = companies.filter(c => c.status === 'pending').length;
+  const totalRevenue = companies.reduce((sum, company) => {
+    return sum + parseFloat(company.revenue);
+  }, 0);
 
-  // Use mock data instead of Redux state
-  const [companies, setCompanies] = useState(mockCompanies);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Initialize state from URL params
-  useEffect(() => {
-    const pageParam = searchParams.get('page');
-    const limitParam = searchParams.get('limit');
-    const searchParam = searchParams.get('search');
-    
-    if (pageParam) setPage(parseInt(pageParam));
-    if (limitParam) setLimit(parseInt(limitParam));
-    if (searchParam) setSearchTerm(searchParam);
-  }, [searchParams]);
-
-  // Filter and paginate data
+  // Filter and sort data
   const filteredData = useMemo(() => {
-    let result = [...companies];
+    // Create a type-safe copy of companies
+    let result: Company[] = [...companies];
     
     // Apply search filter
     if (searchTerm) {
@@ -188,400 +285,408 @@ function Index() {
       );
     }
     
-    // Apply status filter
+    // Apply status filter with type safety
     if (filters.status.length > 0) {
-      result = result.filter(company => filters.status.includes(company.status));
+      // Create a type-safe filter for status
+      const statusFilter = (status: string): status is StatusType => 
+        ['active', 'pending', 'inactive', 'suspended'].includes(status);
+      
+      result = result.filter(company => 
+        filters.status.some(status => statusFilter(status) && status === company.status)
+      );
     }
+    
+    // Apply sorting with type safety
+    result.sort((a, b) => {
+      // Use type assertion to ensure TypeScript knows we're handling the keys correctly
+      const aValue = a[sortBy];
+      const bValue = b[sortBy];
+      
+      // Handle different data types for sorting
+      if (sortBy === 'created_at') {
+        const aDate = new Date(aValue as string).getTime();
+        const bDate = new Date(bValue as string).getTime();
+        return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
+      } 
+      
+      if (sortBy === 'revenue') {
+        const aNum = parseFloat(aValue as string);
+        const bNum = parseFloat(bValue as string);
+        return sortOrder === 'asc' ? aNum - bNum : bNum - aNum;
+      }
+      
+      // Default string comparison for other fields
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortOrder === 'asc' 
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+      
+      return 0;
+    });
     
     // Apply pagination
     const startIndex = (page - 1) * limit;
     return result.slice(startIndex, startIndex + limit);
-  }, [companies, searchTerm, filters, page, limit]);
-
-  useEffect(() => {
-    controls.start("animate");
-  }, [controls]);
+  }, [companies, searchTerm, filters.status, sortBy, sortOrder, page, limit]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    setCompanies([...mockCompanies]); // Refresh with original data
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setIsRefreshing(false);
   };
 
-  const handleFilterChange = (type: 'status', value: string) => {
-    const newFilters = { ...filters };
-    const index = newFilters[type].indexOf(value);
-    
-    if (index === -1) {
-      newFilters[type].push(value);
+  const handleSort = (column: keyof Company) => {
+    if (sortBy === column) {
+      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
     } else {
-      newFilters[type].splice(index, 1);
+      setSortBy(column);
+      setSortOrder('asc');
     }
+  };
+
+  const formatRevenue = (amount: string | number): string => {
+    // Convert to string if it's a number
+    const amountStr = typeof amount === 'number' ? amount.toString() : amount;
     
-    setFilters(newFilters);
-    // Apply filters
-  };
-
-  const clearAllFilters = () => {
-    setFilters({ status: [] });
-    // Reset filters
-  };
-
-  const totalCompanies = companies.length;
-  const activeCompanies = companies.filter(c => c.status === 'active').length;
-
-  // Handle page change
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    setSearchParams({ ...Object.fromEntries(searchParams.entries()), page: newPage.toString() });
-  };
-
-  // Handle page size change
-  const handlePageSizeChange = (newLimit: number) => {
-    setLimit(newLimit);
-    setPage(1);
-    setSearchParams({ 
-      ...Object.fromEntries(searchParams.entries()), 
-      limit: newLimit.toString(), 
-      page: '1' 
-    });
-  };
-
-  // Calculate pagination values
-  const totalItems = companies.length;
-  const totalPages = Math.ceil(totalItems / limit) || 1;
-  const hasMore = page < totalPages;
-  const hasPreviousPage = page > 1;
-  const hasNextPage = page < totalPages;
-
-  
-  const paginationProps = {
-    onPageChange: handlePageChange,
-    onPageSizeChange: handlePageSizeChange,
-    currentPage: page,
-    pageSize: limit,
-    totalItems,
-    totalPages,
-    hasMore,
-    hasPreviousPage,
-    hasNextPage
-  };
-
-  const onEdit = (id: string) => {
-    navigate(`/company/edit/${id}`);
-  };
-
-  const onView = (id: string) => {
-    navigate(`/company/${id}`);
-  };
-
-  const onDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this company?')) {
-      setCompanies(prev => prev.filter(company => company.id !== id));
-      toast.success('Company deleted successfully');
+    // Handle null, undefined or empty string
+    if (!amountStr) return '$0';
+    
+    // Remove any non-numeric characters except decimal points and negative sign
+    const cleanedAmount = amountStr.replace(/[^0-9.-]/g, '');
+    
+    // Parse to number
+    const numAmount = parseFloat(cleanedAmount);
+    
+    // Handle invalid numbers
+    if (isNaN(numAmount)) return '$0';
+    
+    if (numAmount >= 1000000) {
+      return `$${(numAmount / 1000000).toFixed(1)}M`;
+    } else if (numAmount >= 1000) {
+      return `$${(numAmount / 1000).toFixed(1)}K`;
+    } else if (numAmount < 0) {
+      return `-$${Math.abs(numAmount).toFixed(2)}`;
+    } else {
+      return `$${numAmount.toFixed(2)}`;
     }
   };
-
-  const columns = [
-    {
-      header: 'Company ID',
-      accessorKey: 'registrationNumber',
-      cell: ({ row }: { row: any }) => (
-        <span className="text-sm font-medium text-gray-900">{row.original.registrationNumber}</span>
-      ),
-    },
-    {
-      header: 'Company',
-      accessorKey: 'name',
-      cell: ({ row }: { row: any }) => (
-        <div className="flex items-center">
-          <div className="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-            <Database className="h-5 w-5 text-blue-600" />
-          </div>
-          <span className="font-medium text-gray-900">{row.original.name}</span>
-        </div>
-      ),
-    },
-    {
-      header: 'Created On',
-      accessorKey: 'created_at',
-      cell: ({ row }: { row: any }) => (
-        <div className="flex flex-col">
-          <span className="text-sm text-gray-900">
-            {new Date(row.original.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </span>
-          <span className="text-xs text-gray-500">
-            {new Date(row.original.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-          </span>
-        </div>
-      ),
-    },
-    {
-      header: 'Total Property',
-      accessorKey: 'total_property',
-      cell: ({ row }: { row: any }) => (
-        <span className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
-          {row.original.total_property || 0}
-        </span>
-      ),
-    },
-    {
-      header: 'Status',
-      accessorKey: 'status',
-      cell: ({ row }: { row: any }) => (
-        <CompanyStatus status={row.original.status} companyId={row.original.id} />
-      ),
-    },
-    {
-      header: 'Actions',
-      accessorKey: 'actions',
-      cell: ({ row }: { row: any }) => (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onEdit(row.original.id)}
-            className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-            title="Edit company"
-          >
-            <Pencil className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => onDelete(row.original.id)}
-            className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-            title="Delete company"
-          >
-            <Trash className="w-4 h-4" />
-          </button>
-        </div>
-      ),
-    },
-  ];
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-      </div>
-    );
-  }
 
   return (
-    <motion.div
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6"
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-    >
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <motion.h1
-            className="text-3xl font-bold text-gray-900 mb-2"
-            variants={headerVariants}
-          >
-            Companies
-          </motion.h1>
-          <motion.p className="text-gray-600" variants={headerVariants}>
-            Manage your companies and their details
-          </motion.p>
-        </div>
-
-        <motion.div
-          className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-          variants={itemVariants}
-        >
-          <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md">
-              <div className="relative">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  className="pl-10 w-full"
-                  placeholder="Search companies..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-              </div>
-            </form>
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/40 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header Section */}
+        <div className="space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+                Companies Dashboard
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Manage and monitor your company portfolio</p>
+            </div>
+            
             <div className="flex items-center gap-3">
-              <DropdownMenu onOpenChange={setIsFilterOpen}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="flex items-center gap-2"
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  >
-                    <Filter className="h-4 w-4" />
-                    Filters
-                    {filters.status.length > 0 && (
-                      <span className="h-5 w-5 flex items-center justify-center bg-blue-100 text-blue-700 rounded-full text-xs">
-                        {filters.status.length}
-                      </span>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuLabel>Status</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {['active', 'inactive', 'pending', 'suspended'].map((status) => (
-                    <DropdownMenuCheckboxItem
-                      key={status}
-                      checked={filters.status.includes(status)}
-                      onCheckedChange={() =>
-                        handleFilterChange('status', status)
-                      }
-                    >
-                      <span className="capitalize">{status}</span>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <Button
-                variant="outline"
-                size="icon"
+              <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
+                className="p-3 rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-blue-300 group"
               >
                 {isRefreshing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                 ) : (
-                  <RefreshCw className="h-4 w-4" />
+                  <RefreshCw className="h-5 w-5 text-gray-600 group-hover:text-blue-600 group-hover:rotate-180 transition-all duration-300" />
                 )}
-              </Button>
-
-              <Button onClick={() => navigate('/add-spv')}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Company
-              </Button>
+              </button>
+              
+              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group " onClick={() => navigate('/company/new')}>
+                <Plus className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" />
+                Add Company 
+              </button>
             </div>
           </div>
-        </motion.div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatCard
+              title="Total Companies"
+              value={totalCompanies}
+              subtitle={`${activeCompanies} active`}
+              icon={Building2}
+              color="blue"
+              trend="+12% this month"
+            />
+            <StatCard
+              title="Active Companies"
+              value={activeCompanies}
+              subtitle={`${Math.round((activeCompanies/totalCompanies)*100)}% of total`}
+              icon={Activity}
+              color="emerald"
+              trend="94% uptime"
+            />
+            <StatCard
+              title="Pending Review"
+              value={pendingCompanies}
+              subtitle="Awaiting approval"
+              icon={Calendar}
+              color="amber"
+              trend="2 new this week"
+            />
+            <StatCard
+              title="Total Revenue"
+              value={formatRevenue(totalRevenue)}
+              subtitle="Combined portfolio"
+              icon={TrendingUp}
+              color="purple"
+              trend="+18% growth"
+            />
+          </div>
+        </div>
+
+        {/* Controls Section */}
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/50 p-6">
+          <div className="flex flex-col lg:flex-row gap-4 items-center">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search companies, IDs, industries..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all duration-200 placeholder-gray-500"
+              />
+            </div>
+
+            {/* Filter Dropdown */}
+            <div className="relative">
+              <select
+                value={filters.status.join(',')}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFilters({
+                    status: value ? value.split(',') as StatusType[] : []
+                  });
+                  setPage(1);
+                }}
+                className="appearance-none bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl px-4 py-3 pr-10 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all duration-200"
+              >
+                <option value="">All Status</option>
+                <option value="active">Active Only</option>
+                <option value="pending">Pending Only</option>
+                <option value="inactive">Inactive Only</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Sort Controls */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 whitespace-nowrap">Sort by:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as keyof Company)}
+                className="appearance-none bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all duration-200"
+              >
+                <option value="name">Name</option>
+                <option value="created_at">Date Created</option>
+                <option value="total_property">Properties</option>
+                <option value="status">Status</option>
+              </select>
+              
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="p-2 rounded-lg bg-white/80 backdrop-blur-sm border border-gray-200 hover:border-blue-300 transition-all duration-200"
+              >
+                <ArrowUpDown className="h-4 w-4 text-gray-600" />
+              </button>
+            </div>
+          </div>
+        </div>
 
         {/* Table Section */}
-        <motion.div
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 overflow-hidden"
-          variants={itemVariants}
-        >
-          <AnimatePresence mode="wait">
-            {isLoading ? (
-              <motion.div
-                key="loading"
-                className="flex items-center justify-center p-12"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div className="flex items-center gap-3 text-gray-600">
-                  <motion.span 
-                    animate={{ rotate: 360 }} 
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Loader2 className="w-6 h-6" />
-                  </motion.span>
-                  <span className="text-lg font-medium">Loading companies...</span>
-                </motion.div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key={location.key}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={itemVariants}
-                className="overflow-hidden"
-              >
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableHead key={column.accessorKey}>
-                            {column.header}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredData.length > 0 ? (
-                        filteredData.map((company) => (
-                          <TableRow key={company.id}>
-                            {columns.map((column) => (
-                              <TableCell key={`${company.id}-${column.accessorKey}`}>
-                                {typeof column.cell === 'function' 
-                                  ? column.cell({ 
-                                      row: { original: company } 
-                                    })
-                                  : company[column.accessorKey as keyof typeof company]}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={columns.length} className="h-24 text-center">
-                            <div className="flex flex-col items-center justify-center py-12">
-                              <Database className="h-12 w-12 text-gray-400 mb-4" />
-                              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                                No companies found
-                              </h3>
-                              <p className="text-sm text-gray-500 mb-4">
-                                {companies.length === 0
-                                  ? 'Get started by adding a new company.'
-                                  : 'No results match your search criteria.'}
-                              </p>
-                              <Button onClick={() => navigate('/company/add')}>
-                                <Plus className="h-4 w-4 mr-2" />
-                                Add Company
-                              </Button>
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden">
+          {isLoading ? (
+            <div className="flex items-center justify-center p-12">
+              <div className="flex items-center gap-3 text-gray-600">
+                <Loader2 className="w-6 h-6 animate-spin" />
+                <span className="text-lg font-medium">Loading companies...</span>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-gray-50/80 to-blue-50/80 backdrop-blur-sm">
+                  <tr>
+                    {[
+                      { key: 'registrationNumber', label: 'Company ID' },
+                      { key: 'name', label: 'Company' },
+                      { key: 'industry', label: 'Industry' },
+                      { key: 'created_at', label: 'Created' },
+                      { key: 'total_property', label: 'Properties' },
+                      { key: 'revenue', label: 'Revenue' },
+                      { key: 'employees', label: 'Employees' },
+                      { key: 'status', label: 'Status' },
+                      { key: 'actions', label: 'Actions' }
+                    ].map((column) => (
+                      <th
+                        key={column.key}
+                        className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                      >
+                        {column.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100/50">
+                  {filteredData.length > 0 ? (
+                    filteredData.map((company, index) => (
+                      <tr
+                        key={company.id}
+                        className="hover:bg-blue-50/30 transition-all duration-200 group"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded-md">
+                            {company.registrationNumber}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                              <Building2 className="h-5 w-5 text-blue-600" />
                             </div>
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                            <div>
+                              <div className="font-medium text-gray-900">{company.name}</div>
+                              <div className="text-sm text-gray-500">{company.industry}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {new Date(company.created_at).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric',
+                              year: 'numeric'
+                            })}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(company.created_at).toLocaleTimeString('en-US', { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                              <Database className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900">{company.total_property}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-semibold text-gray-900">{formatRevenue(company.revenue)}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4 text-gray-400" />
+                            <span className="text-sm text-gray-900">{company.employees}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <StatusBadge status={company.status} />
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <button className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                              <Eye className="w-4 h-4" />
+                            </button>
+                            <button className="p-2 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200">
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button className="p-2 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={9} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center">
+                            <Database className="w-8 h-8 text-gray-400" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-700 mb-1">No companies found</h3>
+                            <p className="text-gray-500">
+                              {searchTerm ? "Try adjusting your search criteria." : "Get started by adding your first company."}
+                            </p>
+                          </div>
+                          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2">
+                            <Plus className="h-4 w-4" />
+                            Add Company
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
 
-        {/* Empty State - Only show if not loading and no companies */}
-        {!isLoading && companies.length === 0 && (
-          <motion.div
-            className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 text-center shadow-xl border border-white/50"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <motion.div
-              className="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Database className="w-8 h-8 text-gray-400" />
-            </motion.div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Companies Found</h3>
-            <p className="text-gray-500 mb-6">
-              {searchTerm ? "No companies match your search criteria." : "Get started by adding your first company."}
-              </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                onClick={() => navigate('/add-spv')}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+        {/* Pagination */}
+        {filteredData.length > 0 && (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span>Showing</span>
+              <span className="font-medium">{((page - 1) * limit) + 1}</span>
+              <span>to</span>
+              <span className="font-medium">{Math.min(page * limit, companies.length)}</span>
+              <span>of</span>
+              <span className="font-medium">{companies.length}</span>
+              <span>companies</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Add First Company
-              </Button>
-            </motion.div>
-          </motion.div>
+                Previous
+              </button>
+              
+              <div className="flex items-center gap-1">
+                {[...Array(Math.ceil(companies.length / limit))].map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setPage(index + 1)}
+                    className={`w-10 h-10 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      page === index + 1
+                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                        : 'text-gray-600 bg-white/80 backdrop-blur-sm border border-gray-200 hover:border-blue-300'
+                    }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                disabled={page === Math.ceil(companies.length / limit)}
+                onClick={() => setPage(page + 1)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
+
 export default Index;

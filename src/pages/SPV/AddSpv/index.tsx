@@ -20,7 +20,12 @@ import {
   FileSignature,
   Users,
   FileSpreadsheet,
-  FileCode2
+  FileCode2,
+  Building2,
+  File,
+  Banknote,
+  Files,
+  Layers
 } from "lucide-react";
 
 
@@ -110,7 +115,7 @@ const StepIndicator = ({
   onStepClick,
   completedSteps = []
 }: {
-  steps: Array<{ id: string; title: string; icon?: any }>;
+  steps: Array<{ id: string; title: string; icon?: React.ReactNode }>;
   currentStep: string;
   onStepClick: (stepId: string) => void;
   completedSteps: string[];
@@ -128,7 +133,7 @@ const StepIndicator = ({
             ? 'completed' 
             : 'pending';
         
-        const Icon = step.icon || (() => <span>{index + 1}</span>);
+        const Icon = step.icon || <span>{index + 1}</span>;
             
         return (
           <button
@@ -149,7 +154,7 @@ const StepIndicator = ({
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-100 text-gray-500"
             )}>
-              {isCompleted ? '✓' : <Icon className="w-4 h-4" />}
+              {isCompleted ? '✓' : step.icon || <span>{index + 1}</span>}
             </div>
             <div>
               <div className="text-sm font-medium">{step.title}</div>
@@ -427,7 +432,7 @@ function Index() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </FormProvider>
   );
 }
 

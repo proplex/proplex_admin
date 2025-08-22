@@ -19,7 +19,9 @@ import {
   Home,
   Sparkles,
   Sun,
-  Moon
+  Moon,
+  ShoppingCart,
+  Settings2
 } from "lucide-react";
 
 // Mock components for demonstration
@@ -31,10 +33,77 @@ interface BaseComponentProps {
   side?: string;
 }
 
-const Tooltip = ({ children, delayDuration }: BaseComponentProps) => <div data-delay-duration={delayDuration}>{children}</div>;
-const TooltipContent = ({ children, side }: BaseComponentProps) => <div className="hidden" data-side={side}>{children}</div>;
-const TooltipProvider = ({ children }: BaseComponentProps) => children;
-const TooltipTrigger = ({ children, asChild }: BaseComponentProps) => asChild ? children : <div>{children}</div>;
+interface TooltipProviderProps {
+  children: React.ReactNode;
+  delayDuration?: number;
+}
+
+interface TooltipTriggerProps {
+  children: React.ReactNode;
+  asChild?: boolean;
+}
+
+interface TooltipContentProps {
+  children: React.ReactNode;
+  side?: 'top' | 'right' | 'bottom' | 'left';
+  className?: string;
+}
+
+const TooltipProvider: React.FC<TooltipProviderProps> = ({ children, delayDuration = 100 }) => (
+  <div className="relative" style={{ '--delay': `${delayDuration}ms` } as React.CSSProperties}>
+    {children}
+  </div>
+);
+
+const Tooltip: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="group relative inline-flex">{children}</div>
+);
+
+const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ children, asChild = false }) => (
+  asChild ? <>{children}</> : <div>{children}</div>
+);
+
+const TooltipContent: React.FC<TooltipContentProps> = ({ 
+  children, 
+  side = 'bottom',
+  className = ''
+}) => {
+  const positionClasses = {
+    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
+    right: 'left-full top-1/2 -translate-y-1/2 ml-2',
+    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
+    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
+  } as const;
+
+  const arrowPosition = {
+    top: 'bottom-0 left-1/2 -mb-1',
+    right: 'left-0 top-1/2 -ml-1 -translate-y-1/2',
+    bottom: 'top-0 left-1/2 -mt-1',
+    left: 'right-0 top-1/2 -mr-1 -translate-y-1/2',
+  } as const;
+
+  return (
+    <div 
+      className={`
+        absolute z-50 px-2.5 py-1.5 text-xs font-medium text-white bg-gray-900 dark:bg-gray-700 
+        rounded-md shadow-lg whitespace-nowrap pointer-events-none
+        opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-100
+        ${positionClasses[side]} ${className}
+      `}
+    >
+      <div className="relative z-10 flex items-center">
+        {children}
+      </div>
+      <div 
+        className={`
+          absolute w-2.5 h-2.5 bg-gray-900 dark:bg-gray-700 
+          transform rotate-45 -translate-x-1/2
+          ${arrowPosition[side]}
+        `} 
+      />
+    </div>
+  );
+};
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -197,6 +266,12 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
       gradient: "from-purple-500 to-pink-500"
     },
     { 
+      icon: <ShoppingCart className="h-4 w-4" />, 
+      label: "Orders", 
+      href: "/orders", 
+      gradient: "from-teal-500 to-cyan-600"
+    },
+    { 
       icon: <Package className="h-4 w-4" />, 
       label: "Assets", 
       href: "/assets",
@@ -213,13 +288,19 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
       label: "Investors", 
       href: "/customers",
       gradient: "from-indigo-500 to-purple-500"
+    },
+    { 
+      icon: <Settings2 className="h-4 w-4" />, 
+      label: "Configuration", 
+      href: "/configuration",
+      gradient: "from-amber-500 to-orange-500"
     }
   ];
 
   return (
     <TooltipProvider delayDuration={100}>
       <nav className={`
-        fixed top-0 left-0 right-0 h-16 z-50 transition-all duration-500 ease-out
+        fixed  left-0 right-0 rounded-6xl border border-gray-200/20 drop-shadow-lg dark:border-gray-800/20 h-16 z-50 transition-all duration-500 ease-out
         ${isScrolled 
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-200/20 dark:border-gray-800/20' 
           : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-transparent'
@@ -250,7 +331,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             </div>
             
             {/* Desktop Navigation with enhanced effects */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex flex-wrap justify-center gap-1">
               {navItems.map((item, index) => {
               const isActive = item.exact 
                 ? location.pathname === item.href
@@ -259,29 +340,32 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
               return (
                 <Tooltip key={item.href}>
                   <TooltipTrigger asChild>
-                    <NavLink
-                      to={item.href}
-                      isActive={isActive}
-                      className={`group relative flex items-center justify-center p-3 h-11 w-11 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
-                        isActive
-                          ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-current/25`
-                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
-                      }`}
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className="relative z-10 transition-transform duration-200 group-hover:rotate-12">
-                        {item.icon}
-                      </div>
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
-                        isActive ? 'opacity-10' : ''
-                      }`} />
-                    </NavLink>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <div className="px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded-lg shadow-lg">
-                      {item.label}
+                    <div className="relative">
+                      <NavLink
+                        to={item.href}
+                        isActive={isActive}
+                        className={`group relative flex items-center justify-center p-3 h-11 w-11 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
+                          isActive
+                            ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-current/25`
+                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                        }`}
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
+                        <div className="relative z-10 transition-transform duration-200 group-hover:rotate-12">
+                          {item.icon}
+                        </div>
+                        <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
+                          isActive ? 'opacity-10' : ''
+                        }`} />
+                      </NavLink>
+                      <TooltipContent 
+                        side="right"
+                        className="bg-gray-800 dark:bg-gray-100 dark:text-gray-900"
+                      >
+                        <span className="font-semibold">{item.label}</span>
+                      </TooltipContent>
                     </div>
-                  </TooltipContent>
+                  </TooltipTrigger>
                 </Tooltip>
               );
             })}
