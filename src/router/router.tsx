@@ -1,4 +1,3 @@
-
 import React, {
   Suspense,
   type ComponentType,
@@ -39,6 +38,11 @@ const authRoutes: RouteObject[] = [
   {
     path: '/sign-in',
     element: lazyLoad(React.lazy(() => import('@/pages/auth/SignIn'))),
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/web3login',
+    element: lazyLoad(React.lazy(() => import('@/pages/auth/Web3Login'))),
     errorElement: <ErrorPage />,
   },
 ];

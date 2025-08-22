@@ -24,6 +24,11 @@ import {
   Settings2
 } from "lucide-react";
 
+// Web3Auth imports
+// import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
+// import { useAccount } from "wagmi";
+
+
 // Mock components for demonstration
 interface BaseComponentProps {
   children: React.ReactNode;
@@ -229,10 +234,16 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
   const [notifications] = useState<number>(3);
   const [time, setTime] = useState<Date>(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
+    // const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
+    // const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
+    // const { userInfo } = useWeb3AuthUser();
+    // const { address } = useAccount();
+    // console.log("userInfo:", userInfo);
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => setTime(new Date()), 1000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   // Load wallet address from memory (localStorage not available in artifacts)
   useEffect(() => {
@@ -390,7 +401,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             <div className="h-6 w-px bg-gray-300/60 dark:bg-gray-600/60 mx-2" />
 
             
-            {/* Settings Button */}
+            {/* Settings Button
             <Button 
               variant="ghost" 
               size="icon"
@@ -398,6 +409,16 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             >
               <Settings className="h-4 w-4 text-gray-600 dark:text-gray-400 transition-all duration-500 group-hover:text-purple-600 group-hover:rotate-90" />
             </Button>
+
+          web3auth button 
+          <Button
+          onClick={() => connect()}
+        >
+          web3auth
+        </Button>
+        {connectError && (
+          <p className="text-red-600 text-sm mb-4">{connectError.message || 'Web3Auth login failed.'}</p>
+        )} */}
             
             {/* Divider */}
             <div className="w-px h-6 bg-gray-300/60 dark:bg-gray-600/60 mx-3" />
@@ -433,7 +454,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
               >
                 <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-white px-2 py-2 flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-blue-500" />
-                  My Account
+                  My  Account
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-1" />
                 
@@ -472,6 +493,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     </div>
                   </div>
                 </DropdownMenuItem>
+
                 
                 <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-2" />
                 
@@ -489,7 +511,9 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     </div>
                   </div>
                 </DropdownMenuItem>
+
               </DropdownMenuContent>
+
             </DropdownMenu>
           </div>
         </div>
