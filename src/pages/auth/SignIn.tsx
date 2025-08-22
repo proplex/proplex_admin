@@ -1,9 +1,11 @@
-
-
 import React, { useState, FormEvent, useEffect } from 'react';
 import api from '@/lib/httpClient';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/LoadingSpinner';
+
+// // Web3Auth imports
+// import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
+// import { useAccount } from "wagmi";
 
 interface RegisterResponse {
   status: string;
@@ -29,6 +31,12 @@ const SignIn: React.FC = () => {
   >(null);
   const [otpSent, setOtpSent] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  // Web3Auth hooks
+  // const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
+  // const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
+  // const { userInfo } = useWeb3AuthUser();
+  // const { address } = useAccount();
 
   // Restore state and validate token on mount
   useEffect(() => {
@@ -157,26 +165,42 @@ const SignIn: React.FC = () => {
     setEmail('');
   };
 
+  // Redirect if already connected with Web3Auth
+  // useEffect(() => {
+  //   if (isConnected && address) {
+  //     navigate('/');
+  //   }
+  // }, [isConnected, address, navigate]);
+
   return (
     <div className='min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 p-4'>
       <div className='w-full max-w-md bg-white rounded-xl shadow-lg p-8 transform transition-all duration-300 hover:shadow-xl'>
         <div className='flex justify-center mb-6'>
-          <img src='/Ryzerlogo.svg' alt='Ryzer Logo' className='h-16 w-auto' />
+          <img src='/metamask-icon.svg' alt='proplex Logo' className='h-16 w-auto' />
         </div>
 
         <h1 className='text-3xl font-semibold text-center text-gray-800 mb-4'>
           Sign In
         </h1>
 
-        <div className='flex justify-center mb-6'>
-          <div className='flex items-center gap-2'>
-            <span
-              className={`h-2 w-2 rounded-full ${
-                otpSent ? 'bg-blue-500' : 'bg-gray-300'
-              }`}
-            />
-            <span className='h-2 w-2 rounded-full bg-blue-500' />
-          </div>
+        {/* Web3Auth Login Button
+        <button
+          type="button"
+          onClick={() => connect()}
+          className="w-full bg-indigo-600 text-white p-3 rounded-lg font-medium hover:bg-indigo-700 flex items-center justify-center gap-2 transition-all mb-6"
+         
+        >web3auth
+        </button>
+        <button type='button' onClick={()=>disconnect()}>logout web3</button>
+        {connectError && (
+          <p className="text-red-600 text-sm mb-4">{connectError.message || 'Web3Auth login failed.'}</p>
+        )} */}
+
+        {/* Divider */}
+        <div className="flex items-center my-4">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-2 text-gray-400 text-sm">or</span>
+          <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
         {!otpSent ? (

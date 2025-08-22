@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
+    <script type="module">
+      // IMP START - Bundler Issues
+      import { Buffer } from "buffer";
+      import process from "process";
+      window.Buffer = Buffer;
+      window.process = process; 
+      // IMP END - Bundler Issues
+    </script>
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,10 +23,10 @@
     <meta name="msapplication-TileColor" content="#000000" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="proplex Admin - RWA Investment Platform" />
     <title>proplex Admin: RWA Fractional Investment Platform</title>
+    
   </head>
   <body>
     <div id="root"></div>
