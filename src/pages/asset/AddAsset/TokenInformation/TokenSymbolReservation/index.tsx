@@ -5,23 +5,23 @@ import { useFormContext } from 'react-hook-form';
 type ReservationStatus = 'idle' | 'checking' | 'available' | 'unavailable' | 'reserved';
 
 // Props for the component
-interface PropertyDIDReservationProps {
-  onReservationComplete?: (did: string) => void;
+interface TokenSymbolReservationProps {
+  onReservationComplete?: (symbol: string) => void;
 }
 
-// Property DID Input Component
-const PropertyDIDInput: React.FC<{
-  propertyDID: string;
-  setPropertyDID: (value: string) => void;
+// Token Symbol Input Component
+const TokenSymbolInput: React.FC<{
+  tokenSymbol: string;
+  setTokenSymbol: (value: string) => void;
   onCheckAvailability: () => void;
-}> = ({ propertyDID, setPropertyDID, onCheckAvailability }) => {
+}> = ({ tokenSymbol, setTokenSymbol, onCheckAvailability }) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase();
-    setPropertyDID(value);
+    const value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    setTokenSymbol(value);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && propertyDID.trim()) {
+    if (e.key === 'Enter' && tokenSymbol.trim()) {
       onCheckAvailability();
     }
   };
@@ -31,39 +31,35 @@ const PropertyDIDInput: React.FC<{
       <div className="text-center space-y-2">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9 22V12H15V22" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Reserve Your Property DID</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Reserve Your Token Symbol</h2>
         <p className="text-gray-600 max-w-sm mx-auto">
-          Create a unique decentralized identifier for your real estate asset on the blockchain
+          Create a unique token symbol for your digital asset on the blockchain
         </p>
       </div>
 
       <div className="space-y-4">
         <div className="space-y-2">
           <label className="block text-sm font-medium text-gray-700">
-            Property DID Namespace
+            Security Token Symbol
           </label>
           <div className="relative">
-            <div className="flex items-center border-2 border-gray-200 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-200 transition-all">
-              <span className="px-4 py-3 text-gray-500 bg-gray-50 rounded-l-xl border-r border-gray-200 text-sm">
-                did:proplex:
-              </span>
-              <input
-                type="text"
-                value={propertyDID}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress}
-                placeholder="property-identifier"
-                className="flex-1 px-4 py-3 rounded-r-xl focus:outline-none text-gray-900"
-                maxLength={50}
-              />
-            </div>
+            <input
+              type="text"
+              value={tokenSymbol}
+              onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
+              placeholder="e.g., PROP001"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all text-gray-900 font-semibold text-center text-lg"
+              maxLength={10}
+            />
           </div>
           <div className="text-xs text-gray-500 space-y-1">
-            <p>• Use letters, numbers, and hyphens only</p>
+            <p>• Use letters and numbers only (3-10 characters)</p>
             <p>• Must be unique across the Proplex network</p>
             <p>• Cannot be changed once reserved</p>
           </div>
@@ -71,7 +67,7 @@ const PropertyDIDInput: React.FC<{
 
         <button
           onClick={onCheckAvailability}
-          disabled={!propertyDID.trim()}
+          disabled={!tokenSymbol.trim() || tokenSymbol.length < 3}
           className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl"
         >
           Check Availability
@@ -84,10 +80,10 @@ const PropertyDIDInput: React.FC<{
 // Availability Status Component
 const AvailabilityStatus: React.FC<{
   status: ReservationStatus;
-  checkedDID: string;
+  checkedSymbol: string;
   onContinue: () => void;
   onTryAnother: () => void;
-}> = ({ status, checkedDID, onContinue, onTryAnother }) => {
+}> = ({ status, checkedSymbol, onContinue, onTryAnother }) => {
   const isAvailable = status === 'available';
 
   return (
@@ -110,12 +106,12 @@ const AvailabilityStatus: React.FC<{
         <h3 className={`text-xl font-bold ${
           isAvailable ? 'text-green-700' : 'text-red-700'
         }`}>
-          {isAvailable ? 'DID Available!' : 'DID Unavailable'}
+          {isAvailable ? 'Token Symbol Available!' : 'Token Symbol Unavailable'}
         </h3>
         
         <div className="bg-gray-50 rounded-xl p-4 border-2 border-dashed border-gray-200">
-          <code className="text-sm text-gray-700 font-mono break-all">
-            did:proplex:{checkedDID}
+          <code className="text-lg text-gray-700 font-mono font-bold">
+            {checkedSymbol}
           </code>
         </div>
 
@@ -123,8 +119,8 @@ const AvailabilityStatus: React.FC<{
           isAvailable ? 'text-green-600' : 'text-red-600'
         }`}>
           {isAvailable 
-            ? 'This Property DID is available for reservation'
-            : 'This Property DID has already been claimed'
+            ? 'This token symbol is available for reservation'
+            : 'This token symbol has already been claimed'
           }
         </p>
       </div>
@@ -141,7 +137,7 @@ const AvailabilityStatus: React.FC<{
             onClick={onContinue}
             className="flex-1 py-3 px-6 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            Reserve DID
+            Reserve Symbol
           </button>
         )}
       </div>
@@ -149,19 +145,17 @@ const AvailabilityStatus: React.FC<{
   );
 };
 
-// Fee info integrated inline - component removed
-
-const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
+const TokenSymbolReservation: React.FC<TokenSymbolReservationProps> = ({
   onReservationComplete,
 }) => {
   const { setValue } = useFormContext();
-  const [propertyDID, setPropertyDID] = useState('');
+  const [tokenSymbol, setTokenSymbol] = useState('');
   const [status, setStatus] = useState<ReservationStatus>('idle');
-  const [checkedDID, setCheckedDID] = useState('');
+  const [checkedSymbol, setCheckedSymbol] = useState('');
 
-  // Function to check DID availability
+  // Function to check symbol availability
   const checkAvailability = async () => {
-    if (!propertyDID.trim()) return;
+    if (!tokenSymbol.trim() || tokenSymbol.length < 3) return;
     
     setStatus('checking');
     
@@ -169,11 +163,11 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // For demo: DIDs containing "unavailable" or "taken" are unavailable
-      const isAvailable = !propertyDID.toLowerCase().includes('unavailable') && 
-                         !propertyDID.toLowerCase().includes('taken');
+      // For demo: symbols containing "unavailable" or "taken" are unavailable
+      const isAvailable = !tokenSymbol.toLowerCase().includes('unavailable') && 
+                         !tokenSymbol.toLowerCase().includes('taken');
       
-      setCheckedDID(propertyDID.toLowerCase());
+      setCheckedSymbol(tokenSymbol.toUpperCase());
       setStatus(isAvailable ? 'available' : 'unavailable');
     } catch (error) {
       console.error('Error checking availability:', error);
@@ -182,22 +176,33 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
   };
 
   const handleContinueReservation = () => {
-    setValue('propertyInformation.propertyDID', `did:proplex:${checkedDID}`);
+    setValue('tokenInformation.tokenSymbol', checkedSymbol);
     if (onReservationComplete) {
-      onReservationComplete(`did:proplex:${checkedDID}`);
+      onReservationComplete(checkedSymbol);
     }
   };
 
   const handleTryAnother = () => {
-    setPropertyDID('');
+    setTokenSymbol('');
     setStatus('idle');
-    setCheckedDID('');
+    setCheckedSymbol('');
   };
 
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
       {/* Header */}
-     
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center space-x-2 mb-4">
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">P</span>
+          </div>
+          <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+            Proplex
+          </span>
+        </div>
+        <div className="text-sm text-gray-500">Decentralized Real Estate Platform</div>
+      </div>
+
       {/* Main Content - Clean white background */}
       <div className="bg-white rounded-2xl shadow-lg p-8">
         {status === 'checking' ? (
@@ -208,20 +213,20 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
             </div>
             <div className="text-center space-y-2">
               <p className="text-lg font-semibold text-gray-900">Checking Availability</p>
-              <p className="text-sm text-gray-600">Verifying DID on blockchain...</p>
+              <p className="text-sm text-gray-600">Verifying symbol on blockchain...</p>
             </div>
           </div>
         ) : status === 'available' || status === 'unavailable' ? (
           <AvailabilityStatus
             status={status}
-            checkedDID={checkedDID}
+            checkedSymbol={checkedSymbol}
             onContinue={handleContinueReservation}
             onTryAnother={handleTryAnother}
           />
         ) : (
-          <PropertyDIDInput
-            propertyDID={propertyDID}
-            setPropertyDID={setPropertyDID}
+          <TokenSymbolInput
+            tokenSymbol={tokenSymbol}
+            setTokenSymbol={setTokenSymbol}
             onCheckAvailability={checkAvailability}
           />
         )}
@@ -238,15 +243,15 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
                 </svg>
               </div>
               <div>
-                <div className="text-sm font-medium text-gray-900">Property DID Reservation</div>
+                <div className="text-sm font-medium text-gray-900">Token Symbol Reservation</div>
                 <div className="text-xs text-gray-600">One-time registration fee</div>
               </div>
             </div>
             <div className="text-right">
               <div className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                500 PLX
+                100 PLX
               </div>
-              <div className="text-xs text-gray-500">≈ $25.00 USD</div>
+              <div className="text-xs text-gray-500">≈ $5.00 USD</div>
             </div>
           </div>
           
@@ -257,8 +262,8 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
                 <span>5 PLX</span>
               </div>
               <div className="flex justify-between">
-                <span>DID Registration:</span>
-                <span>495 PLX</span>
+                <span>Symbol Registration:</span>
+                <span>95 PLX</span>
               </div>
             </div>
           </div>
@@ -268,4 +273,4 @@ const PropertyDIDReservation: React.FC<PropertyDIDReservationProps> = ({
   );
 };
 
-export default PropertyDIDReservation;
+export default TokenSymbolReservation;
