@@ -67,7 +67,9 @@ const IssueDue = lazy(() => import("./IssueDue"));
 const TermsAndConditions = lazy(() => import("./TermsAndConditions"));
 const FeaturesAndAmenities = lazy(() => import("./FeaturesAndAmenities"));
 const LocationPlaces = lazy(() => import("./LocationPlaces"));
-const TokenInformation = lazy(() => import("./TokenInformation"));
+const TokenInformation = lazy(() => 
+  import("./TokenInformation").then(module => ({ default: module.default }))
+);
 const MediaAndDocuments = lazy(() => import("./MediaAndDocuments"));
 const FeeStructure = lazy(() => import("./FeeStructure"));
 

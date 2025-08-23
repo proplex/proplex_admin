@@ -4,9 +4,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useState } from 'react';
 import FormGenerator from '@/components/UseForm/FormGenerator';
 import { FormProvider, useForm  } from 'react-hook-form';
-import { Plus } from 'lucide-react';
+import { Plus, Scale, Info } from 'lucide-react';
 import { formConfig } from './formConfig';
-const   LegalAdvisor = () => {
+import { motion } from 'framer-motion';
+
+const LegalAdvisor = () => {
     const [open, setOpen] = useState(false);
     const methods = useForm({
         defaultValues: {
@@ -19,47 +21,85 @@ const   LegalAdvisor = () => {
             relevantDocument: '',
         },
     });
+    
+    // Animation variants
+    const itemVariants = {
+        hidden: { opacity: 0, y: 10 },
+        visible: { opacity: 1, y: 0 }
+    };
+
     return (
         <>
-            <div className='flex flex-col gap-4'>
+            <motion.div 
+                className='flex flex-col gap-4'
+                initial="hidden"
+                animate="visible"
+                variants={itemVariants}
+            >
                 <div className='flex justify-between items-center'>
-                    <h1 className='text-lg font-bold'>          
-                                Legal Advisor List
-
-
-                    </h1>
-                    <Button size='sm'  type='button' onClick={() => setOpen(true)}> Add   Legal Advisor   <Plus className='h-4 w-4' /></Button>
+                    <div className="flex items-center gap-2">
+                        <Scale className="h-5 w-5 text-purple-600" />
+                        <h1 className='text-lg font-bold'>Legal Advisor List</h1>
+                    </div>
+                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+                        Add Legal Advisor <Plus className='h-4 w-4 ml-2' />
+                    </Button>
                 </div>
-
-            </div>
+            </motion.div>
+            
             <Dialog open={open} onOpenChange={setOpen}>
-
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle className='text-lg font-bold p-2'>
-                                Add New Legal Advisor
-
-                        </DialogTitle>
-                        <DialogDescription>
-                            <FormProvider {...methods}>
-                                <form className='space-y-4'>
-                                    {FormGenerator(formConfig(methods.control))}
-                                    <div className='flex justify-end gap-2'>
-                                        <Button type='button' variant='outline' onClick={() => setOpen(false)}>
-                                            Cancel
-                                        </Button>
-                                        <Button type='submit' className=''>
-                                            Save
-                                        </Button>
-                                    </div>
-                                </form>
-                            </FormProvider>
-                        </DialogDescription>
+                <DialogContent className="sm:max-w-[500px] rounded-2xl shadow-xl">
+                    <DialogHeader className="mb-2">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <Scale className="h-5 w-5 text-purple-600" />
+                            </div>
+                            <div>
+                                <DialogTitle className='text-xl font-bold text-gray-900'>
+                                    Add New Legal Advisor
+                                </DialogTitle>
+                                <p className="text-gray-600 text-sm">
+                                    Enter the details for the new legal advisor
+                                </p>
+                            </div>
+                        </div>
                     </DialogHeader>
+                    
+                    {/* Information Banner */}
+                    <div className="bg-purple-50 rounded-lg p-3 border border-purple-100 mb-4">
+                        <div className="flex items-start gap-2">
+                            <Info className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                            <p className="text-sm text-purple-700">
+                                Legal advisors will have access to company documents based on their area of expertise.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <DialogDescription>
+                        <FormProvider {...methods}>
+                            <form className='space-y-4'>
+                                <motion.div 
+                                    className="space-y-4"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    {FormGenerator(formConfig(methods.control))}
+                                </motion.div>
+                                <div className='flex justify-end gap-3 pt-2'>
+                                    <Button type='button' variant='outline' onClick={() => setOpen(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button type='submit' className='bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'>
+                                        Save Advisor
+                                    </Button>
+                                </div>
+                            </form>
+                        </FormProvider>
+                    </DialogDescription>
                 </DialogContent>
             </Dialog>
         </>
-
     )
 };
 

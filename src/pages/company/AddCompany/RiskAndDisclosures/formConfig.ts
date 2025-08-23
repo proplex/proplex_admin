@@ -1,5 +1,3 @@
-
-
 import { useFormContext } from 'react-hook-form';
 import { FormFieldConfig } from '@/components/UseForm/ControllerMap';
 
@@ -8,17 +6,18 @@ export const riskFormConfig = (): FormFieldConfig[] => {
    return  [
   {
     name: 'risk_disclosure',
-    label: 'Risk',
+    label: 'Risk & Disclosure Statement',
     control,
     type: 'textarea',
+    placeholder: 'Describe the key risks and disclosures related to your company...',
     rules: {
-      required: 'Risk is required',
+      required: 'Risk disclosure is required',
       maxLength: {
-        value: 500,
-        message: 'Risk should not exceed 500 characters',
+        value: 1000,
+        message: 'Risk disclosure should not exceed 1000 characters',
       },
     },
+    bottomText: 'Provide a comprehensive overview of material risks, including market, operational, and regulatory risks'
   },
 ];
-}
-
+};

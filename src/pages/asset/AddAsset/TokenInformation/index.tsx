@@ -7,7 +7,7 @@ import Loading from "@/components/ui/Loading";
 import PropertyDIDReservation from "./PropertyDIDReservation";
 import AssetInformationSummary from "./AssetInformationSummary";
 import CustomTabs from "@/components/ui/custom-tab";
-// import { motion } from 'framer-motion';
+
 interface Props {
   tab: string;
   step: string;

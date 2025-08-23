@@ -140,6 +140,24 @@ export const ORDER_STATUS_OPTIONS = [
   { label: "Refunded", value: "Refunded" },
 ];
 
+export const IndustryOptions = [
+  { value: "Technology", label: "Technology" },
+  { value: "Energy", label: "Energy" },
+  { value: "Digital Marketing", label: "Digital Marketing" },
+  { value: "Manufacturing", label: "Manufacturing" },
+  { value: "Healthcare", label: "Healthcare" },
+  { value: "Finance", label: "Finance" },
+  { value: "Real Estate", label: "Real Estate" },
+  { value: "Education", label: "Education" },
+  { value: "Agriculture", label: "Agriculture" },
+  { value: "Transportation", label: "Transportation" },
+  { value: "Retail", label: "Retail" },
+  { value: "Entertainment", label: "Entertainment" },
+  { value: "Construction", label: "Construction" },
+  { value: "Hospitality", label: "Hospitality" },
+  { value: "Telecommunications", label: "Telecommunications" },
+];
+
 export const ASSET_STEPS_TABS = [
   {
     id: "asset-information",

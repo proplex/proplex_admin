@@ -1,8 +1,12 @@
 import React from 'react';
 
-const LoadingIcon: React.FC = () => {
+interface LoadingIconProps {
+  className?: string;
+}
+
+const LoadingIcon: React.FC<LoadingIconProps> = ({ className = '' }) => {
   return (
-    <div className="loading-icon">
+    <div className={`loading-icon ${className}`}>
       <svg
         width="24"
         height="24"

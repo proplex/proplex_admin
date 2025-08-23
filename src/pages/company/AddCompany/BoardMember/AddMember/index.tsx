@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -13,6 +12,8 @@ import { useParams } from 'react-router-dom';
 import FormGenerator from '@/components/UseForm/FormGenerator';
 import { formConfig } from './formConfig';
 import toast from 'react-hot-toast';
+import { Loader2, User, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ModalProps {
   update: any;
@@ -87,22 +88,65 @@ const Index: React.FC<ModalProps> = ({
 
   return (
     <Dialog open={!!isOpen} onOpenChange={(open) => !open && handleOnClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {isUpdate ? 'Edit Board Member' : 'Add Board Member'}
-          </DialogTitle>
-        </DialogHeader>
-        <div className='space-y-4'>
-          <div className='flex flex-col gap-6'>
-            {FormGenerator(formConfig({ index }))}
+      <DialogContent className="sm:max-w-[500px] rounded-2xl shadow-xl">
+        <DialogHeader className="mb-2">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <User className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <DialogTitle className="text-2xl font-bold text-gray-900">
+                {isUpdate ? 'Edit Board Member' : 'Add Board Member'}
+              </DialogTitle>
+              <p className="text-gray-600">
+                {isUpdate 
+                  ? 'Update the details for this board member' 
+                  : 'Enter the details for the new board member'}
+              </p>
+            </div>
           </div>
-          <div className='flex justify-end gap-2'>
-            <Button type='button' variant='outline' onClick={handleOnClose}>
+        </DialogHeader>
+        
+        {/* Information Banner */}
+        <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 mb-4">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="font-medium text-blue-800 mb-1">Important Information</h4>
+              <p className="text-sm text-blue-700">
+                All board members must be verified and will receive important company notifications.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="space-y-5 py-2">
+          <motion.div 
+            className="space-y-5"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {FormGenerator(formConfig({ index }))}
+          </motion.div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={handleOnClose}>
               Cancel
             </Button>
-            <Button onClick={onSubmit} type='button' className=''>
-              {isUpdate ? 'Update' : 'Save'}
+            <Button 
+              onClick={onSubmit} 
+              type="button" 
+              disabled={loading}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {isUpdate ? 'Updating...' : 'Adding...'}
+                </>
+              ) : (
+                isUpdate ? 'Update Member' : 'Add Member'
+              )}
             </Button>
           </div>
         </div>
