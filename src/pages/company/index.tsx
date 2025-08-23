@@ -195,45 +195,56 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   const colorConfig = {
     blue: {
-      bg: 'bg-gradient-to-br from-blue-500 to-indigo-600',
-      icon: 'text-blue-100',
-      text: 'text-white'
+      accent: 'bg-blue-50',
+      icon: 'bg-blue-100',
+      iconColor: 'text-blue-600',
+      accentColor: 'text-blue-600',
+      // bar: 'from-blue-500 to-blue-600'
     },
     emerald: {
-      bg: 'bg-gradient-to-br from-emerald-500 to-green-600',
-      icon: 'text-emerald-100',
-      text: 'text-white'
+      accent: 'bg-emerald-50',
+      icon: 'bg-emerald-100',
+      iconColor: 'text-emerald-600',
+      accentColor: 'text-emerald-600',
+      // bar: 'from-emerald-500 to-emerald-600'
     },
     amber: {
-      bg: 'bg-gradient-to-br from-amber-500 to-orange-600',
-      icon: 'text-amber-100',
-      text: 'text-white'
+      accent: 'bg-amber-50',
+      icon: 'bg-amber-100',
+      iconColor: 'text-amber-600',
+      accentColor: 'text-amber-600',
+      // bar: 'from-amber-500 to-amber-600'
     },
     purple: {
-      bg: 'bg-gradient-to-br from-purple-500 to-violet-600',
-      icon: 'text-purple-100',
-      text: 'text-white'
+      accent: 'bg-purple-50',
+      icon: 'bg-purple-100',
+      iconColor: 'text-purple-600',
+      accentColor: 'text-purple-600',
+      // bar: 'from-purple-500 to-purple-600'
     }
   };
 
   const config = colorConfig[color] || colorConfig.blue;
 
   return (
-    <div className={`${config.bg} rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105`}>
+    <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-102 relative overflow-hidden">
+      {/* Subtle colored accent bar */}
+      <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r`} />
+      
       <div className="flex items-center justify-between">
         <div>
-          <p className={`${config.text} opacity-90 text-sm font-medium mb-1`}>{title}</p>
-          <p className={`${config.text} text-3xl font-bold mb-1`}>{value}</p>
-          {subtitle && <p className={`${config.text} opacity-75 text-sm`}>{subtitle}</p>}
+          <p className="text-gray-600 text-sm font-medium mb-1">{title}</p>
+          <p className="text-gray-900 text-3xl font-bold mb-1">{value}</p>
+          {subtitle && <p className={`${config.accentColor} text-sm font-medium`}>{subtitle}</p>}
         </div>
-        <div className={`p-3 rounded-xl bg-white/20 backdrop-blur-sm group-hover:scale-110 transition-transform duration-300`}>
-          <Icon className={`w-6 h-6 ${config.icon}`} />
+        <div className={`p-3 rounded-xl ${config.icon} group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className={`w-6 h-6 ${config.iconColor}`} />
         </div>
       </div>
       {trend && (
         <div className="flex items-center mt-3">
-          <TrendingUp className={`w-4 h-4 ${config.icon} mr-1`} />
-          <span className={`${config.text} text-sm opacity-90`}>{trend}</span>
+          <TrendingUp className={`w-4 h-4 ${config.iconColor} mr-1`} />
+          <span className={`${config.accentColor} text-sm font-medium`}>{trend}</span>
         </div>
       )}
     </div>
@@ -247,6 +258,7 @@ function Index() {
   const [limit] = useState<number>(10);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [selectedCompanies, setSelectedCompanies] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<{ status: StatusType[] }>({
     status: [],
   });
@@ -346,6 +358,24 @@ function Index() {
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectedCompanies.size === filteredData.length && filteredData.length > 0) {
+      setSelectedCompanies(new Set());
+    } else {
+      setSelectedCompanies(new Set(filteredData.map(company => company.id)));
+    }
+  };
+
+  const handleSelectCompany = (companyId: string) => {
+    const newSelected = new Set(selectedCompanies);
+    if (newSelected.has(companyId)) {
+      newSelected.delete(companyId);
+    } else {
+      newSelected.add(companyId);
+    }
+    setSelectedCompanies(newSelected);
+  };
+
   const formatRevenue = (amount: string | number): string => {
     // Convert to string if it's a number
     const amountStr = typeof amount === 'number' ? amount.toString() : amount;
@@ -382,7 +412,7 @@ function Index() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                Companies Dashboard
+                Companies hiii Dashboard
               </h1>
               <p className="text-gray-600 mt-2 text-lg">Manage and monitor your company portfolio</p>
             </div>
@@ -400,7 +430,7 @@ function Index() {
                 )}
               </button>
               
-              <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group" onClick={() => navigate('/add-company')}>
+              <button className="px-6 py-3 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 group" onClick={() => navigate('/add-company')}>
                 <Plus className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" />
                 Add Company 
               </button>
@@ -518,6 +548,14 @@ function Index() {
               <table className="w-full">
                 <thead className="bg-gradient-to-r from-gray-50/80 to-blue-50/80 backdrop-blur-sm">
                   <tr>
+                    <th className="px-6 py-4 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedCompanies.size === filteredData.length && filteredData.length > 0}
+                        onChange={handleSelectAll}
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      />
+                    </th>
                     {[
                       { key: 'registrationNumber', label: 'Company ID' },
                       { key: 'name', label: 'Company' },
@@ -545,6 +583,14 @@ function Index() {
                         key={company.id}
                         className="hover:bg-blue-50/30 transition-all duration-200 group"
                       >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedCompanies.has(company.id)}
+                            onChange={() => handleSelectCompany(company.id)}
+                            className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded-md">
                             {company.registrationNumber}
@@ -613,7 +659,7 @@ function Index() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={9} className="px-6 py-12 text-center">
+                      <td colSpan={10} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center gap-4">
                           <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center">
                             <Database className="w-8 h-8 text-gray-400" />
@@ -624,7 +670,7 @@ function Index() {
                               {searchTerm ? "Try adjusting your search criteria." : "Get started by adding your first company."}
                             </p>
                           </div>
-                          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2" onClick={() => navigate('/add-company')}>
+                          <button className="px-6 py-3 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2" onClick={() => navigate('/add-company')}>
                             <Plus className="h-4 w-4" />
                             Add Company
                           </button>

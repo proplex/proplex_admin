@@ -228,42 +228,47 @@ const StatCard: React.FC<{
   delay?: number;
 }> = ({ title, value, subtitle, icon: Icon, color = 'blue', trend, change, delay = 0 }) => {
   const colorCfg = {
-    blue: 'from-blue-500 via-blue-600 to-indigo-700',
-    emerald: 'from-emerald-500 via-green-600 to-teal-700',
-    purple: 'from-purple-500 via-violet-600 to-indigo-700',
-    amber: 'from-amber-500 via-orange-600 to-red-700',
-    pink: 'from-pink-500 via-rose-600 to-red-700',
+    blue: { bg: 'bg-blue-50', icon: 'bg-blue-100', iconColor: 'text-blue-600', accent: 'text-blue-600' },
+    emerald: { bg: 'bg-emerald-50', icon: 'bg-emerald-100', iconColor: 'text-emerald-600', accent: 'text-emerald-600' },
+    purple: { bg: 'bg-purple-50', icon: 'bg-purple-100', iconColor: 'text-purple-600', accent: 'text-purple-600' },
+    amber: { bg: 'bg-amber-50', icon: 'bg-amber-100', iconColor: 'text-amber-600', accent: 'text-amber-600' },
+    pink: { bg: 'bg-pink-50', icon: 'bg-pink-100', iconColor: 'text-pink-600', accent: 'text-pink-600' },
   }[color];
 
   return (
     <motion.div
-      className={`bg-gradient-to-br ${colorCfg} rounded-2xl p-6 shadow-xl border border-white/10 backdrop-blur-sm relative overflow-hidden group`}
+      className={`bg-white rounded-2xl p-6 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 group relative overflow-hidden`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay }}
-      whileHover={{ scale: 1.05, y: -4 }}
+      whileHover={{ scale: 1.02, y: -2 }}
     >
+      {/* Subtle colored accent bar */}
+      <div className={`absolute top-0 left-0 w-full h-1 ${colorCfg.bg}`} />
+      
       <div className="relative z-10">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-white/80 text-sm">{title}</p>
-            <p className="text-white text-3xl font-bold">{value}</p>
-            {subtitle && <p className="text-white/70 text-sm mt-1">{subtitle}</p>}
+            <p className="text-gray-600 text-sm font-medium">{title}</p>
+            <p className="text-gray-900 text-3xl font-bold mt-2">{value}</p>
+            {subtitle && <p className="text-gray-500 text-sm mt-1">{subtitle}</p>}
           </div>
-          <div className="p-3 rounded-xl bg-white/10">
-            <Icon className="w-6 h-6 text-white/80" />
+          <div className={`p-3 rounded-xl ${colorCfg.icon} transition-colors group-hover:scale-110`}>
+            <Icon className={`w-6 h-6 ${colorCfg.iconColor}`} />
           </div>
         </div>
         {(trend || change !== undefined) && (
-          <div className="flex items-center justify-between mt-3 text-sm">
+          <div className="flex items-center justify-between mt-4 text-sm">
             {trend && (
-              <div className="flex items-center gap-2 text-white/80">
+              <div className="flex items-center gap-2 text-gray-600">
                 <TrendingUp className="w-4 h-4" />
                 <span>{trend}</span>
               </div>
             )}
             {change !== undefined && (
-              <span className={change > 0 ? 'text-green-300' : 'text-red-300'}>
+              <span className={`font-medium ${
+                change > 0 ? 'text-emerald-600' : 'text-red-500'
+              }`}>
                 {change > 0 ? '+' : ''}{change}%
               </span>
             )}
@@ -582,7 +587,7 @@ export default function Index() {
                       key={asset._id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="hover:bg-gray-50"
+                      className="hover:bg-gray-50 group"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <input
@@ -622,14 +627,14 @@ export default function Index() {
                         <div className="text-sm text-gray-500">{asset.occupancy}% occupied</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
-                          <button className="text-blue-600 hover:text-blue-900">
+                        <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <button className="text-blue-600 hover:text-blue-900 p-1 rounded transition-colors">
                             <Eye className="h-5 w-5" />
                           </button>
-                          <button className="text-indigo-600 hover:text-indigo-900">
+                          <button className="text-indigo-600 hover:text-indigo-900 p-1 rounded transition-colors">
                             <Edit3 className="h-5 w-5" />
                           </button>
-                          <button className="text-gray-400 hover:text-gray-600">
+                          <button className="text-gray-400 hover:text-gray-600 p-1 rounded transition-colors">
                             <MoreHorizontal className="h-5 w-5" />
                           </button>
                         </div>
