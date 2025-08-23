@@ -23,10 +23,16 @@ import countriesReducer from "./features/countrySlice";
 import customerDetailsSlice from './features/customerDetailsSlice'
 import SyncFee from  './features/SyncFeePercantageSlice';
 import RiskSlice from './features/RiskSlice'
+import feeCalculationSlice from './features/feeCalculationSlice';
+import assetManagementSlice from './features/assetManagementSlice';
+import notificationSlice from './features/notificationSlice';
+// New slices
+import userManagementSlice from './features/userManagementSlice';
+import documentManagementSlice from './features/documentManagementSlice';
+import themeSlice from './features/themeSlice';
+import analyticsSlice from './features/analyticsSlice';
 
 export const store = configureStore({
-
-
   reducer: {
     counter: counterReducer,
     auth: authReducer,
@@ -53,6 +59,14 @@ export const store = configureStore({
     customerDetails: customerDetailsSlice,
     syncFee : SyncFee,
     risk: RiskSlice,
+    feeCalculation: feeCalculationSlice,
+    assetManagement: assetManagementSlice,
+    notifications: notificationSlice,
+    // New slices
+    userManagement: userManagementSlice,
+    documentManagement: documentManagementSlice,
+    theme: themeSlice,
+    analytics: analyticsSlice,
   },
 });
 
