@@ -69,6 +69,7 @@ const FeaturesAndAmenities = lazy(() => import("./FeaturesAndAmenities"));
 const LocationPlaces = lazy(() => import("./LocationPlaces"));
 const TokenInformation = lazy(() => import("./TokenInformation"));
 const MediaAndDocuments = lazy(() => import("./MediaAndDocuments"));
+const FeeStructure = lazy(() => import("./FeeStructure"));
 
 import { useAssetApi } from "@/hooks/asset/useAssetApi";
 import type { AssetPayload } from "@/hooks/asset/useAssetApi";
@@ -102,6 +103,7 @@ interface StepIcons {
 
 const STEP_ICONS: StepIcons = {
   "asset-information": Building,
+  "fee-structure": CreditCard,
   "additional-details": FileText,
   "issues-due-diligence": Shield,
   "tandc-faq": Settings,
@@ -499,6 +501,14 @@ export function Index() {
             <ErrorBoundary>
               <Suspense fallback={<EnhancedLoading />}>
                 <AssetInformation step={step} tab={tab} asset={asset} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "fee-structure":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <FeeStructure />
               </Suspense>
             </ErrorBoundary>
           );

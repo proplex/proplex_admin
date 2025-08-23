@@ -152,6 +152,10 @@ export const ASSET_STEPS_TABS = [
     ],
   },
   {
+    id: "fee-structure",
+    title: "Fee Structure",
+  },
+  {
     id: "token-information",
     title: "Token Information",
   },
@@ -191,6 +195,7 @@ export const ASSET_STEPS_TABS = [
       { id: "exit-opportunities", title: "Exit Opportunities" },
       { id: "risk-disclosure", title: "Risk Disclosure" },
       { id: "additional-tax", title: "Additional Tax" },
+      { id: "embedded-finance", title: "Embedded Finance" },
     ],
   },
   {
@@ -249,11 +254,52 @@ export const INSTRUMENT_TYPE = [
 ];
 
 export const ASSET_STYLE = [
+  // Traditional Categories
   { label: "Tower", value: "tower" },
   { label: "Villa", value: "villa" },
   { label: "Building", value: "building" },
   { label: "Developed Land", value: "developed-land" },
   { label: "Individual Land", value: "individual-land" },
+  
+  // Data Centers & Edge Locations
+  { label: "Hyperscale Data Center", value: "hyperscale-data-center" },
+  { label: "Edge Computing Facility", value: "edge-computing-facility" },
+  { label: "5G Network Node", value: "5g-network-node" },
+  
+  // Cold Storage Hubs
+  { label: "Refrigerated Warehouse", value: "refrigerated-warehouse" },
+  { label: "Temperature-Controlled Vault", value: "temperature-controlled-vault" },
+  { label: "Blast-Freezer Facility", value: "blast-freezer-facility" },
+  
+  // Last-Mile Logistics
+  { label: "Fulfillment Center", value: "fulfillment-center" },
+  { label: "Multi-Level Warehouse", value: "multi-level-warehouse" },
+  { label: "Cold-Chain Pod", value: "cold-chain-pod" },
+  
+  // Co-Working & Flexible Office
+  { label: "Hot-Desk Network", value: "hot-desk-network" },
+  { label: "Incubator Suite", value: "incubator-suite" },
+  { label: "Managed Office Floor", value: "managed-office-floor" },
+  
+  // Renewable Industrial Parks
+  { label: "Solar Manufacturing Park", value: "solar-manufacturing-park" },
+  { label: "Battery Storage Yard", value: "battery-storage-yard" },
+  { label: "Hydrogen Production Plant", value: "hydrogen-production-plant" },
+  
+  // High-Street Flagship Retail
+  { label: "Flagship Store", value: "flagship-store" },
+  { label: "Corner Lot F&B", value: "corner-lot-fb" },
+  { label: "Experiential Showroom", value: "experiential-showroom" },
+  
+  // Hotels & Resorts
+  { label: "Luxury City Hotel", value: "luxury-city-hotel" },
+  { label: "Resort Property", value: "resort-property" },
+  { label: "Extended-Stay Suite", value: "extended-stay-suite" },
+  
+  // Mixed-Use Complexes
+  { label: "Hybrid Tower", value: "hybrid-tower" },
+  { label: "Transit-Oriented Development", value: "transit-oriented-development" },
+  { label: "Vertical Mixed-Use Stack", value: "vertical-mixed-use-stack" },
 ];
 
 export enum SPVType {

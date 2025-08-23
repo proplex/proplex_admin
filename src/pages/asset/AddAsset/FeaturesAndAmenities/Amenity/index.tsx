@@ -15,6 +15,10 @@ import FormGenerator from '@/components/UseForm/FormGenerator';
 import { Button } from '@/components/ui/button';
 import { useAmenityApi } from '@/hooks/asset/useAmenity';
 import AmenityTable from '@/pages/asset/AddAsset/FeaturesAndAmenities/Amenity/AmenityTable';
+import { getAmenitiesForCategory } from '../categoryAmenitiesFeatures';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Sparkles } from 'lucide-react';
 
 const TenantManagement = () => {
   const { createAmenity, updateAmenity, deleteAmenity } = useAmenityApi();
@@ -24,7 +28,12 @@ const TenantManagement = () => {
     getValues: formGetValues,
     clearErrors,
     trigger,
+    watch,
   } = useFormContext();
+
+  // Watch for category changes to show relevant amenities
+  const category = watch('category');
+  const suggestedAmenities = category ? getAmenitiesForCategory(category) : [];
 
   const { fields, append, update, remove } = useFieldArray({
     control: control,
@@ -37,6 +46,23 @@ const TenantManagement = () => {
 
   const handleAdd = () => {
     setIndex(-1);
+  };
+
+  const handleQuickAdd = async (amenity: any) => {
+    const data = {
+      name: amenity.label,
+      description: amenity.description || `${amenity.label} - Premium amenity`,
+      status: true,
+      image: '',
+    };
+    
+    if (id) {
+      await createAmenity({ ...data, assetId: id }).then((res) => {
+        append({ ...data, _id: res._id });
+      });
+    } else {
+      append(data);
+    }
   };
 
   const handleEdit = (item: any) => {
@@ -118,20 +144,76 @@ const TenantManagement = () => {
   }));
 
   return (
-    <div className='flex flex-col w-full '>
-      <div className='flex justify-between items-center  '>
+    <div className='flex flex-col w-full space-y-6'>
+      <div className='flex justify-between items-center'>
         <h1 className='text-lg font-bold text-gray-800'>Amenities</h1>
         <Button
           type='button'
-          className=' text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center gap-2'
+          className='text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center gap-2'
           onClick={handleAdd}
         >
-          <span className='text-lg'>+</span>
-          <span>Add Amenity</span>
+          <Plus className='w-4 h-4' />
+          <span>Add Custom Amenity</span>
         </Button>
       </div>
-      <div className='space-y-2 mt-2'>
-        <AmenityTable data={mappedFields} onEdit={handleEdit} onDelete={handleDelete}  />
+
+      {/* Suggested Amenities for Category */}
+      {suggestedAmenities.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex items-center gap-2 text-base'>
+              <Sparkles className='w-5 h-5 text-blue-500' />
+              Suggested Amenities for This Category
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>
+              {suggestedAmenities.map((amenity) => {
+                const alreadyAdded = fields.some(
+                  (field: any) => field.name?.toLowerCase() === amenity.label.toLowerCase()
+                );
+                
+                return (
+                  <div
+                    key={amenity.id}
+                    className={`p-3 border rounded-lg transition-all duration-200 ${
+                      alreadyAdded
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-gray-50 border-gray-200 hover:bg-blue-50 hover:border-blue-300 cursor-pointer'
+                    }`}
+                    onClick={() => !alreadyAdded && handleQuickAdd(amenity)}
+                  >
+                    <div className='flex items-center justify-between'>
+                      <div className='flex-1'>
+                        <h3 className='font-medium text-sm text-gray-900'>
+                          {amenity.label}
+                        </h3>
+                        {amenity.description && (
+                          <p className='text-xs text-gray-600 mt-1'>
+                            {amenity.description}
+                          </p>
+                        )}
+                      </div>
+                      <div className='ml-2'>
+                        {alreadyAdded ? (
+                          <Badge variant='secondary' className='text-xs bg-green-100 text-green-700'>
+                            Added
+                          </Badge>
+                        ) : (
+                          <Plus className='w-4 h-4 text-gray-400' />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className='space-y-2'>
+        <AmenityTable data={mappedFields} onEdit={handleEdit} onDelete={handleDelete} />
       </div>
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogTrigger asChild></DialogTrigger>

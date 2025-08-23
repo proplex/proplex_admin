@@ -1,6 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Suspense, useCallback, useMemo, JSX, useState } from "react";
+import { Suspense, useCallback, useMemo, JSX } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ASSET_STEPS_TABS } from "@/constants/global";
+import CustomTabs from "@/components/ui/custom-tab";
 import Loading from "@/components/ui/Loading";
 
 import PropertyDIDReservation from "./PropertyDIDReservation";
@@ -12,6 +14,36 @@ interface Props {
   step: string;
   asset?: any; // Adjust to the correct type
 }
+
+// Animation variants
+const containerVariants = {
+  initial: { opacity: 0 },
+  animate: { 
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const headerVariants = {
+  initial: { opacity: 0, y: -20 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
+
+const contentVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
 
 const TokenInformationComponent = ({ tab, step, asset }: Props) => {
   const { id = null } = useParams<{ id?: string }>();

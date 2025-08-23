@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFormContext } from 'react-hook-form';
-import { CheckCircle2, AlertCircle, Building, Home, Car, LandPlot, ArrowRight, Info } from 'lucide-react';
+import { 
+  CheckCircle2, AlertCircle, Building, Home, Car, LandPlot, ArrowRight, Info,
+  Server, Snowflake, Truck, Coffee, Zap, ShoppingBag, Hotel, Building2
+} from 'lucide-react';
 import FormGenerator from "@/components/UseForm/FormGenerator";
 import { assetInfoConfig } from "./assetInfoConfig";
 import useLocations from "@/hooks/useLocations";
@@ -10,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { enhancedAssetCategories, getSubCategoriesForCategory } from './enhancedAssetCategories';
+import { getCategorySpecificFields } from './categorySpecificFields';
 
 // Animation variants - Simplified to avoid TypeScript errors
 const containerVariants = {
@@ -54,49 +59,31 @@ function Index({ asset }: EnhancedAssetTypeProps) {
   // Move hooks to top level to avoid Rules of Hooks violation
   const locationHooks = useLocations();
   
+  // Watch form values
+  const category = watch('category');
+  const subCategory = watch('subCategory');
+  const stage = watch('stage');
+  const assetName = watch('name');
+  const company = watch('company');
+
+  // Get enhanced asset categories
+  const categoryOptions = enhancedAssetCategories();
+  
+  // Get sub-categories for selected category
+  const subCategoryOptions = category ? getSubCategoriesForCategory(category) : [];
+
   // Generate form config at component level
   const assetFormConfig = useMemo(() => {
     return assetInfoConfig({ asset, locationHooks });
   }, [asset, locationHooks.countries, locationHooks.states, locationHooks.cities]);
 
-  // Watch form values
-  const category = watch('category');
-  const stage = watch('stage');
-  const assetName = watch('name');
-  const company = watch('company');
-
-  // Asset category options
-  const categoryOptions = [
-    {
-      value: 'commercial',
-      label: 'Commercial',
-      icon: Building,
-      description: 'Office buildings, retail spaces, warehouses',
-      color: 'bg-blue-50 border-blue-200 hover:bg-blue-100'
-    },
-    {
-      value: 'holiday-homes',
-      label: 'Holiday Homes',
-      icon: Home,
-      description: 'Vacation rentals, resorts, leisure properties',
-      color: 'bg-green-50 border-green-200 hover:bg-green-100'
-    },
-    {
-      value: 'residential',
-      label: 'Residential',
-      icon: Car,
-      description: 'Apartments, houses, residential complexes',
-      color: 'bg-purple-50 border-purple-200 hover:bg-purple-100'
-    },
-    {
-      value: 'land',
-      label: 'Land',
-      icon: LandPlot,
-      description: 'Undeveloped land, plots for development',
-      color: 'bg-amber-50 border-amber-200 hover:bg-amber-100',
-      disabled: true
+  // Get category-specific fields
+  const categorySpecificFields = useMemo(() => {
+    if (category && subCategory) {
+      return getCategorySpecificFields({ category, subCategory });
     }
-  ];
+    return [];
+  }, [category, subCategory]);
 
   // Asset stage options
   const stageOptions = [
@@ -121,6 +108,12 @@ function Index({ asset }: EnhancedAssetTypeProps) {
 
   const handleCategorySelect = (value: string) => {
     setValue('category', value, { shouldValidate: true });
+    // Clear sub-category when category changes
+    setValue('subCategory', '', { shouldValidate: true });
+  };
+
+  const handleSubCategorySelect = (value: string) => {
+    setValue('subCategory', value, { shouldValidate: true });
   };
 
   const handleStageSelect = (value: string) => {
@@ -141,9 +134,8 @@ function Index({ asset }: EnhancedAssetTypeProps) {
           <p className="text-gray-600">Choose the type of asset you want to list</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {categoryOptions.map((option) => {
-            const Icon = option.icon;
             const isSelected = category === option.value;
             
             return (
@@ -155,14 +147,17 @@ function Index({ asset }: EnhancedAssetTypeProps) {
                 animate={isSelected ? "selected" : "initial"}
               >
                 <Card
-                  className={`cursor-pointer transition-all duration-300 h-32 ${
+                  className={`cursor-pointer transition-all duration-300 h-40 ${
                     option.disabled ? 'opacity-50 cursor-not-allowed' : ''
                   } ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:shadow-md'}`}
                   onClick={() => !option.disabled && handleCategorySelect(option.value)}
                 >
                   <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-                    <Icon className="w-8 h-8 mx-auto mb-2 text-gray-700" />
-                    <h3 className="font-semibold text-sm mb-1">{option.label}</h3>
+                    <div className="w-10 h-10 mx-auto mb-3 text-gray-700">
+                      {option.icon}
+                    </div>
+                    <h3 className="font-semibold text-sm mb-2">{option.label}</h3>
+                    <p className="text-xs text-gray-600 mb-2 line-clamp-2">{option.description}</p>
                     {option.disabled && (
                       <Badge variant="secondary" className="text-xs">Coming Soon</Badge>
                     )}
@@ -193,6 +188,74 @@ function Index({ asset }: EnhancedAssetTypeProps) {
           </motion.div>
         )}
       </motion.div>
+
+      {/* Sub-Category Selection */}
+      <AnimatePresence>
+        {category && subCategoryOptions.length > 0 && (
+          <motion.div 
+            variants={itemVariants} 
+            initial="initial"
+            animate="animate"
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-6"
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Sub-Category</h2>
+              <p className="text-gray-600">
+                Choose the specific type of {categoryOptions.find(opt => opt.value === category)?.label.toLowerCase()} asset
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+              {subCategoryOptions.map((option) => {
+                const isSelected = subCategory === option.value;
+                
+                return (
+                  <motion.div
+                    key={option.value}
+                    variants={cardVariants}
+                    initial="initial"
+                    whileHover="hover"
+                    animate={isSelected ? "selected" : "initial"}
+                  >
+                    <Card
+                      className={`cursor-pointer transition-all duration-300 h-48 ${
+                        isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:shadow-md'
+                      }`}
+                      onClick={() => handleSubCategorySelect(option.value)}
+                    >
+                      <CardContent className="p-4 h-full flex flex-col justify-center">
+                        <h3 className="font-semibold text-lg mb-3 text-gray-900">{option.label}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed mb-4">{option.description}</p>
+                        {isSelected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="mt-auto flex justify-center"
+                          >
+                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {errors.subCategory && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex items-center text-red-500 text-sm mt-2 justify-center"
+              >
+                <AlertCircle className="w-4 h-4 mr-2" />
+                {errors.subCategory.message as string}
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Stage Selection */}
       <motion.div variants={itemVariants} className="space-y-6">
@@ -274,6 +337,31 @@ function Index({ asset }: EnhancedAssetTypeProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Category-Specific Fields */}
+        <AnimatePresence>
+          {categorySpecificFields.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="p-6">
+                <CardHeader className="px-0 pt-0">
+                  <CardTitle className="text-lg">
+                    {subCategory && subCategoryOptions.find(opt => opt.value === subCategory)?.label} Specifications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {FormGenerator(categorySpecificFields)}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Company Selection */}

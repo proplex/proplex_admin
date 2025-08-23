@@ -8,6 +8,7 @@ import RiskFactors from './RiskFactors';
 import RiskDisclosures from './RiskDisclosures';
 import ExitOpportunity from './ExitOpportunities';
 import AdditionalTaxes from './AdditionalTaxes';
+import { EmbeddedFinanceComponent } from '@/components/EmbeddedFinance';
 import { 
   Shield, 
   AlertTriangle, 
@@ -17,7 +18,8 @@ import {
   CheckCircle2,
   Clock,
   FileText,
-  Target
+  Target,
+  Wallet
 } from 'lucide-react';
 
 // Animation variants
@@ -142,6 +144,13 @@ const AdditionalDetails = memo(({ tab, step }: Props) => {
       component: <AdditionalTaxes />,
       icon: DollarSign,
       description: 'Tax implications and additional charges'
+    },
+    {
+      id: 'embedded-finance',
+      title: 'Embedded Finance',
+      component: <EmbeddedFinanceComponent />,
+      icon: Wallet,
+      description: 'DeFi and FinTech solutions for asset tokenization'
     },
   ];
 
