@@ -14,6 +14,12 @@ import {
   FileText,
   CheckCircle2,
   Info,
+  Server,
+  Snowflake,
+  Truck,
+  Coffee,
+  Zap,
+  Hotel,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -115,7 +121,7 @@ export default function AssetClass({
     {
       id: "real-estate",
       title: "Real Estate",
-      description: "Properties, land, and real estate investments",
+      description: "High-IRR tokenizable properties: Data Centers, Cold Storage, Logistics, Co-Working, Renewable Parks, Flagship Retail, Hotels & Mixed-Use",
       icon: <Building className="h-6 w-6" />,
       isDisabled: false,
       recommended: true,
@@ -193,7 +199,7 @@ export default function AssetClass({
           <Alert className="mb-6 bg-blue-50 border-blue-200">
             <Info className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800">
-              Currently, only Real Estate assets are available for tokenization. Other asset classes are coming soon!
+              Real Estate tokenization now supports 8 high-IRR categories including Data Centers, Cold Storage, Logistics, Co-Working, Renewable Parks, Flagship Retail, Hotels & Mixed-Use developments. Other asset classes are coming soon!
             </AlertDescription>
           </Alert>
 
