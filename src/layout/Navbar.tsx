@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Bell, 
@@ -21,12 +21,14 @@ import {
   Sun,
   Moon,
   ShoppingCart,
-  Settings2
+  Settings2,
+  User,
+  LogIn
 } from "lucide-react";
 
 // Web3Auth imports
-// import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
-// import { useAccount } from "wagmi";
+import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
+import { useAccount } from "wagmi";
 
 
 // Mock components for demonstration
@@ -233,21 +235,21 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [notifications] = useState<number>(3);
   const [time, setTime] = useState<Date>(new Date());
+  const navigate = useNavigate();
 
-    // const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
-    // const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
-    // const { userInfo } = useWeb3AuthUser();
-    // const { address } = useAccount();
-    // console.log("userInfo:", userInfo);
+  const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
+  const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
+  const { userInfo } = useWeb3AuthUser();
+  const { address } = useAccount();
 
-  // useEffect(() => {
-  //   const timer = setInterval(() => setTime(new Date()), 1000);
-  //   return () => clearInterval(timer);
-  // }, []);
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Load wallet address from memory (localStorage not available in artifacts)
   useEffect(() => {
-    setWalletAddress('0x742d35Cc6aB6a3C4d5B2...'); // Mock wallet address
+    // setWalletAddress('0x742d35Cc6aB6a3C4d5B2...'); // Mock wallet address
     
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -257,9 +259,16 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-    // In real app: localStorage.removeItem, redirect, etc.
+  const handleLogout = async () => {
+    try {
+      await disconnect();
+      // Redirect to home page after logout
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect to home page even if disconnect fails
+      navigate('/');
+    }
   };
 
   const navItems = [
@@ -316,11 +325,12 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-200/20 dark:border-gray-800/20' 
           : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-transparent'
         }
+        ${!isConnected ? 'justify-center' : ''}
       `}>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-cyan-600/5 opacity-50" />
         
-        <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
+        <div className={`relative mx-auto flex h-16 w-full max-w-7xl items-center ${!isConnected ? 'justify-center' : 'justify-between'} px-6`}>
           {/* Left side - Enhanced Logo and Navigation */}
           <div className="flex items-center gap-4">
             {/* Logo with animated effects */}
@@ -346,193 +356,206 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             </div>
             
             {/* Desktop Navigation with enhanced effects */}
-            <div className="hidden lg:flex flex-wrap justify-center gap-1">
-              {navItems.map((item, index) => {
-              const isActive = item.exact 
-                ? location.pathname === item.href
-                : location.pathname.startsWith(item.href);
-                
-              return (
-                <Tooltip key={item.href}>
-                  <TooltipTrigger asChild>
-                    <div className="relative">
-                      <NavLink
-                        to={item.href}
-                        isActive={isActive}
-                        className={`group relative flex items-center justify-center p-3 h-11 w-11 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
-                          isActive
-                            ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-current/25`
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
-                        }`}
-                        style={{ animationDelay: `${index * 50}ms` }}
-                      >
-                        <div className="relative z-10 transition-transform duration-200 group-hover:rotate-12">
-                          {item.icon}
-                        </div>
-                        <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
-                          isActive ? 'opacity-10' : ''
-                        }`} />
-                      </NavLink>
-                      <TooltipContent 
-                        side="right"
-                        className="bg-gray-800 dark:bg-gray-100 dark:text-gray-900"
-                      >
-                        <span className="font-semibold">{item.label}</span>
-                      </TooltipContent>
-                    </div>
-                  </TooltipTrigger>
-                </Tooltip>
-              );
-            })}
-            </div>
+            {isConnected ? (
+              <div className="hidden lg:flex flex-wrap justify-center gap-1">
+                {navItems.map((item, index) => {
+                const isActive = item.exact 
+                  ? location.pathname === item.href
+                  : location.pathname.startsWith(item.href);
+                  
+                return (
+                  <Tooltip key={item.href}>
+                    <TooltipTrigger asChild>
+                      <div className="relative">
+                        <NavLink
+                          to={item.href}
+                          isActive={isActive}
+                          className={`group relative flex items-center justify-center p-3 h-11 w-11 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
+                            isActive
+                              ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-current/25`
+                              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
+                          }`}
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <div className="relative z-10 transition-transform duration-200 group-hover:rotate-12">
+                            {item.icon}
+                          </div>
+                          <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
+                            isActive ? 'opacity-10' : ''
+                          }`} />
+                        </NavLink>
+                        <TooltipContent 
+                          side="right"
+                          className="bg-gray-800 dark:bg-gray-100 dark:text-gray-900"
+                        >
+                          <span className="font-semibold">{item.label}</span>
+                        </TooltipContent>
+                      </div>
+                    </TooltipTrigger>
+                  </Tooltip>
+                );
+              })}
+              </div>
+            ) : null}
+
           </div>
 
           {/* Right side - Enhanced User Controls */}
           <div className="flex items-center gap-2">
+            {isConnected ? (
+              <>
+                {/* Mobile Menu Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="lg:hidden h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95"
+                  onClick={onMenuToggle}
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
 
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95"
-              onClick={onMenuToggle}
-            >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
+                {/* Divider */}
+                <div className="h-6 w-px bg-gray-300/60 dark:bg-gray-600/60 mx-2" />
 
-            {/* Divider */}
-            <div className="h-6 w-px bg-gray-300/60 dark:bg-gray-600/60 mx-2" />
-
-            
-            {/* Settings Button
-            <Button 
-              variant="ghost" 
-              size="icon"
-              className="h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95 group"
-            >
-              <Settings className="h-4 w-4 text-gray-600 dark:text-gray-400 transition-all duration-500 group-hover:text-purple-600 group-hover:rotate-90" />
-            </Button>
-
-          web3auth button 
-          <Button
-          onClick={() => connect()}
-        >
-          web3auth
-        </Button>
-        {connectError && (
-          <p className="text-red-600 text-sm mb-4">{connectError.message || 'Web3Auth login failed.'}</p>
-        )} */}
-            
-            {/* Divider */}
-            <div className="w-px h-6 bg-gray-300/60 dark:bg-gray-600/60 mx-3" />
-            
-            {/* Enhanced User Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+                {/* Settings Button */}
                 <Button 
                   variant="ghost" 
-                  className="gap-3 pl-2 pr-4 py-2 h-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-105 active:scale-95 group"
+                  size="icon"
+                  className="h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95 group"
                 >
-                  <div className="relative">
-                    <Avatar className="h-8 w-8 ring-2 ring-transparent group-hover:ring-blue-500/30 transition-all duration-300">
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-sm">
-                        JD
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
-                  </div>
-                  <div className="hidden sm:flex flex-col items-start">
-                    <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
-                      John Doe
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 leading-none mt-0.5">
-                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                    </span>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-hover:text-gray-600" />
+                  <Settings className="h-4 w-4 text-gray-600 dark:text-gray-400 transition-all duration-500 group-hover:text-purple-600 group-hover:rotate-90" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                className="w-64 rounded-xl border border-gray-200/50 dark:border-gray-800/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl shadow-black/5 animate-in slide-in-from-top-2 duration-200 p-2"
-              >
-                <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-white px-2 py-2 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-blue-500" />
-                  My  Account
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-1" />
-                
-                <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                      <span className="text-white text-xs font-semibold">P</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Profile</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Manage your profile</div>
-                    </div>
-                  </div>
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                      <Settings className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Settings</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Preferences & privacy</div>
-                    </div>
-                  </div>
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">$</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900 dark:text-white">Billing</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Plans & payments</div>
-                    </div>
-                  </div>
-                </DropdownMenuItem>
 
-                
-                <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-2" />
-                
-                <DropdownMenuItem 
-                  onClick={handleLogout} 
-                  className="rounded-lg p-3 text-red-600 dark:text-red-400 transition-all duration-150 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer group"
+                {/* Divider */}
+                <div className="w-px h-6 bg-gray-300/60 dark:bg-gray-600/60 mx-3" />
+              </>
+            ) : null}
+
+            {/* Enhanced User Dropdown */}
+            {isConnected ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    className="gap-3 pl-2 pr-4 py-2 h-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-105 active:scale-95 group"
+                  >
+                    <div className="relative">
+                      <Avatar className="h-8 w-8 ring-2 ring-transparent group-hover:ring-blue-500/30 transition-all duration-300">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-sm">
+                          {userInfo?.name ? userInfo.name.charAt(0) : 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
+                    </div>
+                    <div className="hidden sm:flex flex-col items-start">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                        {userInfo?.name || 'User'}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 leading-none mt-0.5">
+                        {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+                      </span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-hover:text-gray-600" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  className="w-64 rounded-xl border border-gray-200/50 dark:border-gray-800/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl shadow-black/5 animate-in slide-in-from-top-2 duration-200 p-2"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
-                      <LogOut className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-110" />
+                  <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-white px-2 py-2 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-blue-500" />
+                    My Account
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-1" />
+                  
+                  <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">Profile</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Manage your profile</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-medium">Sign out</div>
-                      <div className="text-xs opacity-75">See you later!</div>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <Settings className="h-4 w-4 text-white" />
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">Settings</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Preferences & privacy</div>
+                      </div>
                     </div>
-                  </div>
-                </DropdownMenuItem>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">$</span>
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-white">Billing</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Plans & payments</div>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
 
-              </DropdownMenuContent>
+                  
+                  <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-2" />
+                  
+                  <DropdownMenuItem 
+                    onClick={handleLogout} 
+                    className="rounded-lg p-3 text-red-600 dark:text-red-400 transition-all duration-150 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
+                        <LogOut className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-110" />
+                      </div>
+                      <div>
+                        <div className="font-medium">Sign out</div>
+                        <div className="text-xs opacity-75">See you later!</div>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
 
-            </DropdownMenu>
+                </DropdownMenuContent>
+
+              </DropdownMenu>
+            ) : (
+              // Sign in button when user is not connected
+              <Button
+                onClick={() => connect()}
+                disabled={connectLoading}
+                className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-4 py-2 h-10 transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign In</span>
+                {connectLoading && (
+                  <div className="ml-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                )}
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="md:hidden px-6 pb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-100/80 dark:bg-gray-800/80 border border-gray-200/50 dark:border-gray-700/50 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all duration-200"
-            />
+        {isConnected ? (
+          <div className="md:hidden px-6 pb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full pl-10 pr-4 py-2 bg-gray-100/80 dark:bg-gray-800/80 border border-gray-200/50 dark:border-gray-700/50 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all duration-200"
+              />
+            </div>
           </div>
-        </div>
+        ) : null}
+
       </nav>
     </TooltipProvider>
   );

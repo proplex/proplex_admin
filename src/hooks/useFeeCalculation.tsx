@@ -10,6 +10,10 @@ import {
   formatCurrency,
   getCategorizedFees
 } from '@/config/feeStructure';
+import { useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchFeeStructure, calculateFees } from '@/store/features/feeCalculationSlice';
+import { FeeItem } from '@/types/feemanagment';
 
 export interface CalculatedFee {
   id: string;
@@ -256,3 +260,46 @@ export const useFeeCalculation = (options: UseFeeCalculationOptions = {}) => {
     }))
   };
 };
+
+interface UseFeeCalculationReturn {
+  feeItems: FeeItem[];
+  calculatedFees: Record<string, number>;
+  totalAmount: number;
+  loading: boolean;
+  error: string | null;
+  fetchFeeStructure: (categoryId: string) => void;
+  calculateFees: (baseAmount: number, feeItems: FeeItem[]) => void;
+}
+
+const useFeeCalculation = (): UseFeeCalculationReturn => {
+  const dispatch = useAppDispatch();
+  const { feeItems, calculatedFees, totalAmount, loading, error } = useAppSelector(
+    (state) => state.feeCalculation
+  );
+
+  const handleFetchFeeStructure = useCallback(
+    (categoryId: string) => {
+      dispatch(fetchFeeStructure(categoryId));
+    },
+    [dispatch]
+  );
+
+  const handleCalculateFees = useCallback(
+    (baseAmount: number, feeItems: FeeItem[]) => {
+      dispatch(calculateFees({ baseAmount, feeItems }));
+    },
+    [dispatch]
+  );
+
+  return {
+    feeItems,
+    calculatedFees,
+    totalAmount,
+    loading,
+    error,
+    fetchFeeStructure: handleFetchFeeStructure,
+    calculateFees: handleCalculateFees,
+  };
+};
+
+export default useFeeCalculation;

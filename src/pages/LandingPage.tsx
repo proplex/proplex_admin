@@ -19,9 +19,12 @@ import {
   CreditCard,
   Zap,
   Clock,
-  UserCheck
+  UserCheck,
+  LogIn
 } from 'lucide-react';
 import { KYBWizard } from '@/components/wizard/KYBWizard';
+import { useWeb3AuthConnect } from "@web3auth/modal/react";
+import { useNavigate } from 'react-router-dom';
 
 // Animation variants
 const containerVariants = {
@@ -120,6 +123,18 @@ export default function LandingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showKYBWizard, setShowKYBWizard] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const { connect, loading } = useWeb3AuthConnect();
+  const navigate = useNavigate();
+
+  const handleSignIn = async () => {
+    try {
+      await connect();
+      // Redirect to home page after successful login
+      navigate('/');
+    } catch (err) {
+      console.error("Connection error:", err);
+    }
+  };
 
   const handleSubscribe = (planId: string) => {
     setSelectedPlan(planId);
@@ -193,6 +208,15 @@ export default function LandingPage() {
                   onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Learn More
+                </Button>
+                <Button
+                  onClick={handleSignIn}
+                  disabled={loading}
+                  size="lg"
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-8 py-3 text-lg"
+                >
+                  <LogIn className="w-5 h-5 mr-2" />
+                  {loading ? "Connecting..." : "Sign In"}
                 </Button>
               </div>
             </motion.div>
