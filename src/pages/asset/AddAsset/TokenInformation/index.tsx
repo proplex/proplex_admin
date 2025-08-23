@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Suspense, useCallback, useMemo, JSX, useState } from "react";
 import { ASSET_STEPS_TABS } from "@/constants/global";
 import Loading from "@/components/ui/Loading";
-import TokenInformation from "./TokenAllocation";
+
 import PropertyDIDReservation from "./PropertyDIDReservation";
 import AssetInformationSummary from "./AssetInformationSummary";
 import CustomTabs from "@/components/ui/custom-tab";
@@ -16,16 +16,10 @@ interface Props {
 const TokenInformationComponent = ({ tab, step, asset }: Props) => {
   const { id = null } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(tab || 'token-information');
+  const [activeTab, setActiveTab] = useState(tab || 'asset-information');
 
-  // Define token-specific tabs
+  // Define available tabs
   const tokenTabs = [
-    {
-      id: 'token-information',
-      title: 'Token Configuration',
-      icon: '🪙',
-      description: 'Configure token symbol, supply, and allocation'
-    },
     {
       id: 'asset-information',
       title: 'Asset Information',
@@ -41,11 +35,6 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
   ];
 
   const COMPONENT_MAP: Record<string, JSX.Element> = {
-    "token-information": (
-      <Suspense fallback={<Loading />}>
-        <TokenInformation />
-      </Suspense>
-    ),
     "asset-information": (
       <Suspense fallback={<Loading />}>
         <AssetInformationSummary asset={asset} />
@@ -89,10 +78,10 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
               </div>
               <div className="flex-1">
                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                  Token Information
+                  Asset Configuration
                 </h1>
                 <p className="text-gray-600 flex items-center gap-2 text-sm md:text-base">
-                  Configure token allocation and blockchain integration for your asset
+                  Configure asset details and blockchain integration for your property
                 </p>
               </div>
             </div>
