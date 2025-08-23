@@ -33,6 +33,8 @@ export const formConfig = (index: number): FormFieldConfig[] => {
       name: `allocationStats.categories.${index}.tokens`,
       control,
       label: "Tokens",
+      type: "number",
+      inputType: "number",
       rules: {
         required: {
           message: "Tokens are required",
@@ -50,6 +52,8 @@ export const formConfig = (index: number): FormFieldConfig[] => {
       name: `allocationStats.categories.${index}.cliffPeriod`,
       control,
       label: "Cliff Period",
+      type: "number",
+      inputType: "number",
       placeholder: "Cliff Period",
       rules: {
         required: {

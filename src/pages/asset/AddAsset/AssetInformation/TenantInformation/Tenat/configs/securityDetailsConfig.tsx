@@ -8,6 +8,7 @@ export const securityDetailsConfig = (index: number): FormFieldConfig[] => {
   return [
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.securityDeposit`,
       control,
       label: "Security Deposit",
@@ -18,6 +19,7 @@ export const securityDetailsConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.interestOnSecurityDeposit`,
       control,
       label: "Interest Rate On Security Deposit (%)",

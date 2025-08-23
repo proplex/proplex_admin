@@ -5,7 +5,6 @@ import {
   INSTRUMENT_TYPE,
 } from "@/constants/global";
 import { useFormContext } from "react-hook-form";
-import useLocations from "@/hooks/useLocations";
 
 interface Asset {
   country?: string;
@@ -16,14 +15,46 @@ interface Asset {
   };
 }
 
+interface LocationHooks {
+  getCountries: () => Promise<Array<{ label: string; value: string }> | undefined>;
+  getStates: (countryCode: string) => Promise<Array<{ label: string; value: string }> | undefined>;
+  getCities: (params: { countryCode: string; stateCode: string }) => Promise<Array<{ label: string; value: string }> | undefined>;
+  countries: Array<{ label: string; value: string }>;
+  states: Array<{ label: string; value: string }>;
+  cities: Array<{ label: string; value: string }>;
+}
+
+/**
+ * Asset information form configuration
+ * 
+ * IMPORTANT: This function previously violated React Rules of Hooks by calling
+ * useLocations() inside a function that could be called conditionally during render.
+ * 
+ * To fix this, hooks are now called at the component level and passed as parameters.
+ * This ensures hooks are always called in the same order and at the top level.
+ * 
+ * @param asset - Asset data object
+ * @param locationHooks - Location-related hooks and data from useLocations()
+ * @returns Form field configuration array
+ */
 export const assetInfoConfig = ({
   asset,
+  locationHooks,
 }: {
   asset: Asset;
+  locationHooks?: LocationHooks;
 }): FormFieldConfig[] => {
-  const { getCountries, getStates, getCities, countries, states, cities } =
-    useLocations();
   const { watch, control, setValue } = useFormContext();
+
+  // Use provided location hooks or default empty values
+  const {
+    getCountries = async () => undefined,
+    getStates = async () => undefined,
+    getCities = async () => undefined,
+    countries = [],
+    states = [],
+    cities = []
+  } = locationHooks || {};
 
   const country = asset?.country ?? "";
   const state = asset?.state ?? "";

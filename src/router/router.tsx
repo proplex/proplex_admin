@@ -53,19 +53,19 @@ const authRoutes: RouteObject[] = [
 const mainRoutes: RouteConfig[] = [
   {
     path: '/',
-    component: React.lazy(() => import('@/pages/asset/AssetList')),
+    component: React.lazy(() => import('@/pages/asset/AssetList/index')),
   },
   {
     path: '/assets',
-    component: React.lazy(() => import('@/pages/asset/AssetList')),
+    component: React.lazy(() => import('@/pages/asset/AssetList/index')),
   },
   {
     path: '/add-asset',
-    component: React.lazy(() => import('@/pages/asset/AddAsset/index').then(module => ({ default: module.Index }))),
+    component: React.lazy(() => import('@/pages/asset/AddAsset/index')),
   },
   {
     path: '/edit-asset/:id',
-    component: React.lazy(() => import('@/pages/asset/AddAsset/index').then(module => ({ default: module.Index }))),
+    component: React.lazy(() => import('@/pages/asset/AddAsset/index')),
   },
   {
     path: '/dashboard-asset/:id',

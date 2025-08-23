@@ -10,7 +10,7 @@ interface Props {
   asset?: any; // Adjust to the correct type
 }
 
-const IssuesDue =({ tab, step, asset }: Props) => {
+const TokenInformationComponent = ({ tab, step, asset }: Props) => {
   const { id = null } = useParams<{ id?: string }>();
   const navigate = useNavigate();
 
@@ -61,6 +61,6 @@ const IssuesDue =({ tab, step, asset }: Props) => {
   );
 }
 
-IssuesDue.displayName = "IssuesDue";
+TokenInformationComponent.displayName = "TokenInformationComponent";
 
-export default IssuesDue;
+export default TokenInformationComponent;

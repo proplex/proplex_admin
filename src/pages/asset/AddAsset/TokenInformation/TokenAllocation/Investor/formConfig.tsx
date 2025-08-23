@@ -66,7 +66,7 @@ const formConfig = (): FormFieldConfig[] => {
     },
     {
       name: "investorRequirementsAndTimeline.kycOrAmlRequirements",
-      label: "KYC/AML requirmenets",
+      label: "KYC/AML Requirements",
       type: "select",
       control: control,
       options: KYC_OR_AML_REQUIREMENTS,

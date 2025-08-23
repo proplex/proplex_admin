@@ -44,6 +44,7 @@ export const formConfig = (): FormFieldConfig[] => {
   return [
     {
       type: "number",
+      inputType: "number",
       name: "totalNumberOfSfts",
       control,
       label: "Total Area (sqft)",
@@ -52,6 +53,7 @@ export const formConfig = (): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: "rentalInformation.rentPerSft",
       control,
       label: "Rent per sqft",
@@ -60,6 +62,7 @@ export const formConfig = (): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: "rentalInformation.vacancyRate",
       control,
       label: "Approx Vacancy Rate(%)",
@@ -68,6 +71,7 @@ export const formConfig = (): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: "totalPropertyValueAfterFees",
       control,
       label: "Gross Total Property Value",
@@ -101,6 +105,7 @@ export const expenseFormConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `expenses.${index}.value`,
       control,
       label: "value",

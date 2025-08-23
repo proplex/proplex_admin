@@ -27,6 +27,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.annualRentEscalation`,
       control,
       label: "Annual Rent Escalation",
@@ -37,6 +38,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.lockInPeriod`,
       control,
       label: "Lock In Period",
@@ -47,6 +49,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.sftsAllocated`,
       control,
       label: "SFTs Allocated",
@@ -60,6 +63,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.rentPerSft`,
       control,
       label: "Rent Per Sft",
@@ -84,6 +88,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
 
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.leasePeriod`,
       control,
       label: "Lease Period",
@@ -94,6 +99,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.securityDeposit`,
       control,
       label: "Security Deposit        ",
@@ -101,6 +107,7 @@ export const formConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.interestOnSecurityDeposit`,
       control,
       label: "Interest Rate On Security Deposit",

@@ -328,7 +328,11 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition-all duration-500" />
                 <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 p-2 rounded-lg">
-                  <Layers2 className="h-5 w-5 text-white" />
+                  <img 
+                    src="/favicon.png" 
+                    alt="Proplex Logo" 
+                    className="h-5 w-5 object-contain" 
+                  />
                 </div>
               </div>
               <div className="hidden sm:block">

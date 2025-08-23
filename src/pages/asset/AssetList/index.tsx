@@ -1,6 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   Search,
   Plus,
@@ -343,6 +344,7 @@ const AssetCard: React.FC<{ asset: Asset; index: number }> = ({ asset, index }) 
 /* MAIN COMPONENT                                                     */
 /* ------------------------------------------------------------------ */
 export default function Index() {
+  const navigate = useNavigate();
   const [assets] = useState<Asset[]>(mockAssets);
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<{ status: string; type: string; stage: string }>({
@@ -455,7 +457,10 @@ export default function Index() {
               )}
             </button>
 
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2 text-sm">
+            <button 
+              onClick={() => navigate('/add-asset')}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2 text-sm"
+            >
               <Plus className="w-4 h-4" />
               Add Asset
             </button>

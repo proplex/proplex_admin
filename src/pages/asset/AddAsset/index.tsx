@@ -40,8 +40,8 @@ import queryString from "query-string";
 // Types
 interface StepTab {
   id: string;
-  label: string;
-  tabs: Array<{ id: string }>;
+  title: string;
+  tabs?: Array<{ id: string; title: string }>;
 }
 
 interface StepIndicatorProps {
@@ -60,24 +60,15 @@ interface FormData {
 const ErrorFallback = () => <div>Failed to load component. Please try again.</div>;
 ErrorFallback.displayName = 'ErrorFallback';
 
-const AssetInformation = lazy(async () => {
-  try {
-    const module = await import("./AssetInformation");
-    return { default: module.default };
-  } catch (error) {
-    console.error('Failed to load AssetInformation:', error);
-    return { 
-      default: Object.assign(
-        () => <ErrorFallback />, 
-        { displayName: 'AssetInformationError' }
-      )
-    };
-  }
-}) as React.LazyExoticComponent<React.FC<{
-  step?: string;
-  tab?: string;
-  asset?: any;
-}>>;
+// Lazy-loaded components with simplified error handling
+const AssetInformation = lazy(() => import("./AssetInformation"));
+const AdditionalDetails = lazy(() => import("./AdditionalDetails"));
+const IssueDue = lazy(() => import("./IssueDue"));
+const TermsAndConditions = lazy(() => import("./TermsAndConditions"));
+const FeaturesAndAmenities = lazy(() => import("./FeaturesAndAmenities"));
+const LocationPlaces = lazy(() => import("./LocationPlaces"));
+const TokenInformation = lazy(() => import("./TokenInformation"));
+const MediaAndDocuments = lazy(() => import("./MediaAndDocuments"));
 
 import { useAssetApi } from "@/hooks/asset/useAssetApi";
 import type { AssetPayload } from "@/hooks/asset/useAssetApi";
@@ -101,15 +92,10 @@ import {
   Star
 } from "lucide-react";
 
-const AdditionalDetails = lazy(() => import("./AdditionalDetails"));
-const IssueDue = lazy(() => import("./IssueDue"));
-const TermsAndConditions = lazy(() => import("./TermsAndConditions"));
-const FeaturesAndAmenities = lazy(() => import("./FeaturesAndAmenities"));
-const LocationPlaces = lazy(() => import("./LocationPlaces"));
-const TokenInformation = lazy(() => import("./TokenInformation"));
-const MediaAndDocuments = lazy(() => import("./MediaAndDocuments"));
+// Import the actual ASSET_STEPS_TABS from constants
+import { ASSET_STEPS_TABS } from "@/constants/global";
 
-// Mock step icons mapping with type safety
+// Step icons mapping with type safety
 interface StepIcons {
   [key: string]: React.ComponentType<{ className?: string }>;
 }
@@ -125,7 +111,7 @@ const STEP_ICONS: StepIcons = {
   "location-places": MapPin,
 } as const;
 
-// Animation variants
+// Animation variants - Simplified to avoid TypeScript errors
 const pageVariants = {
   initial: { 
     opacity: 0,
@@ -136,7 +122,6 @@ const pageVariants = {
     scale: 1,
     transition: {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
       staggerChildren: 0.1
     }
   },
@@ -159,7 +144,6 @@ const sidebarVariants = {
     x: 0,
     transition: {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
       staggerChildren: 0.1
     }
   }
@@ -176,8 +160,7 @@ const stepIconVariants = {
     opacity: 1,
     rotate: 0,
     transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.6
     }
   },
   hover: {
@@ -191,8 +174,7 @@ const stepIconVariants = {
     scale: 1.2,
     rotate: 0,
     transition: {
-      duration: 0.3,
-      ease: "backOut"
+      duration: 0.3
     }
   }
 };
@@ -206,8 +188,7 @@ const lineVariants = {
     scaleY: 1,
     opacity: 1,
     transition: {
-      duration: 0.8,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.8
     }
   }
 };
@@ -224,7 +205,6 @@ const formVariants = {
     scale: 1,
     transition: {
       duration: 0.8,
-      ease: [0.22, 1, 0.36, 1],
       delay: 0.2
     }
   }
@@ -241,8 +221,7 @@ const contentVariants = {
     x: 0,
     scale: 1,
     transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.6
     }
   },
   exit: { 
@@ -266,16 +245,14 @@ const buttonVariants = {
     scale: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      ease: [0.22, 1, 0.36, 1]
+      duration: 0.5
     }
   },
   hover: { 
     scale: 1.05,
     y: -2,
     transition: {
-      duration: 0.2,
-      ease: "easeOut"
+      duration: 0.2
     }
   },
   tap: { 
@@ -292,8 +269,7 @@ const pulseVariants = {
     opacity: [0.5, 0.8, 0.5],
     transition: {
       duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut"
+      repeat: Infinity
     }
   }
 };
@@ -439,7 +415,7 @@ const IconStepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, c
                 initial={{ x: -10 }}
                 whileHover={{ x: 0 }}
               >
-                {step.label}
+                {step.title}
                 <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45" />
               </motion.div>
             </motion.div>
@@ -464,17 +440,7 @@ export function Index() {
   const location = useLocation();
   const controls = useAnimation();
 
-  // Mock ASSET_STEPS_TABS for demonstration
-  const ASSET_STEPS_TABS = [
-    { id: "asset-information", label: "Asset Information", tabs: [{ id: "asset-type" }] },
-    { id: "additional-details", label: "Additional Details", tabs: [{ id: "details" }] },
-    { id: "issues-due-diligence", label: "Due Diligence", tabs: [{ id: "issues" }] },
-    { id: "tandc-faq", label: "Terms & FAQ", tabs: [{ id: "terms" }] },
-    { id: "features-amenities", label: "Features", tabs: [{ id: "amenities" }] },
-    { id: "token-information", label: "Token Info", tabs: [{ id: "tokens" }] },
-    { id: "media-documents", label: "Media", tabs: [{ id: "documents" }] },
-    { id: "location-places", label: "Location", tabs: [{ id: "places" }] },
-  ];
+  // ASSET_STEPS_TABS is now imported from constants
 
   useEffect(() => {
     const fetchAsset = async () => {
@@ -532,50 +498,65 @@ export function Index() {
           return (
             <ErrorBoundary>
               <Suspense fallback={<EnhancedLoading />}>
-                <div className="p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Asset Information</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="p-4 border border-gray-200 rounded-lg">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
-                        <select className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                          <option>Commercial</option>
-                          <option>Residential</option>
-                        </select>
-                      </div>
-                      <div className="p-4 border border-gray-200 rounded-lg">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Property Name</label>
-                        <input type="text" placeholder="Enter property name" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="p-4 border border-gray-200 rounded-lg">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input type="text" placeholder="Enter location" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                      </div>
-                      <div className="p-4 border border-gray-200 rounded-lg">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Price</label>
-                        <input type="number" placeholder="Enter price" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <AssetInformation step={step} tab={tab} asset={asset} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "token-information":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <TokenInformation step={step} tab={tab} asset={asset} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "media-documents":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <MediaAndDocuments step={step} tab={tab} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "issues-due-diligence":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <IssueDue step={step} tab={tab} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "features-amenities":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <FeaturesAndAmenities step={step} tab={tab} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "location-places":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <LocationPlaces step={step} tab={tab} />
               </Suspense>
             </ErrorBoundary>
           );
         case "additional-details":
           return (
-            <Suspense fallback={<EnhancedLoading />}>
-              <div className="p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Additional Details</h2>
-                <div className="space-y-6">
-                  <div className="p-4 border border-gray-200 rounded-lg">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                    <textarea rows={4} placeholder="Enter detailed description" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
-                  </div>
-                </div>
-              </div>
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <AdditionalDetails step={step} tab={tab} />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        case "tandc-faq":
+          return (
+            <ErrorBoundary>
+              <Suspense fallback={<EnhancedLoading />}>
+                <TermsAndConditions tab={tab} />
+              </Suspense>
+            </ErrorBoundary>
           );
         default:
           return (
@@ -898,3 +879,5 @@ export function Index() {
     </motion.div>
   );
 }
+
+export default Index;

@@ -19,6 +19,7 @@ export const formConfig = ({ index }: { index: number }): FormFieldConfig[] => {
       label: 'Value',
       name: `additionalTaxes.${index}.value`,
       type: 'number',
+      inputType: 'number',
       control,
       rules: {
         required: `Value is required`,

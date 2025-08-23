@@ -3,9 +3,9 @@ import { useFormContext } from "react-hook-form";
 
 const formConfig = (): FormFieldConfig[] => {
   const { control, setValue, watch } = useFormContext();
-  const [tokenSupply, minimumTokenToBuy,totalNumberOfSfts,pricePerSft] = watch([
+  const [tokenSupply, minimumTokensToBuy,totalNumberOfSfts,pricePerSft] = watch([
     "tokenInformation.tokenSupply",
-    "tokenInformation.minimumTokenToBuy",
+    "tokenInformation.minimumTokensToBuy",
     'totalNumberOfSfts',
     'pricePerSft'
   ]);
@@ -38,6 +38,7 @@ const formConfig = (): FormFieldConfig[] => {
       name: "tokenInformation.tokenSupply",
       label: "Total Token Supply",
       type: "number",
+      inputType: "number",
       control: control,
       rules: {
         required: "Total Token Supply is required",
@@ -54,7 +55,7 @@ const formConfig = (): FormFieldConfig[] => {
           message: "Total Token Supply must be less than 1 billion",
         },
         validate: (value: number) => {
-          if (value < minimumTokenToBuy) {
+          if (value < minimumTokensToBuy) {
             return "Total Token Supply must be greater than Minimum Token To Buy";
           }
           return true;
@@ -72,7 +73,8 @@ const formConfig = (): FormFieldConfig[] => {
     {
       name: "tokenInformation.minimumTokensToBuy",
       label: "Minimum Token To Buy",
-      type: "number",
+      type: "number", 
+      inputType: "number",
       control: control,
       rules: {
         required: "Minimum Token To Buy is required",
@@ -100,6 +102,7 @@ const formConfig = (): FormFieldConfig[] => {
       name: "tokenInformation.maximumTokensToBuy",
       label: "Maximum Token To Buy",
       type: "number",
+      inputType: "number", 
       control: control,
       rules: {
         required: "Maximum Token To Buy is required",
@@ -116,7 +119,7 @@ const formConfig = (): FormFieldConfig[] => {
           message: "Maximum Token To Buy must be less than 1 billion",
         },
         validate: (value: number) => {
-          if (value < minimumTokenToBuy) {
+          if (value < minimumTokensToBuy) {
             return "Maximum Token To Buy must be greater than Minimum Token To Buy";
           }
           return true;
@@ -127,6 +130,7 @@ const formConfig = (): FormFieldConfig[] => {
       name: "tokenInformation.tokenPrice",
       label: "Token Price",
       type: "number",
+      inputType: "number",
       control: control,
       disabled: true,
     },
@@ -134,6 +138,7 @@ const formConfig = (): FormFieldConfig[] => {
       name: "basePropertyValue",
       label: "Base Property Value",
       type: "number",
+      inputType: "number",
       control: control,
       disabled: true,
     },

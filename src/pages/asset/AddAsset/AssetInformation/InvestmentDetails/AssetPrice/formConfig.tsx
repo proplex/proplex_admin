@@ -26,6 +26,7 @@ export const formConfig = ({
       label: "Value",
       control,
       type: "number",
+      inputType: "number",
       rules: {
         required: "Value is required",
         min: {
@@ -65,6 +66,7 @@ export const feeFormConfig = (): FormFieldConfig[] => {
       label: "Total Number of SFTs",
       control,
       type: "number",
+      inputType: "number",
       rules: {
         required: "Total Number of SFTs is required",
         min: {
@@ -78,6 +80,7 @@ export const feeFormConfig = (): FormFieldConfig[] => {
       label: "Price Per SFT",
       control,
       type: "number",
+      inputType: "number",
       rules: {
         required: "Price Per SFT is required",
         min: {

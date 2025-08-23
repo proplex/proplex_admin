@@ -8,6 +8,7 @@ export const leaseDetailsConfig = (index: number): FormFieldConfig[] => {
   return [
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.sftsAllocated`,
       control,
       label: "SFTs Allocated",
@@ -21,6 +22,7 @@ export const leaseDetailsConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.rentPerSft`,
       control,
       label: "Rent Per Sft",
@@ -31,6 +33,7 @@ export const leaseDetailsConfig = (index: number): FormFieldConfig[] => {
     },
     {
       type: "number",
+      inputType: "number",
       name: `tenants.${index}.annualRentEscalation`,
       control,
       label: "Annual Rent Escalation (%)",

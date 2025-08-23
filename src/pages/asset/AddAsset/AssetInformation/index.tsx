@@ -1,16 +1,187 @@
 
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { lazy, Suspense, useCallback, useMemo, JSX } from 'react';
+import { lazy, Suspense, useCallback, useMemo, JSX, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import CustomTabs from '@/components/ui/custom-tab';
 import { ASSET_STEPS_TABS } from '@/constants/global';
 import Loading from '@/components/ui/Loading';
+import { Building2, TrendingUp, FileText, Users, Sparkles, CheckCircle2, Clock, AlertCircle, Info, ChevronRight, Target } from 'lucide-react';
+import { useFormContext } from 'react-hook-form';
 
 // Lazy-loaded components
 const AssetType = lazy(() => import('./AssetType'));
 const InvestmentDetails = lazy(() => import('./InvestmentDetails'));
 const EscrowLegal = lazy(() => import('./EscrowLegal'));
 const TenantInformation = lazy(() => import('./TenantInformation'));
+
+// Enhanced Animation variants - Simplified for TypeScript compatibility
+const containerVariants = {
+  initial: { opacity: 0 },
+  animate: { 
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      staggerChildren: 0.15
+    }
+  }
+};
+
+const headerVariants = {
+  initial: { opacity: 0, y: -30, scale: 0.9 },
+  animate: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: { 
+      duration: 0.7
+    }
+  }
+};
+
+const tabContentVariants = {
+  initial: { opacity: 0, x: 30, scale: 0.95 },
+  animate: { 
+    opacity: 1, 
+    x: 0,
+    scale: 1,
+    transition: { 
+      duration: 0.5
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    x: -30,
+    scale: 0.95,
+    transition: { 
+      duration: 0.3
+    }
+  }
+};
+
+const progressVariants = {
+  initial: { scaleX: 0, opacity: 0 },
+  animate: { 
+    scaleX: 1, 
+    opacity: 1,
+    transition: { 
+      duration: 1
+    }
+  }
+};
+
+const statusVariants = {
+  initial: { scale: 0, rotate: -180 },
+  animate: { 
+    scale: 1, 
+    rotate: 0,
+    transition: { 
+      duration: 0.5
+    }
+  }
+};
+
+// Enhanced Loading Component with Skeleton
+const EnhancedLoading = () => (
+  <motion.div
+    className="space-y-6 p-8"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <div className="flex items-center gap-4">
+      <motion.div
+        className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+      >
+        <Building2 className="w-6 h-6 text-blue-600" />
+      </motion.div>
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-48 animate-pulse"></div>
+        <div className="h-3 bg-gray-100 rounded w-72 animate-pulse"></div>
+      </div>
+    </div>
+    
+    {/* Skeleton Content */}
+    <div className="space-y-4">
+      <div className="h-8 bg-gray-200 rounded w-1/3 animate-pulse"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="h-32 bg-gray-100 rounded-xl animate-pulse"></div>
+        <div className="h-32 bg-gray-100 rounded-xl animate-pulse"></div>
+      </div>
+      <div className="h-24 bg-gray-100 rounded-xl animate-pulse"></div>
+    </div>
+  </motion.div>
+);
+
+// Tab Status Component
+const TabStatus = ({ tabId, asset }: { tabId: string; asset: any }) => {
+  const getTabStatus = (id: string) => {
+    // Basic validation logic - can be enhanced based on actual requirements
+    switch (id) {
+      case 'asset-type':
+        return asset?.name && asset?.category ? 'complete' : 'incomplete';
+      case 'investment-details':
+        return asset?.totalNumberOfSfts && asset?.pricePerSft ? 'complete' : 'incomplete';
+      case 'rent-information':
+        return asset?.tenants?.length > 0 ? 'complete' : 'incomplete';
+      case 'escrow-legal':
+        return asset?.legalAdvisor ? 'complete' : 'incomplete';
+      default:
+        return 'incomplete';
+    }
+  };
+
+  const status = getTabStatus(tabId);
+  
+  return (
+    <motion.div
+      variants={statusVariants}
+      initial="initial"
+      animate="animate"
+      className="ml-2"
+    >
+      {status === 'complete' ? (
+        <CheckCircle2 className="w-4 h-4 text-green-500" />
+      ) : (
+        <Clock className="w-4 h-4 text-amber-500" />
+      )}
+    </motion.div>
+  );
+};
+
+// Progress Indicator Component
+const ProgressIndicator = ({ tabs, currentTab }: { tabs: any[]; currentTab: string }) => {
+  const currentIndex = tabs.findIndex(tab => tab.id === currentTab);
+  const progress = ((currentIndex + 1) / tabs.length) * 100;
+  
+  return (
+    <motion.div
+      className="mb-6"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Target className="w-4 h-4 text-blue-600" />
+          <span className="text-sm font-medium text-gray-700">Section Progress</span>
+        </div>
+        <span className="text-sm text-blue-600 font-semibold">{Math.round(progress)}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+        <motion.div
+          className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: progress / 100 }}
+          transition={{ duration: 0.8 }}
+          style={{ originX: 0 }}
+        />
+      </div>
+    </motion.div>
+  );
+};
 
 interface Props {
   tab: string;
@@ -22,58 +193,114 @@ interface Props {
 const AssetInformation = ({ tab, step, asset }: Props) => {
   const { id = null } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-
-  // Inside AssetInformation
-const getComponentByTabId = (tabId: string): JSX.Element => {
-  switch (tabId) {
-    case 'asset-type':
-      return (
-        <Suspense fallback={<Loading />}>
-          <AssetType asset={asset} />
-        </Suspense>
-      );
-    case 'investment-details':
-      return (
-        <Suspense fallback={<Loading />}>
-          <InvestmentDetails asset={asset} />
-        </Suspense>
-      );
-    case 'rent-information':
-      return (
-        <Suspense fallback={<Loading />}>
-          <TenantInformation asset={asset} />
-        </Suspense>
-      );
-    case 'escrow-legal':
-      return (
-        <Suspense fallback={<Loading />}>
-          <EscrowLegal asset={asset} />
-        </Suspense>
-      );
-    default:
-      return <div />;
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  // Get form context if available for validation
+  let formContext;
+  try {
+    formContext = useFormContext();
+  } catch {
+    // Form context not available
   }
-};
 
-  // Memoized tab change handler
+  // Enhanced tab change handler with transition state
   const handleTabChange = useCallback(
     (tabId: string) => {
-      const basePath = id ? `/edit-asset/${id}` : '/add-asset';
-      navigate(`${basePath}?step=${step}&tab=${tabId}`, { replace: false });
+      setIsTransitioning(true);
+      setTimeout(() => {
+        const basePath = id ? `/edit-asset/${id}` : '/add-asset';
+        navigate(`${basePath}?step=${step}&tab=${tabId}`, { replace: false });
+        setIsTransitioning(false);
+      }, 150);
     },
     [id, navigate, step]
   );
+  // Enhanced component getter with better loading states
+  const getComponentByTabId = (tabId: string): JSX.Element => {
+    if (isTransitioning) {
+      return <EnhancedLoading />;
+    }
+    
+    switch (tabId) {
+      case 'asset-type':
+        return (
+          <Suspense fallback={<EnhancedLoading />}>
+            <motion.div
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <AssetType asset={asset} />
+            </motion.div>
+          </Suspense>
+        );
+      case 'investment-details':
+        return (
+          <Suspense fallback={<EnhancedLoading />}>
+            <motion.div
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <InvestmentDetails asset={asset} />
+            </motion.div>
+          </Suspense>
+        );
+      case 'rent-information':
+        return (
+          <Suspense fallback={<EnhancedLoading />}>
+            <motion.div
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <TenantInformation asset={asset} />
+            </motion.div>
+          </Suspense>
+        );
+      case 'escrow-legal':
+        return (
+          <Suspense fallback={<EnhancedLoading />}>
+            <motion.div
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <EscrowLegal asset={asset} />
+            </motion.div>
+          </Suspense>
+        );
+      default:
+        return (
+          <motion.div 
+            className="flex items-center justify-center p-16 text-gray-500"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <div className="text-center">
+              <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+              <p>Tab content not available</p>
+            </div>
+          </motion.div>
+        );
+    }
+  };
 
-  // Memoized tabs computation
+  // Enhanced tabs computation with status indicators
   const tabs = useMemo(() => {
     const stepTabs =
       ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
     return stepTabs.map((tabItem) => ({
       id: tabItem.id,
-      title: tabItem.title,
+      title: tabItem.title, // Keep as string for compatibility
       component: getComponentByTabId(tabItem.id) || <div />,
+      statusIcon: <TabStatus tabId={tabItem.id} asset={asset} />,
     }));
-  }, [step, asset]);
+  }, [step, asset, isTransitioning]);
 
   const disabledTabs = useMemo(() => {
     if (id) {
@@ -81,20 +308,201 @@ const getComponentByTabId = (tabId: string): JSX.Element => {
     } else {
       return tabs.slice(1, tabs.length).map((tab) => tab.id);
     }
-  }, [tabs]);
+  }, [tabs, id]);
+
+  // Get current tab info for progress
+  const currentTabInfo = useMemo(() => {
+    const stepTabs = ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
+    return stepTabs;
+  }, [step]);
 
   return (
-    <Suspense fallback={<div>Loading Asset Information...</div>}>
-      <div className='asset-information shadow-none'>
-        <h1 className='text-2xl font-bold mb-4'>Asset Information</h1>
-        <CustomTabs
-          defaultTab={tab}
-          tabs={tabs}
-          handleTabChange={handleTabChange}
-         disabledTabs={disabledTabs}
-        />
-      </div>
-    </Suspense>
+    <motion.div
+      className="min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden"
+      variants={containerVariants}
+      initial="initial"
+      animate="animate"
+    >
+      <Suspense fallback={<EnhancedLoading />}>
+        <div className='max-w-7xl mx-auto p-4 md:p-6 lg:p-8'>
+          {/* Enhanced Header with better typography and spacing */}
+          <motion.div
+            className="mb-8"
+            variants={headerVariants}
+          >
+            <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+              <motion.div
+                className="p-3 md:p-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg"
+                whileHover={{ scale: 1.05, rotate: 5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Building2 className="w-6 h-6 md:w-8 md:h-8 text-white" />
+              </motion.div>
+              <div className="flex-1">
+                <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2'>Asset Information</h1>
+                <p className="text-gray-600 flex items-center gap-2 text-sm md:text-base">
+                  <Sparkles className="w-4 h-4" />
+                  Configure the fundamental details and investment structure of your asset
+                </p>
+              </div>
+            </div>
+            
+            {/* Progress Indicator */}
+            <ProgressIndicator tabs={currentTabInfo} currentTab={tab} />
+          </motion.div>
+
+          {/* Enhanced Information Banner */}
+          <motion.div
+            className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-blue-900 mb-1">Complete All Sections</h3>
+                <p className="text-blue-700 text-sm">
+                  Fill out all required information across the tabs to proceed. 
+                  {!id && " Save your asset type first to unlock additional sections."}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Enhanced Tabs Container with better responsive design */}
+          <motion.div
+            className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 overflow-hidden"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            whileHover={{ y: -2, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)" }}
+          >
+            <div className="p-4 md:p-6 lg:p-8">
+              {/* Enhanced Tab Header with Status Indicators */}
+              <div className="mb-6">
+                <div className="flex flex-wrap gap-2 border-b border-gray-200">
+                  {tabs.map((tabItem) => {
+                    const isActive = tabItem.id === tab;
+                    const isDisabled = disabledTabs.includes(tabItem.id);
+                    
+                    return (
+                      <motion.button
+                        key={tabItem.id}
+                        onClick={() => !isDisabled && handleTabChange(tabItem.id)}
+                        disabled={isDisabled}
+                        className={`px-4 py-3 text-sm font-medium rounded-t-lg border-b-2 transition-all duration-200 ${
+                          isActive 
+                            ? 'border-blue-500 text-blue-600 bg-blue-50' 
+                            : isDisabled
+                            ? 'border-transparent text-gray-400 cursor-not-allowed'
+                            : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-300'
+                        }`}
+                        whileHover={!isDisabled ? { scale: 1.02 } : {}}
+                        whileTap={!isDisabled ? { scale: 0.98 } : {}}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{tabItem.title}</span>
+                          {tabItem.statusIcon}
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {tabs.find(t => t.id === tab)?.component}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+
+          {/* Enhanced Quick Navigation */}
+          <motion.div
+            className="mt-6 flex flex-wrap gap-2 justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            {currentTabInfo.map((tabItem, index) => {
+              const isActive = tabItem.id === tab;
+              const isDisabled = disabledTabs.includes(tabItem.id);
+              
+              return (
+                <motion.button
+                  key={tabItem.id}
+                  onClick={() => !isDisabled && handleTabChange(tabItem.id)}
+                  disabled={isDisabled}
+                  className={`px-3 py-1.5 text-xs rounded-full transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-blue-600 text-white shadow-md' 
+                      : isDisabled
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 border border-gray-200'
+                  }`}
+                  whileHover={!isDisabled ? { scale: 1.05 } : {}}
+                  whileTap={!isDisabled ? { scale: 0.95 } : {}}
+                >
+                  <div className="flex items-center gap-1">
+                    <span>{index + 1}</span>
+                    <ChevronRight className="w-3 h-3" />
+                    <span className="hidden sm:inline">{tabItem.title}</span>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </motion.div>
+
+          {/* Enhanced Decorative Elements with better positioning */}
+          <motion.div
+            className="absolute top-10 right-10 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3]
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+          <motion.div
+            className="absolute bottom-10 left-10 w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-xl"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.4, 0.7, 0.4]
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+          />
+          <motion.div
+            className="absolute top-1/2 right-4 w-8 h-8 bg-gradient-to-br from-green-400/20 to-blue-400/20 rounded-full blur-lg"
+            animate={{
+              y: [-10, 10, -10],
+              opacity: [0.2, 0.5, 0.2]
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+          />
+        </div>
+      </Suspense>
+    </motion.div>
   );
 }
 

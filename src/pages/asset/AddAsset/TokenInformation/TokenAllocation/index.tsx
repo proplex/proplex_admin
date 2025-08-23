@@ -5,7 +5,7 @@ import formConfig from "./formConfig";
 import TokenAllocation from "./tokenAllocation";
 import Investor from "./Investor";
 import CustomTabs from "@/components/ui/custom-tab";
-import TokenSymbolRegistration from "../TokenSymbolRegistration";
+import TokenSymbolRegistration from "../PropertyDIDReservation"
 import { useFormContext } from "react-hook-form";
 
 interface Category {

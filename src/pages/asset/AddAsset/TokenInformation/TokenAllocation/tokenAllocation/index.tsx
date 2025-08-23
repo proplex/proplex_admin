@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "../../../../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import { EditIcon, TrashIcon } from "lucide-react";
 import TableComponent from "@/components/TableComponent";
 import { formConfig } from "./formConfig";
@@ -15,7 +15,6 @@ import { useParams } from "react-router-dom";
 import { DialogHeader } from "@/components/ui/CustomDialog";
 import FormGenerator from "@/components/UseForm/FormGenerator";
 import { useAllocation } from "@/hooks/asset/useAllocation";
-import { tr } from "date-fns/locale";
 
 const Index = () => {
   const { createAllocation, updateAllocation, deleteAllocation } =
