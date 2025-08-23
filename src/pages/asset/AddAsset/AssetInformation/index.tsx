@@ -203,6 +203,33 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
     // Form context not available
   }
 
+  // Get current tab info for progress and fallback
+  const currentTabInfo = useMemo(() => {
+    const stepTabs = ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
+    return stepTabs;
+  }, [step]);
+
+  // Ensure we have a valid tab - fallback to first tab if none provided
+  const currentTab = useMemo(() => {
+    if (!tab && currentTabInfo.length > 0) {
+      return currentTabInfo[0].id;
+    }
+    // Validate that the current tab exists in the step
+    const tabExists = currentTabInfo.some(tabItem => tabItem.id === tab);
+    if (!tabExists && currentTabInfo.length > 0) {
+      return currentTabInfo[0].id;
+    }
+    return tab;
+  }, [tab, currentTabInfo]);
+
+  // Auto-redirect to correct tab if needed
+  useEffect(() => {
+    if (currentTab !== tab && currentTab) {
+      const basePath = id ? `/edit-asset/${id}` : '/add-asset';
+      navigate(`${basePath}?step=${step}&tab=${currentTab}`, { replace: true });
+    }
+  }, [currentTab, tab, id, step, navigate]);
+
   // Enhanced tab change handler with transition state
   const handleTabChange = useCallback(
     (tabId: string) => {
@@ -215,10 +242,15 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
     },
     [id, navigate, step]
   );
-  // Enhanced component getter with better loading states
+  // Enhanced component getter with better loading states and error handling
   const getComponentByTabId = (tabId: string): JSX.Element => {
     if (isTransitioning) {
       return <EnhancedLoading />;
+    }
+    
+    // If no tabId provided, show the first available tab
+    if (!tabId && currentTabInfo.length > 0) {
+      tabId = currentTabInfo[0].id;
     }
     
     switch (tabId) {
@@ -281,26 +313,41 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <div className="text-center">
+            <div className="text-center space-y-4">
               <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-              <p>Tab content not available</p>
+              <div>
+                <p className="text-lg font-medium text-gray-700 mb-2">Tab Content Not Available</p>
+                <p className="text-sm text-gray-500 mb-4">The requested tab "{tabId}" could not be loaded.</p>
+                {currentTabInfo.length > 0 && (
+                  <button
+                    onClick={() => handleTabChange(currentTabInfo[0].id)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Go to {currentTabInfo[0].title}
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         );
     }
   };
 
-  // Enhanced tabs computation with status indicators
+  // Enhanced tabs computation with status indicators and better error handling
   const tabs = useMemo(() => {
-    const stepTabs =
-      ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
+    const stepTabs = ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
+    
+    if (stepTabs.length === 0) {
+      return [];
+    }
+    
     return stepTabs.map((tabItem) => ({
       id: tabItem.id,
-      title: tabItem.title, // Keep as string for compatibility
+      title: tabItem.title,
       component: getComponentByTabId(tabItem.id) || <div />,
       statusIcon: <TabStatus tabId={tabItem.id} asset={asset} />,
     }));
-  }, [step, asset, isTransitioning]);
+  }, [step, asset, isTransitioning, currentTabInfo]);
 
   const disabledTabs = useMemo(() => {
     if (id) {
@@ -310,11 +357,24 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
     }
   }, [tabs, id]);
 
-  // Get current tab info for progress
-  const currentTabInfo = useMemo(() => {
-    const stepTabs = ASSET_STEPS_TABS.find((ele) => ele.id === step)?.tabs || [];
-    return stepTabs;
-  }, [step]);
+  // Early return if no tabs available
+  if (tabs.length === 0) {
+    return (
+      <motion.div
+        className="min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <div className="text-center space-y-4">
+          <AlertCircle className="w-16 h-16 mx-auto text-gray-400" />
+          <div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">No Tabs Available</h2>
+            <p className="text-gray-500">No tabs are configured for the "{step}" step.</p>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -348,7 +408,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
             </div>
             
             {/* Progress Indicator */}
-            <ProgressIndicator tabs={currentTabInfo} currentTab={tab} />
+            <ProgressIndicator tabs={currentTabInfo} currentTab={currentTab} />
           </motion.div>
 
           {/* Enhanced Information Banner */}
@@ -383,7 +443,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
               <div className="mb-6">
                 <div className="flex flex-wrap gap-2 border-b border-gray-200">
                   {tabs.map((tabItem) => {
-                    const isActive = tabItem.id === tab;
+                    const isActive = tabItem.id === currentTab;
                     const isDisabled = disabledTabs.includes(tabItem.id);
                     
                     return (
@@ -413,13 +473,27 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
               
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={tab}
+                  key={currentTab}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  {tabs.find(t => t.id === tab)?.component}
+                  {tabs.find(t => t.id === currentTab)?.component || (
+                    <motion.div 
+                      className="flex items-center justify-center p-16 text-gray-500"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <div className="text-center space-y-4">
+                        <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                        <div>
+                          <p className="text-lg font-medium text-gray-700 mb-2">Loading Content...</p>
+                          <p className="text-sm text-gray-500">Please wait while we load the tab content.</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -433,7 +507,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
             transition={{ delay: 0.8 }}
           >
             {currentTabInfo.map((tabItem, index) => {
-              const isActive = tabItem.id === tab;
+              const isActive = tabItem.id === currentTab;
               const isDisabled = disabledTabs.includes(tabItem.id);
               
               return (

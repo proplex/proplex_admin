@@ -53,7 +53,7 @@ const authRoutes: RouteObject[] = [
 const mainRoutes: RouteConfig[] = [
   {
     path: '/',
-    component: React.lazy(() => import('@/pages/asset/AssetList/index')),
+    component: React.lazy(() => import('@/pages/LandingPage')),
   },
   {
     path: '/assets',
@@ -73,18 +73,18 @@ const mainRoutes: RouteConfig[] = [
   },
   {
     path: '/dashboard',
-    component: React.lazy(() => import('@/pages/Dashboard')), // Make sure this component exists
+    component: React.lazy(() => import('@/pages/Dashboard/index')),
   },
   {
-    path: 'amenities',
+    path: '/amenities',
     component: React.lazy(() => import('@/pages/amenities')),
   },
   {
-    path: 'channel-assets-partner',
+    path: '/channel-assets-partner',
     component: React.lazy(() => import('@/pages/channelAssetsPartner')),
   },
   {
-    path: 'token-asset-partner',
+    path: '/token-asset-partner',
     component: React.lazy(() => import('@/pages/tokenAssetPartner')),
   },
   {
@@ -116,95 +116,103 @@ const mainRoutes: RouteConfig[] = [
     component: React.lazy(() => import('@/pages/customer/AddCustomer')),
   },
   {
-    path: 'employee',
+    path: '/employee',
     component: React.lazy(() => import('@/pages/employee/EmployeeList')),
   },
   {
-    path: 'add-employee',
+    path: '/add-employee',
     component: React.lazy(() => import('@/pages/employee/AddEmployee')),
   },
   {
-    path: 'edit-employee/:id',
+    path: '/edit-employee/:id',
     component: React.lazy(() => import('@/pages/employee/AddEmployee')),
   },
   {
-    path: 'customer-profile/:id',
+    path: '/customer-profile/:id',
     component: React.lazy(() => import('@/pages/customers/customer')),
   },
   {
-    path: 'customer-profile-fo/:id',
+    path: '/customer-profile-fo/:id',
     component: React.lazy(() => import('@/pages/customers/ForeginInverstors')),
   },
   {
-    path: 'orders',
-    component: React.lazy(() => import('@/pages/orders')),
+    path: '/orders',
+    component: React.lazy(() => import('@/pages/orders/index')),
   },
   {
-    path: 'order-details/:id',
+    path: '/investors',
+    component: React.lazy(() => import('@/pages/customers/index')),
+  },
+  {
+    path: '/orders/new',
+    component: React.lazy(() => import('@/pages/orders/AddOrder')),
+  },
+  {
+    path: '/order-details/:id',
     component: React.lazy(() => import('@/pages/orders/OrderDetail')),
   },
   {
-    path: 'cancel',
+    path: '/cancel',
     component: React.lazy(() => import('@/pages/cancel')),
   },
   {
-    path: 'fee',
+    path: '/fee',
     component: React.lazy(() => import('@/pages/fee')),
   },
   {
-    path: 'fee-management',
+    path: '/fee-management',
     component: React.lazy(() => import('@/pages/feeManagement/FeeDashboard')),
   },
   {
-    path: 'super-admin-withdrawal',
+    path: '/super-admin-withdrawal',
     component: React.lazy(() => import('@/pages/superAdminWithdrawal')),
   },
   {
-    path: 'spv-list',
+    path: '/spv-list',
     component: React.lazy(() => import('@/pages/SPV/SpvList')),
   },
   {
-    path: 'add-spv',
+    path: '/add-spv',
     component: React.lazy(() => import('@/pages/SPV/AddSpv')),
   },
   {
-    path: 'edit-spv/:id',
+    path: '/edit-spv/:id',
     component: React.lazy(() => import('@/pages/SPV/AddSpv')),
   },
   {
-    path: 'blog',
+    path: '/blog',
     component: React.lazy(() => import('@/pages/blog')),
   },
   {
-    path: 'review',
+    path: '/review',
     component: React.lazy(() => import('@/pages/review')),
   },
   {
-    path: 'config',
+    path: '/config',
     component: React.lazy(() => import('@/pages/configuration')),
   },
   {
-    path: 'roles',
+    path: '/roles',
     component: React.lazy(() => import('@/pages/roles')),
   },
   {
-    path: 'roles/:id',
+    path: '/roles/:id',
     component: React.lazy(() => import('@/pages/roles/RoleForm')),
   },
   {
-    path: 'settings',
+    path: '/settings',
     component: React.lazy(() => import('@/pages/setting')),
   },
   {
-    path: 'notification',
+    path: '/notification',
     component: React.lazy(() => import('@/pages/notification')),
   },
   {
-    path: 'report',
+    path: '/report',
     component: React.lazy(() => import('@/pages/report')),
   },
   {
-    path: 'EOI',
+    path: '/EOI',
     component: React.lazy(() => import('@/pages/EOI')),
   },
 ];
