@@ -135,36 +135,6 @@ const Index: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Header Section */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Scale className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Legal Advisors
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Manage your company's legal advisors and consultants
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Total Advisors</span>
-              </div>
-              <p className="text-xl font-bold text-gray-900 mt-1">{fields.length}</p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
       
       {/* Main Content */}
       <motion.div 

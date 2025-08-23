@@ -32,26 +32,7 @@ const Index = () => {
       initial="hidden"
       animate="visible"
     >
-      {/* Header Section */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <FileText className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              SPV Memo
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Provide details about the Special Purpose Vehicle (SPV) for your company
-            </p>
-          </div>
-        </div>
-      </motion.div>
-      
+     
       {/* Main Content */}
       <motion.div 
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"

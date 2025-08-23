@@ -179,47 +179,9 @@ const Index = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Header Section with Enhanced Styling */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <CreditCard className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Royalty Distribution
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Manage royalty distributions and escrow account details
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
       <div className="space-y-6">
         {/* Escrow Details Section */}
-        <motion.div 
-          className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
-          variants={itemVariants}
-        >
-          <div className="pb-4 border-b border-gray-200 px-6 py-4 bg-gradient-to-r from-blue-50/30 to-indigo-50/30">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-md">
-                <Building2 className="h-5 w-5 text-blue-600" />
-              </div>
-              <h2 className="text-xl font-semibold text-gray-800">Royalty Escrow Details</h2>
-            </div>
-            <p className="text-gray-600 text-sm mt-2 ml-11">
-              Secure account information for royalty distributions
-            </p>
-          </div>
-          <div className="p-6">
-            <EscrowDetails userInfo={escrowDetails} setValue={setValue} />
-          </div>
-        </motion.div>
+
         
         {/* Distribution Management Section */}
         <motion.div 
@@ -249,38 +211,7 @@ const Index = () => {
           </div>
           
           {/* Information Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 pt-0">
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Info className="h-4 w-4 text-blue-600" />
-                <h3 className="font-medium text-blue-800">Distribution Process</h3>
-              </div>
-              <p className="text-sm text-blue-700">
-                Select a distribution date to view and manage customer distributions.
-              </p>
-            </div>
-            
-            <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Info className="h-4 w-4 text-amber-600" />
-                <h3 className="font-medium text-amber-800">Processing Time</h3>
-              </div>
-              <p className="text-sm text-amber-700">
-                Distributions may take 1-2 business days to process completely.
-              </p>
-            </div>
-            
-            <div className="bg-purple-50 rounded-lg p-4 border border-purple-100">
-              <div className="flex items-center gap-2 mb-2">
-                <Info className="h-4 w-4 text-purple-600" />
-                <h3 className="font-medium text-purple-800">Transaction Records</h3>
-              </div>
-              <p className="text-sm text-purple-700">
-                All transactions are securely recorded and available for audit.
-              </p>
-            </div>
-          </div>
-          
+
           <div className="px-6 pb-6">
             <div className="border-b border-gray-200">
               <div className="flex flex-wrap gap-4">

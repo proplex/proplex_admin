@@ -120,46 +120,7 @@ const Index = () => {
       </motion.div>
 
       {/* Information Cards */}
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        variants={itemVariants}
-      >
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-blue-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Briefcase className="h-5 w-5 text-blue-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Industry Focus</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Select the most relevant industry category for your company to help us provide tailored services.
-          </p>
-        </div>
-        
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-green-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Phone className="h-5 w-5 text-green-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Contact Verification</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            All contact information will be verified to ensure secure communication and compliance.
-          </p>
-        </div>
-        
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-amber-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-amber-100 rounded-lg">
-              <FileText className="h-5 w-5 text-amber-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Document Security</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Uploaded documents are securely stored and processed in compliance with data protection regulations.
-          </p>
-        </div>
-      </motion.div>
+
     </motion.div>
   );
 };

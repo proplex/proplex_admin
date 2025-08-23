@@ -64,24 +64,7 @@ const Index = () => {
       />
       
       {/* Header Section with Enhanced Styling */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <CreditCard className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Bank Details
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Manage your company's bank accounts and escrow information
-            </p>
-          </div>
-        </div>
-      </motion.div>
+     
 
       <div className="space-y-6">
         {/* Escrow Details Section */}

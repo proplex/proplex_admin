@@ -129,37 +129,6 @@ const Index: React.FC = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Header Section */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Board Members
-              </h1>
-              <p className="text-gray-600 text-lg">
-                Manage the board members of your company
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Total Members</span>
-              </div>
-              <p className="text-xl font-bold text-gray-900 mt-1">{fields.length}</p>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-      
       {/* Main Content */}
       <motion.div 
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
@@ -182,37 +151,6 @@ const Index: React.FC = () => {
         </div>
         
         {/* Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 pt-0">
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-            <div className="flex items-center gap-2 mb-2">
-              <User className="h-4 w-4 text-blue-600" />
-              <h3 className="font-medium text-blue-800">Roles & Responsibilities</h3>
-            </div>
-            <p className="text-sm text-blue-700">
-              Board members oversee company operations and make strategic decisions.
-            </p>
-          </div>
-          
-          <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="h-4 w-4 text-amber-600" />
-              <h3 className="font-medium text-amber-800">Term Length</h3>
-            </div>
-            <p className="text-sm text-amber-700">
-              Board members typically serve 1-3 year terms as defined in company bylaws.
-            </p>
-          </div>
-          
-          <div className="bg-purple-50 rounded-lg p-4 border border-purple-100">
-            <div className="flex items-center gap-2 mb-2">
-              <Mail className="h-4 w-4 text-purple-600" />
-              <h3 className="font-medium text-purple-800">Communication</h3>
-            </div>
-            <p className="text-sm text-purple-700">
-              All board members receive important notifications and meeting invitations.
-            </p>
-          </div>
-        </div>
         
         <div className="px-6 pb-6">
           <div className="rounded-lg border border-gray-200 overflow-hidden">

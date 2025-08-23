@@ -325,7 +325,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
           <div className="flex items-center gap-4">
             {/* Logo with animated effects */}
             <div className="flex items-center gap-3 pr-4 border-r border-gray-200/30 dark:border-gray-700/30">
-              <div className="relative group">
+              {/* <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition-all duration-500" />
                 <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 p-2 rounded-lg">
                   <img 
@@ -334,7 +334,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     className="h-5 w-5 object-contain" 
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="hidden sm:block">
                 <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
                   Proplex

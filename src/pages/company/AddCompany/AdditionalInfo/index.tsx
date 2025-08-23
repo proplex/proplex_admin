@@ -119,46 +119,7 @@ const Index = () => {
       </motion.div>
 
       {/* Information Cards */}
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        variants={itemVariants}
-      >
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-blue-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <CreditCard className="h-5 w-5 text-blue-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Financial Compliance</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            All bank accounts must be verified to ensure compliance with financial regulations and secure transactions.
-          </p>
-        </div>
-        
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-green-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Users className="h-5 w-5 text-green-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Board Governance</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Maintain proper board member records with appropriate permissions and documentation for regulatory compliance.
-          </p>
-        </div>
-        
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-all duration-300 hover:border-purple-200">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Scale className="h-5 w-5 text-purple-600" />
-            </div>
-            <h3 className="font-semibold text-gray-800">Legal Requirements</h3>
-          </div>
-          <p className="text-gray-600 text-sm">
-            Keep legal advisor information up-to-date to ensure proper legal representation and compliance support.
-          </p>
-        </div>
-      </motion.div>
+      
     </motion.div>
   )
 }
