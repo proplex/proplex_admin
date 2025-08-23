@@ -30,7 +30,8 @@ import {
 
 // Web3Auth imports
 import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
-import { useAccount } from "wagmi";
+import { useAccount,useBalance,useChainId,useSwitchChain } from "wagmi";
+import {formatUnits} from "viem";
 
 
 // Mock components for demonstration
@@ -243,13 +244,53 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
   const { address } = useAccount();
+  
 
-  console.log("userInfo", userInfo,address);
 
+  const [avalancheFujiChain, setAvalancheFujiChain] = useState(null);
+  
+  const chainId = useChainId();
+  const { chains, switchChain, error: switchChainError } = useSwitchChain();
+  
+  // Find Avalanche Fuji chain dynamically from available chains
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
+    if (isConnected && address && chains && chains.length > 0) {
+      const fujiChain = chains.find(chain => 
+        chain.name === 'Avalanche Fuji' || 
+        chain.id === 43113 || 
+        chain.nativeCurrency?.symbol === 'AVAX'
+      );
+      
+      if (fujiChain) {
+        setAvalancheFujiChain(fujiChain);
+        console.log('Found Avalanche Fuji chain:', fujiChain);
+      }
+    }
+  }, [isConnected, address, chains]);
+  
+  const {data, isLoading, error: balanceError} = useBalance({
+    address,
+    chainId: avalancheFujiChain?.id
+  });
+  
+  // Check if currently connected to Avalanche Fuji
+  const isOnAvalancheFuji = avalancheFujiChain && chainId === avalancheFujiChain.id;
+  
+  // Only log when connected to Avalanche Fuji and have balance data
+  useEffect(() => {
+    if (isOnAvalancheFuji && data && avalancheFujiChain) {
+      console.log('Avalanche Fuji Balance:', {
+        balance: data,
+        chain: avalancheFujiChain,
+        chainId: chainId
+      });
+    }
+  }, [isOnAvalancheFuji, data, avalancheFujiChain, chainId]);
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => setTime(new Date()), 1000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   // Load wallet address from memory (localStorage not available in artifacts)
   useEffect(() => {
@@ -358,18 +399,15 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
           <div className="flex items-center gap-4">
             {/* Logo with animated effects - Always visible */}
             <div className="flex items-center gap-3 pr-4 border-r border-gray-200/30 dark:border-gray-700/30">
-              {/* <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition-all duration-500" />
-                <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 p-2 rounded-lg">
-                  <img 
-                    src="/favicon.png" 
-                    alt="Proplex Logo" 
-                    className="h-5 w-5 object-contain" 
-                  />
-                </div>
-              </div> */}
+              <div className="relative group">
+                <img 
+                  src="/logo.png" 
+                  alt="Proplex Logo" 
+                  className="h-12 w-8 object-contain transition-transform duration-200 group-hover:scale-110" 
+                />
+              </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
                   Proplex
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
@@ -438,17 +476,50 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                   <span className="sr-only">Toggle menu</span>
                 </Button>
 
-                {/* Divider */}
-                <div className="h-6 w-px bg-gray-300/60 dark:bg-gray-600/60 mx-2" />
-
-                {/* Settings Button */}
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  className="h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95 group"
-                >
-                  <Settings className="h-4 w-4 text-gray-600 dark:text-gray-400 transition-all duration-500 group-hover:text-purple-600 group-hover:rotate-90" />
-                </Button>
+                {/* AVAX Balance Display - Clean white design to match website */}
+                {isOnAvalancheFuji && data && avalancheFujiChain && (
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm">
+                    <div className="flex items-center gap-1">
+                      <div className="h-6 w-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
+                          {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                          {parseFloat(formatUnits(data.value, data.decimals)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'AVAX'}
+                        </span>
+                        <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                          {avalancheFujiChain.name}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Switch to Avalanche Fuji if not connected - Clean white design */}
+                {!isOnAvalancheFuji && isConnected && avalancheFujiChain && (
+                  <button
+                    onClick={() => switchChain({ chainId: avalancheFujiChain.id })}
+                    className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200"
+                  >
+                    <div className="flex items-center gap-1">
+                      <div className="h-6 w-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
+                          {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                          Switch to {avalancheFujiChain.name}
+                        </span>
+                        <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                          Click to connect
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                )}
 
                 {/* Divider */}
                 <div className="w-px h-6 bg-gray-300/60 dark:bg-gray-600/60 mx-3" />
