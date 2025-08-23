@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Suspense, useCallback, useMemo, JSX } from "react";
+import { Suspense, useCallback, useMemo, JSX, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ASSET_STEPS_TABS } from "@/constants/global";
-import CustomTabs from "@/components/ui/custom-tab";
 import Loading from "@/components/ui/Loading";
 
 import PropertyDIDReservation from "./PropertyDIDReservation";
 import AssetInformationSummary from "./AssetInformationSummary";
 import CustomTabs from "@/components/ui/custom-tab";
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 interface Props {
   tab: string;
   step: string;
@@ -48,7 +47,10 @@ const contentVariants = {
 const TokenInformationComponent = ({ tab, step, asset }: Props) => {
   const { id = null } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(tab || 'asset-information');
+  
+  // Ensure default tab is always asset-information
+  const defaultTab = tab && ['asset-information', 'property-did'].includes(tab) ? tab : 'asset-information';
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   // Define available tabs
   const tokenTabs = [
@@ -68,12 +70,12 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
 
   const COMPONENT_MAP: Record<string, JSX.Element> = {
     "asset-information": (
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<div className="flex items-center justify-center p-8"><Loading /></div>}>
         <AssetInformationSummary asset={asset} />
       </Suspense>
     ),
     "property-did": (
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<div className="flex items-center justify-center p-8"><Loading /></div>}>
         <PropertyDIDReservation />
       </Suspense>
     ),
@@ -140,6 +142,10 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
                       <div className="font-semibold">{tabItem.title}</div>
                       <div className="text-xs text-gray-500">{tabItem.description}</div>
                     </div>
+                    {/* Active indicator */}
+                    {isActive && (
+                      <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
+                    )}
                   </motion.button>
                 );
               })}
@@ -154,12 +160,13 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {COMPONENT_MAP[activeTab] || (
-              <div className="flex items-center justify-center p-16 text-gray-500">
-                <div className="text-center">
-                  <p>Tab content not available</p>
-                </div>
-              </div>
+            {COMPONENT_MAP[activeTab] ? (
+              COMPONENT_MAP[activeTab]
+            ) : (
+              // Default fallback - show Asset Information if no tab content
+              <Suspense fallback={<div className="flex items-center justify-center p-8"><Loading /></div>}>
+                <AssetInformationSummary asset={asset} />
+              </Suspense>
             )}
           </motion.div>
         </div>

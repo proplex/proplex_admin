@@ -63,7 +63,7 @@ export default function AssetHost({ hostedBy }: HostedByProps) {
       <div className="p-6 border-t border-slate-100">
         <div className="flex items-center gap-2 mb-6 text-slate-800">
           <Building className="h-5 w-5 text-purple-500" />
-          <h2 className="text-lg font-semibold">Company Information</h2>
+          <h2 className="text-lg font-semibold">Company  Information</h2>
         </div>
 
         <div className="flex flex-col space-y-6">

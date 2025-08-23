@@ -8,4 +8,3 @@ export {
   type FinanceSolution,
   type CategoryFinanceConfig
 } from '@/config/embeddedFinance';
-"

@@ -20,7 +20,7 @@ const LegalAdvisor = lazy(() => import('./LegalAdvisors'));
 const AdditionalInfo = lazy(() => import('./AdditionalInfo'));
 
 const steps = [
-  { id: 'company-info', title: 'Company Info', icon: Building },
+  { id: 'company-info', title: 'Company hiii Info', icon: Building },
   { id: 'spv-memo', title: 'SPV Memo', icon: FileText },
   { id: 'bank-details', title: 'Bank Details', icon: Banknote },
   { id: 'royalty-distributions', title: 'Royalty Distributions', icon: Banknote },
@@ -202,23 +202,23 @@ const EnhancedAddCompany = () => {
       animate="animate"
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-3rem)] lg:min-h-[calc(100vh-4rem)]">
+        <div className="flex flex-col xl:flex-row gap-4 lg:gap-6 min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-3rem)] lg:min-h-[calc(100vh-4rem)]">
           {/* Icon-Based Sidebar */}
           <motion.div 
-            className="xl:w-32 flex-shrink-0 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-4 xl:sticky xl:top-8 xl:h-fit xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto"
+            className="xl:w-20 flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-3 xl:sticky xl:top-8 xl:h-fit xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto"
             variants={sidebarVariants}
           >
             {/* Header Icon */}
             <motion.div 
-              className="flex xl:flex-col items-center xl:items-center justify-center xl:justify-start mb-6"
+              className="flex xl:flex-col items-center xl:items-center justify-center xl:justify-start mb-4"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
-                <Building className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shadow-sm">
+                <Building className="w-5 h-5 text-gray-700" />
               </div>
-              <div className="hidden xl:block mt-3 text-center">
+              <div className="hidden xl:block mt-2 text-center">
                 <div className="text-xs font-bold text-gray-800">
                   {id ? 'UPDATE' : 'CREATE'}
                 </div>
@@ -229,7 +229,7 @@ const EnhancedAddCompany = () => {
             </motion.div>
             
             {/* Step Icons */}
-            <div className="flex xl:flex-col xl:space-y-4 space-x-4 xl:space-x-0 overflow-x-auto xl:overflow-x-visible">
+            <div className="flex xl:flex-col xl:space-y-3 space-x-3 xl:space-x-0 overflow-x-auto xl:overflow-x-visible">
               {steps.map((step, index) => {
                 const Icon = step.icon || Building;
                 const isActive = step.id === currentStep;
@@ -241,7 +241,7 @@ const EnhancedAddCompany = () => {
                     {/* Connecting Line - Only for desktop vertical layout */}
                     {index < steps.length - 1 && (
                       <motion.div 
-                        className="hidden xl:block absolute top-16 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b from-gray-200 to-gray-300 z-0"
+                        className="hidden xl:block absolute top-12 left-1/2 transform -translate-x-1/2 w-0.5 h-6 bg-gradient-to-b from-gray-200 to-gray-300 z-0"
                         initial={{ scaleY: 0, opacity: 0 }}
                         animate={{ scaleY: 1, opacity: 1 }}
                         transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.1 }}
@@ -270,52 +270,38 @@ const EnhancedAddCompany = () => {
                       disabled={isDisabled}
                       title={step.title}
                     >
-                      {/* Glow effect for active step */}
-                      {isActive && (
-                        <motion.div 
-                          className="absolute inset-0 rounded-xl bg-blue-400/30 blur-sm scale-110"
-                          animate={{ 
-                            scale: [1.1, 1.2, 1.1],
-                            opacity: [0.3, 0.6, 0.3]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                          }}
-                        />
-                      )}
-                      
                       {/* Icon Container */}
                       <div className={`
-                        relative w-12 h-12 rounded-xl flex items-center justify-center border-2 transition-all duration-300 flex-shrink-0
+                        relative w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all duration-300 flex-shrink-0
                         ${
                           isActive 
-                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 border-blue-400 shadow-lg shadow-blue-500/30 scale-110' 
+                            ? 'bg-blue-100 border-blue-300 shadow-md scale-110' 
                             : isCompleted 
-                              ? 'bg-gradient-to-br from-green-500 to-emerald-600 border-green-400 shadow-lg shadow-green-500/20' 
+                              ? 'bg-green-100 border-green-300 shadow-md' 
                               : isDisabled
-                                ? 'bg-gray-100 border-gray-200 opacity-50'
+                                ? 'bg-gray-50 border-gray-200 opacity-50'
                                 : 'bg-white border-gray-200 group-hover:border-blue-300 group-hover:shadow-md group-hover:scale-105'
                         }
                       `}>
-                        <Icon className={`w-5 h-5 transition-colors duration-300 ${
-                          isActive || isCompleted 
-                            ? 'text-white' 
-                            : isDisabled 
-                              ? 'text-gray-400' 
-                              : 'text-gray-500 group-hover:text-blue-600'
+                        <Icon className={`w-4 h-4 transition-colors duration-300 ${
+                          isActive 
+                            ? 'text-blue-600' 
+                            : isCompleted
+                              ? 'text-green-600'
+                              : isDisabled 
+                                ? 'text-gray-400' 
+                                : 'text-gray-500 group-hover:text-blue-600'
                         }`} />
                         
                         {/* Completion Checkmark */}
                         {isCompleted && !isActive && (
                           <motion.div 
-                            className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center border-2 border-white"
+                            className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full flex items-center justify-center border border-white"
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ delay: 0.2, type: "spring", stiffness: 500, damping: 25 }}
                           >
-                            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
                           </motion.div>
@@ -323,9 +309,9 @@ const EnhancedAddCompany = () => {
                         
                         {/* Step Number Badge */}
                         {!isCompleted && (
-                          <div className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold border-2 border-white ${
+                          <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-xs font-bold border border-white ${
                             isActive 
-                              ? 'bg-blue-100 text-blue-700' 
+                              ? 'bg-blue-600 text-white' 
                               : isDisabled 
                                 ? 'bg-gray-100 text-gray-400' 
                                 : 'bg-gray-100 text-gray-500'
@@ -335,21 +321,6 @@ const EnhancedAddCompany = () => {
                         )}
                       </div>
                     </motion.button>
-                    
-                    {/* Step Title - Hidden on mobile, shown on desktop with tooltip-like appearance */}
-                    <div className="hidden xl:block mt-3 text-center max-w-[4rem]">
-                      <div className={`text-xs font-medium leading-tight transition-colors duration-300 ${
-                        isActive 
-                          ? 'text-blue-700' 
-                          : isCompleted 
-                            ? 'text-green-700' 
-                            : isDisabled 
-                              ? 'text-gray-400' 
-                              : 'text-gray-600'
-                      }`}>
-                        {step.title}
-                      </div>
-                    </div>
                   </div>
                 );
               })}
@@ -357,22 +328,22 @@ const EnhancedAddCompany = () => {
             
             {/* Compact Progress Indicator */}
             <motion.div 
-              className="mt-6 xl:mt-8 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100"
+              className="mt-4 xl:mt-6 p-2 bg-white rounded-xl border border-gray-200 shadow-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <div className="text-center mb-2">
-                <div className="text-xs font-bold text-blue-600">
+              <div className="text-center mb-1">
+                <div className="text-xs font-bold text-gray-800">
                   {Math.round(((steps.findIndex(step => step.id === currentStep) + 1) / steps.length) * 100)}%
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs text-gray-500">
                   Complete
                 </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
+              <div className="w-full bg-gray-200 rounded-full h-1">
                 <motion.div 
-                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-1.5 rounded-full"
+                  className="bg-blue-500 h-1 rounded-full"
                   initial={{ width: "0%" }}
                   animate={{ 
                     width: `${((steps.findIndex(step => step.id === currentStep) + 1) / steps.length) * 100}%` 
@@ -380,7 +351,7 @@ const EnhancedAddCompany = () => {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </div>
-              <div className="mt-2 text-xs text-gray-500 text-center">
+              <div className="mt-1 text-xs text-gray-500 text-center">
                 {steps.findIndex(step => step.id === currentStep) + 1}/{steps.length}
               </div>
             </motion.div>
@@ -390,12 +361,12 @@ const EnhancedAddCompany = () => {
           <div className="flex-1 min-w-0">
             <FormProvider {...methods}>
               <motion.form
-                className="h-full flex flex-col bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/50 overflow-hidden"
+                className="h-full flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
                 onSubmit={methods.handleSubmit(onSubmit)}
                 variants={formVariants}
               >
                 {/* Content Header with Mobile Step Indicator */}
-                <div className="border-b border-gray-100 p-4 bg-gradient-to-r from-white/50 to-blue-50/30">
+                <div className="border-b border-gray-200 p-4 bg-white">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h2 className="text-2xl font-bold text-gray-900">
@@ -445,9 +416,9 @@ const EnhancedAddCompany = () => {
                       </div>
                       
                       {/* Current Step Icon */}
-                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                         {React.createElement(steps.find(s => s.id === currentStep)?.icon || Building, {
-                          className: "w-5 h-5 text-blue-600"
+                          className: "w-5 h-5 text-gray-700"
                         })}
                       </div>
                     </div>
@@ -490,7 +461,7 @@ const EnhancedAddCompany = () => {
                 
                 {/* Action Buttons */}
                 <motion.div 
-                  className="border-t border-gray-100 p-6 bg-gradient-to-r from-white/50 to-gray-50/30 backdrop-blur-sm"
+                  className="border-t border-gray-200 p-6 bg-white"
                   variants={buttonVariants}
                 >
                   <div className="flex justify-between items-center">

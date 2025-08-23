@@ -625,4 +625,3 @@ export const calculateRiskScore = (solutions: FinanceSolution[]): number => {
   const totalRisk = solutions.reduce((sum, solution) => sum + riskWeights[solution.riskLevel], 0);
   return totalRisk / solutions.length;
 };
-"
