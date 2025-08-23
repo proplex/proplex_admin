@@ -150,33 +150,20 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <motion.section
-        className="relative overflow-hidden"
+        className="relative overflow-hidden bg-white"
         variants={containerVariants}
         initial="initial"
         animate="animate"
       >
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            variants={floatingVariants}
-            className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
-          />
-          <motion.div
-            variants={floatingVariants}
-            initial="initial"
-            animate="animate"
-            transition={{ delay: 2 }}
-            className="absolute bottom-20 left-20 w-96 h-96 bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 rounded-full blur-3xl"
-          />
-        </div>
+        {/* Background Elements - Removed for clean white design */}
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
             <motion.div variants={itemVariants} className="mb-8">
-              <Badge className="mb-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-none px-4 py-2">
+              <Badge className="mb-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white border-none px-6 py-2 shadow-lg">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Revolutionary RWA Platform
               </Badge>
@@ -195,7 +182,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg"
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 text-lg shadow-lg"
                   onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   Get Started Today
@@ -204,19 +191,10 @@ export default function LandingPage() {
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="border-2 border-gray-300 hover:border-blue-500 px-8 py-3 text-lg"
+                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-3 text-lg transition-all duration-200"
                   onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  Learn More
-                </Button>
-                <Button
-                  onClick={handleSignIn}
-                  disabled={loading}
-                  size="lg"
-                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-8 py-3 text-lg"
-                >
-                  <LogIn className="w-5 h-5 mr-2" />
-                  {loading ? "Connecting..." : "Sign In"}
+                  Watch Demo
                 </Button>
               </div>
             </motion.div>
@@ -274,41 +252,35 @@ export default function LandingPage() {
                 icon: Building2,
                 title: "Browse Premium Assets",
                 description: "Explore curated real estate, infrastructure, and commodity investments with detailed analytics.",
-                color: "purple"
+                color: "blue"
               },
               {
                 step: "03",
                 icon: Coins,
                 title: "Invest & Earn",
                 description: "Purchase fractional tokens, track performance, and receive regular distributions securely.",
-                color: "emerald"
+                color: "blue"
               }
             ].map((step, index) => (
               <motion.div
                 key={step.step}
                 variants={itemVariants}
                 custom={index}
-                className="relative"
+                className="relative text-center group"
               >
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <CardContent className="p-8 text-center">
-                    <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br ${
-                      step.color === 'blue' ? 'from-blue-500 to-blue-600' :
-                      step.color === 'purple' ? 'from-purple-500 to-purple-600' :
-                      'from-emerald-500 to-emerald-600'
-                    } flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <step.icon className="w-8 h-8 text-white" />
-                    </div>
-                    
-                    <div className="text-sm font-bold text-gray-400 mb-2">{step.step}</div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">{step.title}</h3>
-                    <p className="text-gray-600">{step.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="p-8">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+                  
+                  <div className="text-sm font-bold text-blue-500 mb-2">{step.step}</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{step.title}</h3>
+                  <p className="text-gray-600">{step.description}</p>
+                </div>
                 
                 {index < 2 && (
                   <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <ArrowRight className="w-6 h-6 text-gray-300" />
+                    <ArrowRight className="w-6 h-6 text-blue-300" />
                   </div>
                 )}
               </motion.div>
@@ -319,7 +291,7 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <motion.section
-        className="py-20 bg-gradient-to-br from-gray-50 to-blue-50"
+        className="py-20"
         variants={containerVariants}
         initial="initial"
         whileInView="animate"
@@ -347,13 +319,13 @@ export default function LandingPage() {
                 icon: Lock,
                 title: "Institutional Security",
                 description: "Bank-grade security with multi-signature wallets and cold storage solutions.",
-                color: "purple"
+                color: "blue"
               },
               {
                 icon: TrendingUp,
                 title: "Real-Time Analytics",
                 description: "Advanced portfolio tracking with live performance metrics and insights.",
-                color: "emerald"
+                color: "blue"
               },
               {
                 icon: Globe,
@@ -365,33 +337,28 @@ export default function LandingPage() {
                 icon: Zap,
                 title: "Instant Liquidity",
                 description: "Trade tokens on secondary markets with instant settlement.",
-                color: "purple"
+                color: "blue"
               },
               {
                 icon: Clock,
                 title: "24/7 Platform",
                 description: "Round-the-clock access to your investments and portfolio management.",
-                color: "emerald"
+                color: "blue"
               }
             ].map((feature, index) => (
               <motion.div
                 key={feature.title}
                 variants={itemVariants}
                 custom={index}
+                className="text-center group"
               >
-                <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <CardContent className="p-6">
-                    <div className={`w-12 h-12 mb-4 rounded-lg bg-gradient-to-br ${
-                      feature.color === 'blue' ? 'from-blue-500 to-blue-600' :
-                      feature.color === 'purple' ? 'from-purple-500 to-purple-600' :
-                      'from-emerald-500 to-emerald-600'
-                    } flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                      <feature.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">{feature.title}</h3>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </CardContent>
-                </Card>
+                <div className="p-6">
+                  <div className="w-12 h-12 mb-4 mx-auto rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <feature.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -452,21 +419,21 @@ export default function LandingPage() {
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-none px-4 py-1">
+                    <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-none px-4 py-1">
                       <Star className="w-3 h-3 mr-1" />
                       Most Popular
                     </Badge>
                   </div>
                 )}
                 
-                <Card className={`h-full border-2 transition-all duration-300 hover:shadow-xl ${
+                <div className={`h-full border border-gray-200 bg-white rounded-2xl p-8 transition-all duration-300 hover:shadow-lg relative ${
                   plan.popular 
-                    ? 'border-purple-200 shadow-lg scale-105' 
-                    : 'border-gray-200 hover:border-blue-300'
+                    ? 'ring-2 ring-blue-200 shadow-lg scale-105' 
+                    : 'hover:border-blue-300'
                 }`}>
-                  <CardHeader className="text-center pb-4">
-                    <CardTitle className="text-2xl font-bold text-gray-900">{plan.name}</CardTitle>
-                    <p className="text-gray-600 mt-2">{plan.description}</p>
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                    <p className="text-gray-600">{plan.description}</p>
                     
                     <div className="mt-6">
                       <div className="flex items-baseline justify-center">
@@ -483,10 +450,10 @@ export default function LandingPage() {
                         </p>
                       )}
                     </div>
-                  </CardHeader>
+                  </div>
                   
-                  <CardContent className="pt-0">
-                    <ul className="space-y-3 mb-6">
+                  <div>
+                    <ul className="space-y-3 mb-8">
                       {plan.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-start">
                           <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
@@ -499,15 +466,15 @@ export default function LandingPage() {
                       onClick={() => handleSubscribe(plan.id)}
                       className={`w-full py-3 ${
                         plan.popular
-                          ? 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white'
+                          ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
                           : 'bg-gray-900 hover:bg-gray-800 text-white'
                       }`}
                     >
                       <CreditCard className="w-4 h-4 mr-2" />
                       Subscribe Now
                     </Button>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -522,7 +489,7 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <motion.section
-        className="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600"
+        className="py-20 bg-white border-t border-gray-200"
         variants={containerVariants}
         initial="initial"
         whileInView="animate"
@@ -530,16 +497,16 @@ export default function LandingPage() {
       >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Ready to Start Investing?
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Join thousands of investors who trust Proplex for their RWA investment needs. 
               Start your journey today with our streamlined onboarding process.
             </p>
             <Button
               size="lg"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 text-lg font-semibold shadow-lg"
               onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Get Started Free

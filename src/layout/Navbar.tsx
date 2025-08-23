@@ -23,7 +23,9 @@ import {
   ShoppingCart,
   Settings2,
   User,
-  LogIn
+  LogIn,
+  Copy,
+  Check
 } from "lucide-react";
 
 // Web3Auth imports
@@ -230,17 +232,19 @@ interface NavbarProps {
 }
 
 const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
-  const [walletAddress, setWalletAddress] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [notifications] = useState<number>(3);
   const [time, setTime] = useState<Date>(new Date());
+  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
 
   const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
   const { address } = useAccount();
+
+  console.log("userInfo", userInfo,address);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -249,7 +253,6 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
 
   // Load wallet address from memory (localStorage not available in artifacts)
   useEffect(() => {
-    // setWalletAddress('0x742d35Cc6aB6a3C4d5B2...'); // Mock wallet address
     
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -268,6 +271,27 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
       console.error('Logout error:', error);
       // Still redirect to home page even if disconnect fails
       navigate('/');
+    }
+  };
+
+  const handleCopyAddress = async () => {
+    if (address) {
+      try {
+        await navigator.clipboard.writeText(address);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy address:', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = address;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
     }
   };
 
@@ -325,15 +349,14 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-200/20 dark:border-gray-800/20' 
           : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-transparent'
         }
-        ${!isConnected ? 'justify-center' : ''}
       `}>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-purple-600/5 to-cyan-600/5 opacity-50" />
         
-        <div className={`relative mx-auto flex h-16 w-full max-w-7xl items-center ${!isConnected ? 'justify-center' : 'justify-between'} px-6`}>
+        <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6">
           {/* Left side - Enhanced Logo and Navigation */}
           <div className="flex items-center gap-4">
-            {/* Logo with animated effects */}
+            {/* Logo with animated effects - Always visible */}
             <div className="flex items-center gap-3 pr-4 border-r border-gray-200/30 dark:border-gray-700/30">
               {/* <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-40 transition-all duration-500" />
@@ -355,8 +378,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
               </div>
             </div>
             
-            {/* Desktop Navigation with enhanced effects */}
-            {isConnected ? (
+            {/* Desktop Navigation with enhanced effects - Only when connected */}
+            {isConnected && (
               <div className="hidden lg:flex flex-wrap justify-center gap-1">
                 {navItems.map((item, index) => {
                 const isActive = item.exact 
@@ -396,7 +419,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                 );
               })}
               </div>
-            ) : null}
+            )}
 
           </div>
 
@@ -452,9 +475,27 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                       <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
                         {userInfo?.name || 'User'}
                       </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 leading-none mt-0.5">
-                        {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
-                      </span>
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
+                          {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+                        </span>
+                        {address && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCopyAddress();
+                            }}
+                            className="ml-1 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 group"
+                            title="Copy full address"
+                          >
+                            {copied ? (
+                              <Check className="h-3 w-3 text-green-500" />
+                            ) : (
+                              <Copy className="h-3 w-3 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
                     <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-hover:text-gray-600" />
                   </Button>
@@ -479,6 +520,31 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                       </div>
                     </div>
                   </DropdownMenuItem>
+                  
+                  {address && (
+                    <DropdownMenuItem 
+                      onClick={handleCopyAddress}
+                      className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
+                          {copied ? (
+                            <Check className="h-4 w-4 text-white" />
+                          ) : (
+                            <Copy className="h-4 w-4 text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900 dark:text-white">
+                            {copied ? 'Copied!' : 'Copy Address'}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                            {address.slice(0, 12)}...{address.slice(-8)}
+                          </div>
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                  )}
                   
                   <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
                     <div className="flex items-center gap-3">
