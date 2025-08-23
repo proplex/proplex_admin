@@ -339,7 +339,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
                 <Building2 className="w-6 h-6 md:w-8 md:h-8 text-white" />
               </motion.div>
               <div className="flex-1">
-                <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2'>Asset Information</h1>
+                <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2'>Assethii Information</h1>
                 <p className="text-gray-600 flex items-center gap-2 text-sm md:text-base">
                   <Sparkles className="w-4 h-4" />
                   Configure the fundamental details and investment structure of your asset

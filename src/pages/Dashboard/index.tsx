@@ -80,7 +80,7 @@ const Dashboard = () => {
     { id: 4, type: 'Asset Valuation', name: 'PropTech Solutions', value: '$2.1M', priority: 'low' }
   ];
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amoun:any) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -89,11 +89,11 @@ const Dashboard = () => {
     }).format(amount);
   };
 
-  const formatNumber = (num) => {
+  const formatNumber = (num:any) => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status:any) => {
     switch (status.toLowerCase()) {
       case 'active': return 'text-green-600 bg-green-100';
       case 'pending': return 'text-yellow-600 bg-yellow-100';
@@ -109,20 +109,27 @@ const Dashboard = () => {
   const StatCard = ({ title, value, growth, icon: Icon, prefix = '', suffix = '' }) => {
     const isPositive = growth >= 0;
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-shadow duration-300">
-        <div className="flex items-center justify-between">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
+        {/* Subtle colored accent bar */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-xl" />
+        
+        <div className="flex items-center justify-between relative">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-              <Icon className="h-6 w-6 text-white" />
+            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:scale-110 transition-transform">
+              <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</h3>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
+              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
                 {prefix}{typeof value === 'number' ? formatNumber(value) : value}{suffix}
               </p>
             </div>
           </div>
-          <div className={`flex items-center space-x-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+          <div className={`flex items-center space-x-1 px-3 py-1.5 rounded-lg ${
+            isPositive 
+              ? 'text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/20' 
+              : 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20'
+          }`}>
             {isPositive ? (
               <ArrowUpRight className="h-4 w-4" />
             ) : (
@@ -145,11 +152,11 @@ const Dashboard = () => {
             <p className="text-gray-600 dark:text-gray-400 mt-1">Welcome back! Here's what's happening with your portfolio.</p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <button className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
               <Eye className="h-4 w-4 inline mr-2" />
               View Report
             </button>
-            <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors">
+            <button className="px-4 py-2 bg-white border border-blue-200 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">
               <Plus className="h-4 w-4 inline mr-2" />
               Add New
             </button>
@@ -276,8 +283,8 @@ const Dashboard = () => {
               {recentCompanies.map((company) => (
                 <div key={company.id} className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                      <Building2 className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                      <Building2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">{company.name}</p>
@@ -302,8 +309,8 @@ const Dashboard = () => {
               {recentInvestors.map((investor) => (
                 <div key={investor.id} className="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-                      <Users className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                      <Users className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">{investor.name}</p>
@@ -357,8 +364,8 @@ const Dashboard = () => {
               {recentActivities.map((activity) => (
                 <div key={activity.id} className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors border border-gray-100 dark:border-gray-600">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
-                      <Activity className="h-5 w-5 text-white" />
+                    <div className="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                      <Activity className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900 dark:text-white">{activity.description}</p>
@@ -380,35 +387,50 @@ const Dashboard = () => {
 
         {/* Status Summary */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-8 w-8" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            {/* Subtle green accent bar */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
+            
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl group-hover:scale-110 transition-transform">
+                <CheckCircle className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+              </div>
               <div>
-                <h4 className="text-lg font-semibold">Active Assets</h4>
-                <p className="text-2xl font-bold">1,089</p>
-                <p className="text-green-100 text-sm">87% of total portfolio</p>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Active Assets</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">1,089</p>
+                <p className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">87% of total portfolio</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-xl shadow-lg p-6 text-white">
-            <div className="flex items-center space-x-3">
-              <Clock className="h-8 w-8" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            {/* Subtle yellow accent bar */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-yellow-600" />
+            
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl group-hover:scale-110 transition-transform">
+                <Clock className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+              </div>
               <div>
-                <h4 className="text-lg font-semibold">Under Review</h4>
-                <p className="text-2xl font-bold">124</p>
-                <p className="text-yellow-100 text-sm">Avg. review time: 3 days</p>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Under Review</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">124</p>
+                <p className="text-amber-600 dark:text-amber-400 text-sm font-medium">Avg. review time: 3 days</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-            <div className="flex items-center space-x-3">
-              <AlertCircle className="h-8 w-8" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
+            {/* Subtle blue accent bar */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-blue-600" />
+            
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl group-hover:scale-110 transition-transform">
+                <AlertCircle className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
               <div>
-                <h4 className="text-lg font-semibold">Upcoming Milestones</h4>
-                <p className="text-2xl font-bold">34</p>
-                <p className="text-blue-100 text-sm">Next 30 days</p>
+                <h4 className="text-lg font-semibold text-gray-900 dark:text-white">Upcoming Milestones</h4>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">34</p>
+                <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">Next 30 days</p>
               </div>
             </div>
           </div>
