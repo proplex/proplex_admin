@@ -196,7 +196,7 @@ const EnhancedAddCompany = () => {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-6 lg:p-8"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-2 md:p-4 lg:p-6"
       variants={pageVariants}
       initial="initial"
       animate="animate"
@@ -205,7 +205,7 @@ const EnhancedAddCompany = () => {
         <div className="flex flex-col xl:flex-row gap-6 lg:gap-8 min-h-[calc(100vh-2rem)] md:min-h-[calc(100vh-3rem)] lg:min-h-[calc(100vh-4rem)]">
           {/* Icon-Based Sidebar */}
           <motion.div 
-            className="xl:w-20 flex-shrink-0 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-4 xl:sticky xl:top-8 xl:h-fit xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto"
+            className="xl:w-32 flex-shrink-0 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-4 xl:sticky xl:top-8 xl:h-fit xl:max-h-[calc(100vh-4rem)] xl:overflow-y-auto"
             variants={sidebarVariants}
           >
             {/* Header Icon */}
@@ -395,8 +395,8 @@ const EnhancedAddCompany = () => {
                 variants={formVariants}
               >
                 {/* Content Header with Mobile Step Indicator */}
-                <div className="border-b border-gray-100 p-6 bg-gradient-to-r from-white/50 to-blue-50/30">
-                  <div className="flex items-center justify-between mb-4">
+                <div className="border-b border-gray-100 p-4 bg-gradient-to-r from-white/50 to-blue-50/30">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
                       <h2 className="text-2xl font-bold text-gray-900">
                         {steps.find(s => s.id === currentStep)?.title || 'Company Information'}
@@ -484,7 +484,7 @@ const EnhancedAddCompany = () => {
                 </div>
                 
                 {/* Form Content */}
-                <div className="flex-1 p-6 overflow-y-auto">
+                <div className="flex-1 p-4 overflow-y-auto">
                   {renderStepContent()}
                 </div>
                 
