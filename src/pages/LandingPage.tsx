@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useInView } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,6 +25,48 @@ import {
 import { KYBWizard } from '@/components/wizard/KYBWizard';
 import { useWeb3AuthConnect } from "@web3auth/modal/react";
 import { useNavigate } from 'react-router-dom';
+
+// Counter Animation Component
+const AnimatedCounter = ({ end, duration = 2000, suffix = '', prefix = '' }: { 
+  end: number; 
+  duration?: number; 
+  suffix?: string; 
+  prefix?: string; 
+}) => {
+  const [count, setCount] = useState(0);
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (!isInView) return;
+    
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+      const percentage = Math.min(progress / duration, 1);
+      
+      // Easing function for smooth animation
+      const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
+      setCount(Math.floor(end * easeOutQuart));
+
+      if (percentage < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [end, duration, isInView]);
+
+  return (
+    <span ref={ref}>
+      {prefix}{count.toLocaleString()}{suffix}
+    </span>
+  );
+};
 
 // Animation variants
 const containerVariants = {
@@ -199,21 +241,46 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            {/* Trust Indicators */}
-            <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              {[
-                { icon: Shield, label: "Bank-Grade Security", value: "256-bit SSL" },
-                { icon: Users, label: "Active Investors", value: "10,000+" },
-                { icon: DollarSign, label: "Assets Under Management", value: "$500M+" },
-                { icon: Globe, label: "Global Markets", value: "25 Countries" }
-              ].map((stat, index) => (
-                <div key={stat.label} className="text-center">
-                  <stat.icon className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                  <div className="font-bold text-2xl text-gray-900">{stat.value}</div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
+            {/* Powered by Avalanche */}
+            <div className="relative py-12 px-4">
+              <motion.div variants={itemVariants} className="text-center">
+                <div className="mb-8">
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                    Powered by Avalanche
+                  </h3>
+
                 </div>
-              ))}
-            </motion.div>
+                
+                <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+                  {/* Avalanche Logo/Icon */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">A</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-bold text-xl text-gray-900">Avalanche</div>
+                      <div className="text-sm text-gray-600">Blockchain Platform</div>
+                    </div>
+                  </div>
+                  
+                  {/* Key Benefits */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="font-semibold text-gray-900">Sub-Second</div>
+                      <div className="text-sm text-gray-600">Finality</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-gray-900">Low Fees</div>
+                      <div className="text-sm text-gray-600">Transactions</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-semibold text-gray-900">Eco-Friendly</div>
+                      <div className="text-sm text-gray-600">Consensus</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
       </motion.section>
