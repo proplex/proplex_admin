@@ -9,8 +9,8 @@ import {
   setSelectedAsset,
   clearSelectedAsset,
   clearError,
+  Asset,
 } from '@/store/features/assetManagementSlice';
-import { Asset } from '@/types/global';
 
 interface UseAssetManagementReturn {
   assets: Asset[];

@@ -57,7 +57,7 @@ const pageVariants = {
     scale: 1,
     transition: {
       duration: 0.8,
-      ease: [0.16, 1, 0.3, 1],
+      ease: "easeOut" as const,
       staggerChildren: 0.15
     }
   }
@@ -71,7 +71,7 @@ const cardVariants = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: [0.16, 1, 0.3, 1]
+      ease: "easeOut" as const
     }
   }
 };
@@ -84,7 +84,7 @@ const tableRowVariants = {
     transition: {
       duration: 0.5,
       delay: index * 0.1,
-      ease: [0.16, 1, 0.3, 1]
+      ease: "easeOut" as const
     }
   }),
   hover: {
@@ -299,8 +299,9 @@ interface StatCardProps {
   value: string | number;
   icon: React.ComponentType<{ className?: string }>;
   trend?: 'up' | 'down' | 'neutral';
-  change?: string;
+  change?: string | number;
   color?: 'blue' | 'emerald' | 'amber' | 'purple' | 'indigo';
+  prefix?: string;
 }
 
 const StatCard: React.FC<StatCardProps> = ({ 

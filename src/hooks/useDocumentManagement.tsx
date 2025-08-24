@@ -9,8 +9,8 @@ import {
   setSelectedDocument,
   clearSelectedDocument,
   clearError,
+  Document,
 } from '@/store/features/documentManagementSlice';
-import { Document } from '@/types/global';
 
 interface UseDocumentManagementReturn {
   documents: Document[];

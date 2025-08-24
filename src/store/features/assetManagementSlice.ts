@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '@/lib/httpClient';
 
 // Define types
-interface Asset {
+export interface Asset {
   id: number;
   name: string;
   type: string;

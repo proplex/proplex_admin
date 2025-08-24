@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { 
   CATEGORY_FEE_STRUCTURES,
   CategoryFeeStructure,
-  FeeItem,
+  FeeItem as ConfigFeeItem,
   calculateFeeAmount,
   calculateGrossTotal,
   getFeeStructureByCategory,
@@ -13,7 +13,9 @@ import {
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { fetchFeeStructure, calculateFees } from '@/store/features/feeCalculationSlice';
-import { FeeItem } from '@/types/feemanagment';
+
+// Type alias to resolve the conflict between different FeeItem types
+type FeeItem = ConfigFeeItem;
 
 export interface CalculatedFee {
   id: string;
@@ -261,7 +263,7 @@ export const useFeeCalculation = (options: UseFeeCalculationOptions = {}) => {
   };
 };
 
-interface UseFeeCalculationReturn {
+interface UseFeeCalculationWithReduxReturn {
   feeItems: FeeItem[];
   calculatedFees: Record<string, number>;
   totalAmount: number;
@@ -271,11 +273,22 @@ interface UseFeeCalculationReturn {
   calculateFees: (baseAmount: number, feeItems: FeeItem[]) => void;
 }
 
-const useFeeCalculation = (): UseFeeCalculationReturn => {
+const useFeeCalculationWithRedux = (): UseFeeCalculationWithReduxReturn => {
   const dispatch = useAppDispatch();
-  const { feeItems, calculatedFees, totalAmount, loading, error } = useAppSelector(
+  const { feeItems: reduxFeeItems, calculatedFees, totalAmount, loading, error } = useAppSelector(
     (state) => state.feeCalculation
   );
+
+  // Convert Redux FeeItem to ConfigFeeItem format
+  const feeItems: FeeItem[] = reduxFeeItems.map(item => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    percentage: item.percentage,
+    fixedAmount: item.fixedAmount,
+    required: item.required,
+    category: item.category as 'registration' | 'legal' | 'platform' | 'brokerage' | 'technical' | 'miscellaneous' | undefined
+  }));
 
   const handleFetchFeeStructure = useCallback(
     (categoryId: string) => {
@@ -286,7 +299,13 @@ const useFeeCalculation = (): UseFeeCalculationReturn => {
 
   const handleCalculateFees = useCallback(
     (baseAmount: number, feeItems: FeeItem[]) => {
-      dispatch(calculateFees({ baseAmount, feeItems }));
+      // Convert ConfigFeeItem to Redux FeeItem format
+      const reduxFeeItems = feeItems.map(item => ({
+        ...item,
+        fixedAmount: item.fixedAmount || 0,
+        category: item.category || 'miscellaneous'
+      }));
+      dispatch(calculateFees({ baseAmount, feeItems: reduxFeeItems }));
     },
     [dispatch]
   );
@@ -303,3 +322,4 @@ const useFeeCalculation = (): UseFeeCalculationReturn => {
 };
 
 export default useFeeCalculation;
+export { useFeeCalculationWithRedux };

@@ -10,7 +10,7 @@ interface SearchFilterState<T> {
 interface UseSearchFilterProps<T> {
   initialSearchTerm?: string;
   initialFilters?: Partial<Record<keyof T, any>>;
-  initialSortBy?: keyof T;
+  initialSortBy?: keyof T | null;
   initialSortOrder?: 'asc' | 'desc';
 }
 
@@ -61,7 +61,7 @@ const useSearchFilter = <T extends Record<string, any>>({
     }));
   }, []);
 
-  const setSort = useCallback((sortBy: keyof T, sortOrder: 'asc' | 'desc' = 'asc') => {
+  const setSort = useCallback((sortBy: keyof T | null, sortOrder: 'asc' | 'desc' = 'asc') => {
     setSearchFilterState((prev) => ({
       ...prev,
       sortBy,

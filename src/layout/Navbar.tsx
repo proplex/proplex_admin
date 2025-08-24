@@ -31,7 +31,7 @@ import {
 // Web3Auth imports
 import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
 import { useAccount,useBalance,useChainId,useSwitchChain } from "wagmi";
-import {formatUnits} from "viem";
+import {formatUnits, type Chain} from "viem";
 
 
 // Mock components for demonstration
@@ -247,24 +247,51 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
   
 
 
-  const [avalancheFujiChain, setAvalancheFujiChain] = useState(null);
+  const [avalancheFujiChain, setAvalancheFujiChain] = useState<Chain | null>(null);
   
   const chainId = useChainId();
   const { chains, switchChain, error: switchChainError } = useSwitchChain();
   
+  // Debug logging
+  console.log("=== WALLET DEBUG INFO ===");
+  console.log("isConnected:", isConnected);
+  console.log("address:", address);
+  console.log("currentChainId:", chainId);
+  console.log("chains array:", chains);
+  console.log("chains length:", chains?.length);
+  console.log("avalancheFujiChain state:", avalancheFujiChain);
+  
   // Find Avalanche Fuji chain dynamically from available chains
   useEffect(() => {
+    console.log("=== CHAIN DETECTION USEEFFECT ===");
+    console.log("Conditions - isConnected:", isConnected, "address:", address, "chains:", chains, "chains.length:", chains?.length);
+    
     if (isConnected && address && chains && chains.length > 0) {
-      const fujiChain = chains.find(chain => 
-        chain.name === 'Avalanche Fuji' || 
-        chain.id === 43113 || 
-        chain.nativeCurrency?.symbol === 'AVAX'
-      );
+      console.log("Searching for Avalanche Fuji in chains:", chains);
+      
+      // Try multiple search criteria
+      const fujiByName = chains.find(chain => chain.name === 'Avalanche Fuji');
+      const fujiById = chains.find(chain => chain.id === 43113);
+      const fujiBySymbol = chains.find(chain => chain.nativeCurrency?.symbol === 'AVAX');
+      
+      console.log("Search results:");
+      console.log("- By name 'Avalanche Fuji':", fujiByName);
+      console.log("- By ID 43113:", fujiById);
+      console.log("- By symbol 'AVAX':", fujiBySymbol);
+      
+      const fujiChain = fujiByName || fujiById || fujiBySymbol;
       
       if (fujiChain) {
+        console.log('✅ Found Avalanche Fuji chain:', fujiChain);
         setAvalancheFujiChain(fujiChain);
-        console.log('Found Avalanche Fuji chain:', fujiChain);
+      } else {
+        console.log('❌ Avalanche Fuji chain not found in available chains');
+        console.log('Available chain names:', chains.map(c => c.name));
+        console.log('Available chain IDs:', chains.map(c => c.id));
+        console.log('Available chain symbols:', chains.map(c => c.nativeCurrency?.symbol));
       }
+    } else {
+      console.log('❌ Conditions not met for chain detection');
     }
   }, [isConnected, address, chains]);
   
@@ -273,19 +300,26 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
     chainId: avalancheFujiChain?.id
   });
   
+  // Debug balance fetching
+  console.log("=== BALANCE DEBUG INFO ===");
+  console.log("Balance fetch params:", {
+    address,
+    chainId: avalancheFujiChain?.id,
+    avalancheFujiChainExists: !!avalancheFujiChain
+  });
+  console.log("Balance result:", { data, isLoading, balanceError });
+  
   // Check if currently connected to Avalanche Fuji
   const isOnAvalancheFuji = avalancheFujiChain && chainId === avalancheFujiChain.id;
+  console.log("=== CHAIN COMPARISON ===");
+  console.log("Current chainId:", chainId);
+  console.log("Fuji chainId:", avalancheFujiChain?.id);
+  console.log("isOnAvalancheFuji:", isOnAvalancheFuji);
   
-  // Only log when connected to Avalanche Fuji and have balance data
-  useEffect(() => {
-    if (isOnAvalancheFuji && data && avalancheFujiChain) {
-      console.log('Avalanche Fuji Balance:', {
-        balance: data,
-        chain: avalancheFujiChain,
-        chainId: chainId
-      });
-    }
-  }, [isOnAvalancheFuji, data, avalancheFujiChain, chainId]);
+  // Final summary logging
+  console.log("=== FINAL SUMMARY ===");
+  console.log("Should show balance?", isOnAvalancheFuji && data && avalancheFujiChain);
+  console.log("Should show switch button?", !isOnAvalancheFuji && isConnected && avalancheFujiChain);
 
   // useEffect(() => {
   //   const timer = setInterval(() => setTime(new Date()), 1000);

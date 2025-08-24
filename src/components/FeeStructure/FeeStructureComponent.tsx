@@ -57,7 +57,7 @@ const categoryIcons = {
   miscellaneous: FileText
 };
 
-interface FeeStructureComponentProps {
+export interface FeeStructureComponentProps {
   showComparison?: boolean;
   allowCustomization?: boolean;
   compactMode?: boolean;

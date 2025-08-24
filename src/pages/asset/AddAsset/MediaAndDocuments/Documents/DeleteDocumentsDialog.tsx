@@ -29,7 +29,7 @@ const modalVariants = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: "easeOut"
+      ease: "easeOut" as const
     }
   },
   exit: { 
@@ -50,7 +50,7 @@ const iconVariants = {
     transition: {
       delay: 0.2,
       duration: 0.5,
-      ease: "easeOut"
+      ease: "easeOut" as const
     }
   }
 };

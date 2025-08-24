@@ -80,7 +80,7 @@ const Dashboard = () => {
     { id: 4, type: 'Asset Valuation', name: 'PropTech Solutions', value: '$2.1M', priority: 'low' }
   ];
 
-  const formatCurrency = (amoun:any) => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -89,11 +89,11 @@ const Dashboard = () => {
     }).format(amount);
   };
 
-  const formatNumber = (num:any) => {
+  const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const getStatusColor = (status:any) => {
+  const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case 'active': return 'text-green-600 bg-green-100';
       case 'pending': return 'text-yellow-600 bg-yellow-100';
@@ -106,7 +106,16 @@ const Dashboard = () => {
     }
   };
 
-  const StatCard = ({ title, value, growth, icon: Icon, prefix = '', suffix = '' }) => {
+  interface StatCardProps {
+    title: string;
+    value: number | string;
+    growth: number;
+    icon: React.ComponentType<any>;
+    prefix?: string;
+    suffix?: string;
+  }
+
+  const StatCard = ({ title, value, growth, icon: Icon, prefix = '', suffix = '' }: StatCardProps) => {
     const isPositive = growth >= 0;
     return (
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700 hover:shadow-xl transition-all duration-300 group">
@@ -213,8 +222,8 @@ const Dashboard = () => {
               <LineChart data={revenueData}>
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                 <XAxis dataKey="month" className="text-gray-600 dark:text-gray-400" />
-                <YAxis tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`} className="text-gray-600 dark:text-gray-400" />
-                <Tooltip formatter={(value) => [`$${(value / 1000000).toFixed(2)}M`, '']} />
+                <YAxis tickFormatter={(value: number) => `$${(value / 1000000).toFixed(1)}M`} className="text-gray-600 dark:text-gray-400" />
+                <Tooltip formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M`, '']} />
                 <Line type="monotone" dataKey="revenue" stroke="#3B82F6" strokeWidth={3} dot={{ fill: '#3B82F6', strokeWidth: 2, r: 6 }} />
                 <Line type="monotone" dataKey="target" stroke="#8B5CF6" strokeWidth={2} strokeDasharray="5 5" dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 4 }} />
               </LineChart>
@@ -263,8 +272,8 @@ const Dashboard = () => {
             <BarChart data={performanceMetrics}>
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
               <XAxis dataKey="category" className="text-gray-600 dark:text-gray-400" />
-              <YAxis tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`} className="text-gray-600 dark:text-gray-400" />
-              <Tooltip formatter={(value) => [`$${(value / 1000000).toFixed(2)}M`, '']} />
+              <YAxis tickFormatter={(value: number) => `$${(value / 1000000).toFixed(1)}M`} className="text-gray-600 dark:text-gray-400" />
+              <Tooltip formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M`, '']} />
               <Bar dataKey="revenue" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               <Bar dataKey="profit" fill="#10B981" radius={[4, 4, 0, 0]} />
             </BarChart>

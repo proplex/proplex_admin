@@ -9,8 +9,8 @@ import {
   setSelectedUser,
   clearSelectedUser,
   clearError,
+  User,
 } from '@/store/features/userManagementSlice';
-import { User } from '@/types/global';
 
 interface UseUserManagementReturn {
   users: User[];
