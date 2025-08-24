@@ -158,6 +158,7 @@ const EnhancedAddCompany = () => {
   };
 
   const onSubmit: SubmitHandler<any> = async (data: any) => {
+    console.log("data is here paylaod data :",data);
     setIsSubmitting(true);
     try {
       const { llp_agreement_copy_file, ...rest } = data;
@@ -165,6 +166,7 @@ const EnhancedAddCompany = () => {
         ...rest,
         llp_agreement_copy: llp_agreement_copy_file,
       };
+      console.log("payload is here :",payload);
 
       if (!id) {
         await createCompany(payload);
