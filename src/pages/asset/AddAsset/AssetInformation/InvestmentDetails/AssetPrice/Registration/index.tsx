@@ -1,19 +1,38 @@
 import { useState } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useFormContext, useFieldArray, FieldValues } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import FeeDialog from "./FeeDialog";
+import FeeDialog from "@/components/fees/FeeDialog";
 import DeleteFeeDialog from "./DeleteFeeDialog";
 import FeeTable from "./FeeTable";
 import { Button } from "@/components/ui/button";
 import { useFee } from "@/hooks/asset/useFee";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Plus } from "lucide-react";
 import { formConfig } from "../formConfig";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
+interface FeeItem {
+  fr_id: string;
+  _id?: string;
+  name: string;
+  value: number;
+  isPercentage: boolean | string;
+  status: boolean;
+}
+
+type FeeFormValues = {
+  fees: {
+    registration: FeeItem[];
+  };
+  totalNumberOfSfts?: number;
+  pricePerSft?: number;
+};
 const Index = () => {
   const { createFee, updateFee, deleteFee } = useFee();
   const { id = null } = useParams<{ id?: string }>();
@@ -22,11 +41,11 @@ const Index = () => {
     getValues: formGetValues,
     clearErrors,
     trigger,
-  } = useFormContext();
+  } = useFormContext<FeeFormValues>();
 
   const { fields, append, update, remove } = useFieldArray({
-    control,
-    name: "fees.registration",
+    control: control as any, // Temporary workaround for type issues
+    name: "fees.registration" as const,
     keyName: "fr_id",
   });
 
@@ -34,37 +53,97 @@ const Index = () => {
   const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
   const handleAdd = () => {
-    setIndex(-1);
+    // Create a new fee with default values
+    const newFee: FeeItem = {
+      fr_id: `temp-${Date.now()}`,
+      name: '',
+      value: 0,
+      isPercentage: false,
+      status: true
+    };
+    
+    // Append the new fee to the form
+    append(newFee);
+    // Set the index to the new fee's position (last in the array)
+    setIndex(fields.length);
+  };
+
+  const handleEdit = (index: number) => {
+    setIndex(index);
+  };
+
+  const handleDelete = (index: number) => {
+    setDeleteIndex(index);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteIndex === null) return;
+    
+    const field = fields[deleteIndex] as FeeItem;
+    if (field?._id) {
+      await deleteFee(field._id);
+    }
+    remove(deleteIndex);
+    setDeleteIndex(null);
+  };
+  
+  const handleOnDelete = async () => {
+    if (deleteIndex === null) return;
+    
+    const field = fields[deleteIndex] as FeeItem;
+    if (field?._id) {
+      await deleteFee(field._id);
+    }
+    remove(deleteIndex);
+    setDeleteIndex(null);
   };
 
   const onSubmit = async () => {
-    trigger(`fees.registration.${index}`).then(async (isValid) => {
-      if (isValid) {
-        const data = formGetValues();
-        console.log(data)
-        const values = data.fees.registration[index ?? -1];
-        if (isEdit) {
-          if (index !== null) {
-            await updateFee(values._id, { ...values });
-          }
-          update(index ?? -1, { ...values });
-        } else {
-          await createFee({
-            ...data,
-            assetId: id ?? "",
-            name: values.name ?? "",
-            isPercentage: values.isPercentage ?? false,
-            value: values.value ?? 0,
-            type: "registration",
-            status: values.status ?? false,
-          }).then((res) => {
-            append({ ...values, _id: res._id });
-          });
-        }
-        setIndex(null);
-        clearErrors();
+    if (index === null) return;
+
+    // Trigger validation for the specific fee being edited/added
+    const isValid = await trigger(`fees.registration.${index}`);
+    if (!isValid) return;
+
+    const data = formGetValues();
+    const values = data.fees.registration[index] as FeeItem;
+
+    try {
+      if (values._id && values._id.startsWith('temp-')) {
+        // This is a new fee (has a temporary ID)
+        const response = await createFee({
+          ...values,
+          assetId: id ?? "",
+          type: "registration",
+          isPercentage: String(values.isPercentage), // Ensure string type
+          status: values.status ?? true
+        });
+        
+        // Update the fee with the server-generated _id
+        update(index, {
+          ...values,
+          _id: response._id,
+          fr_id: response._id // Also update the fr_id to match the _id
+        });
+      } else if (values._id) {
+        // This is an existing fee being updated
+        await updateFee(values._id, {
+          ...values,
+          isPercentage: String(values.isPercentage), // Ensure string type
+          status: values.status ?? true
+        });
+        
+        // Update the local state
+        update(index, values);
       }
-    });
+      
+      // Close the dialog and clear any errors
+      setIndex(null);
+      clearErrors();
+    } catch (error) {
+      console.error('Error saving fee:', error);
+      // Optionally show an error message to the user
+    }
   };
 
   const isOpen = index !== null;
@@ -76,16 +155,6 @@ const Index = () => {
       update(index, previousValues);
     }
     setIndex(null);
-  };
-
-  const handleOnDelete = async () => {
-    setDeleteIndex(null);
-    const data = formGetValues();
-    const values = data.fees.registration[deleteIndex ?? -1];
-    if (deleteIndex !== null) {
-      remove(deleteIndex);
-      await deleteFee(values._id);
-    }
   };
 
   const totalNumberOfSfts = formGetValues("totalNumberOfSfts");
@@ -107,32 +176,19 @@ const Index = () => {
                 setDeleteIndex={setDeleteIndex}
               />
               <Button
-                type="button"
-                disabled={!totalNumberOfSfts || !pricePerSft}
-                variant="secondary"
+                type='button'
+                variant='secondary'
                 onClick={handleAdd}
-                className="mx-2"
+                className='mx-2'
+                disabled={!totalNumberOfSfts || !pricePerSft}
               >
-                <span className="text-lg">+</span>
+                <span className='text-lg'>+</span>
                 <span>Add Fee</span>
               </Button>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
-      <FeeDialog
-        isOpen={isOpen}
-        isEdit={isEdit}
-        index={index}
-        formConfig={formConfig}
-        onSubmit={onSubmit}
-        onCancel={onOpenChange}
-      />
-      <DeleteFeeDialog
-        isOpen={deleteIndex !== null}
-        onDelete={handleOnDelete}
-        onCancel={() => setDeleteIndex(null)}
-      />
     </div>
   );
 };

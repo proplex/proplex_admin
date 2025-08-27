@@ -17,7 +17,7 @@ const BoardLegal = lazy(() => import('./BoardLegal').then(module => ({ default: 
 const PrivacyTerms = lazy(() => import('./PrivacyTerms').then(module => ({ default: module.default })));
 
 const steps = [
-  { id: 'company-info', title: 'Company hiii Information', icon: Building },
+  { id: 'company-info', title: 'Company Information', icon: Building },
   { id: 'spv-memo-risk', title: 'SPV Memo & Risk Disclosure', icon: FileText },
   { id: 'royalty-distributions', title: 'Royalty Distributions', icon: Banknote },
   { id: 'board-legal', title: 'Board Members & Legal Advisors', icon: Users },

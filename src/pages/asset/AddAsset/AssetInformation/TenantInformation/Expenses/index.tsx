@@ -122,7 +122,11 @@ const index = () => {
       <div className="w-full">
         <div className="flex justify-between items-center mt-4">
           <h1 className="text-lg font-semibold text-black">Expenses</h1>
-          <Button type="button" onClick={handleAdd}>
+          <Button 
+            type="button" 
+            className="bg-white text-black px-4 py-2 rounded-md flex items-center gap-2 hover:bg-white hover:text-black border border-gray-300"
+            onClick={handleAdd}
+          >
             <span className="text-lg">+</span>
             <span>Add Expense</span>
           </Button>

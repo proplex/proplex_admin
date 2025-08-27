@@ -9,17 +9,7 @@ import Platform from "./Platform";
 import Brokerage from './Brokerage';
 import { Calculator, DollarSign, TrendingUp, Receipt } from 'lucide-react';
 
-// Animation variants
-const containerVariants = {
-  initial: { opacity: 0 },
-  animate: { 
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      staggerChildren: 0.1
-    }
-  }
-};
+
 
 const itemVariants = {
   initial: { opacity: 0, y: 20 },
@@ -98,9 +88,6 @@ const index = () => {
 
   return (
     <motion.div
-      variants={containerVariants}
-      initial="initial"
-      animate="animate"
       className="space-y-6"
     >
       {/* Enhanced Header */}
@@ -173,12 +160,12 @@ const index = () => {
       {/* Enhanced Final Total */}
       <motion.div 
         variants={itemVariants}
-        className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border-2 border-green-200"
+        className="bg-gradient-to-r  rounded-xl p-4 "
       >
         <InfoTag
           info="Gross Total Property Value"
           amount={`${currnecy === "INR" ? "₹" : "$"}${totalPropertyValue}`}
-          icon={<div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">₹</div>}
+          icon={<div className="w-6 h-6  rounded-full flex items-center justify-center text-white text-sm font-bold">₹</div>}
         />
       </motion.div>
     </motion.div>

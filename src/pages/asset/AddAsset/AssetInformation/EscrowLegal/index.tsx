@@ -51,33 +51,11 @@ function EscrowLegal({ asset }: any) {
       animate="animate"
       className="space-y-6"
     >
-      {/* Enhanced Header */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100"
-      >
-        <div className="flex items-center gap-4">
-          <motion.div
-            className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg"
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Shield className="w-6 h-6 text-white" />
-          </motion.div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Legal & Service Providers</h2>
-            <p className="text-gray-600 mt-1 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              Configure legal advisory and asset management services
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
+     
       {/* Enhanced Accordion */}
       <motion.div
         variants={itemVariants}
-        className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
+        className="bg-white rounded-xl  overflow-hidden"
       >
         <Accordion type="single" defaultValue="item-1" collapsible>
           <AccordionItem value="item-1" className="border-none">
@@ -90,52 +68,19 @@ function EscrowLegal({ asset }: any) {
             <AccordionContent className="p-6">
               <div className="space-y-8">
                 {/* Legal Advisory Section */}
-                <motion.div 
-                  variants={sectionVariants}
-                  className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <Scale className="w-5 h-5 text-blue-600" />
-                      <h3 className="text-xl font-semibold text-gray-900">Legal Advisory</h3>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg p-4 grid grid-cols-2 gap-4 shadow-sm">
+                 <div className="bg-white rounded-lg p-4 grid grid-cols-2 gap-4 shadow-sm">
                     {FormGenerator(legalFormConfig())}
                   </div>
-                </motion.div>
 
                 {/* Asset Management Section */}
-                <motion.div 
-                  variants={sectionVariants}
-                  className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-100"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <TrendingUp className="w-5 h-5 text-green-600" />
-                      <h3 className="text-xl font-semibold text-gray-900">Asset Management Company</h3>
-                    </div>
-                  </div>
                   <div className="bg-white rounded-lg p-4 grid grid-cols-2 gap-4 shadow-sm">
                     {FormGenerator(assetManagementFormConfig())}
                   </div>
-                </motion.div>
 
                 {/* Brokerage Section */}
-                <motion.div 
-                  variants={sectionVariants}
-                  className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <Briefcase className="w-5 h-5 text-purple-600" />
-                      <h3 className="text-xl font-semibold text-gray-900">Brokerage Services</h3>
-                    </div>
-                  </div>
                   <div className="bg-white rounded-lg p-4 grid grid-cols-2 gap-4 shadow-sm">
                     {FormGenerator(brokerageFormConfig())}
                   </div>
-                </motion.div>
               </div>
             </AccordionContent>
           </AccordionItem>
