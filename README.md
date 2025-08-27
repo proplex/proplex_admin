@@ -282,6 +282,146 @@ In addition to Web3Auth, the application now uses Supabase for traditional authe
 
 ---
 
+## 📱 Smart Contract Deployment
+
+Proplex Admin is powered by a comprehensive suite of smart contracts deployed on the **Avalanche Fuji Testnet**. These contracts handle the core blockchain functionality including tokenization, asset management, escrow services, and decentralized governance.
+
+### **🔗 Deployed Contract Addresses**
+
+#### **Core Protocol Contracts**
+| Contract Name | Address | Purpose |
+|---------------|---------|----------|
+| **ProplexRegistry** | [`0x60c977735cfBF44Cf5B33bD02a8B637765E7AbbB`](https://testnet.snowscan.xyz/address/0x60c977735cfBF44Cf5B33bD02a8B637765E7AbbB) | Central registry for all protocol contracts |
+| **ProplexCompanyFactory** | [`0x6157DCF5f7E0546706e7153AbEb2Fe48122bEec5`](https://testnet.snowscan.xyz/address/0x6157DCF5f7E0546706e7153AbEb2Fe48122bEec5) | Factory for creating SPV companies |
+| **ProplexRealEstateTokenFactory** | [`0x7d8940bAf8A432E09a30ce762abb3dD9Ab75eF3d`](https://testnet.snowscan.xyz/address/0x7d8940bAf8A432E09a30ce762abb3dD9Ab75eF3d) | Factory for tokenizing real estate assets |
+
+#### **Implementation Contracts**
+| Contract Name | Address | Purpose |
+|---------------|---------|----------|
+| **ProplexEscrow** | [`0x2928D9Efe70c4a56a8A3Cff5d304f3626e60e5F3`](https://testnet.snowscan.xyz/address/0x2928D9Efe70c4a56a8A3Cff5d304f3626e60e5F3) | Escrow services for secure transactions |
+| **ProplexOrderManager** | [`0x0C13bB0C887b6aBdbe6D4301B8dc67886617641a`](https://testnet.snowscan.xyz/address/0x0C13bB0C887b6aBdbe6D4301B8dc67886617641a) | Order management and trading |
+| **ProplexDAO** | [`0x938749EA4883A4987508b40EE28BB337dBC97c5D`](https://testnet.snowscan.xyz/address/0x938749EA4883A4987508b40EE28BB337dBC97c5D) | Decentralized governance |
+| **ProplexRealEstateToken** | [`0xA4bAC58e92D3b5632c4e417430b5eCE0812f600C`](https://testnet.snowscan.xyz/address/0xA4bAC58e92D3b5632c4e417430b5eCE0812f600C) | Real estate tokenization template |
+| **ProplexCompany** | [`0x8285234d4b49C5956cAe7C1b9273B322e74dcE72`](https://testnet.snowscan.xyz/address/0x8285234d4b49C5956cAe7C1b9273B322e74dcE72) | SPV company template |
+| **ProplexRegistry (Implementation)** | [`0x58C9Fc2877679207fB382281b82D18262AcDbbD3`](https://testnet.snowscan.xyz/address/0x58C9Fc2877679207fB382281b82D18262AcDbbD3) | Logic contract for main registry |
+| **ProplexCompanyFactory (Implementation)** | [`0x2E275Be0Db062c9fC5a0A02Af9084f3b948F7c42`](https://testnet.snowscan.xyz/address/0x2E275Be0Db062c9fC5a0A02Af9084f3b948F7c42) | Logic contract for company factory |
+| **ProplexRealEstateTokenFactory (Implementation)** | [`0x5Ba212974EFF69748811CE57c5ce58eDfeb66B9f`](https://testnet.snowscan.xyz/address/0x5Ba212974EFF69748811CE57c5ce58eDfeb66B9f) | Logic contract for real estate factory |
+
+#### **Token Contracts**
+| Token Name | Address | Purpose |
+|------------|---------|----------|
+| **USDT Mock** | [`0xe66ae37Bc0982825b5F8b37821b42d3B2d04D085`](https://testnet.snowscan.xyz/address/0xe66ae37Bc0982825b5F8b37821b42d3B2d04D085) | Test USDT for transactions |
+| **USDC Mock** | [`0xa6401adAd919ea6Ec9929716a19DDFf62bc3Bc1C`](https://testnet.snowscan.xyz/address/0xa6401adAd919ea6Ec9929716a19DDFf62bc3Bc1C) | Test USDC for transactions |
+| **ProplexToken** | [`0x0Acc1f0C68150f2928dF9F3B316BD062a5562F8F`](https://testnet.snowscan.xyz/address/0x0Acc1f0C68150f2928dF9F3B316BD062a5562F8F) | Platform utility token |
+
+#### **Compliance & Identity**
+| Contract Name | Address | Purpose |
+|---------------|---------|----------|
+| **IdentityRegistry** | [`0xb9694089d485f5Af75cAee1F4447b629f097FF82`](https://testnet.snowscan.xyz/address/0xb9694089d485f5Af75cAee1F4447b629f097FF82) | Identity management for KYC/AML |
+| **ModularCompliance** | [`0x7d5299e611990b6d25F48d3954bEB07B1f4E6dE0`](https://testnet.snowscan.xyz/address/0x7d5299e611990b6d25F48d3954bEB07B1f4E6dE0) | Compliance and regulatory framework |
+
+### **🌐 Network Details**
+
+**Avalanche Fuji Testnet**
+- **Chain ID:** `43113`
+- **RPC URL:** `https://api.avax-test.network/ext/bc/C/rpc`
+- **Explorer:** [Snowscan Testnet](https://testnet.snowscan.xyz/)
+- **Native Token:** AVAX
+- **Deployer Address:** [`0x53Ae02C14aa48cd3131Ff81Dc9fE0C5b923b64Ce`](https://testnet.snowscan.xyz/address/0x53Ae02C14aa48cd3131Ff81Dc9fE0C5b923b64Ce)
+
+### **📊 Deployment Statistics**
+
+- **Total Contracts Deployed:** 16
+- **Total Gas Used:** 25,010,367
+- **Average Gas Price:** 0.000000002 gwei (2 wei)
+- **Total Deployment Cost:** 0.000000000050020734 ETH
+- **Block Range:** 45,166,651 - 45,166,653
+- **Deployer Address:** `0x53Ae02C14aa48cd3131Ff81Dc9fE0C5b923b64Ce`
+- **Network:** Avalanche Fuji Testnet (Chain ID: 43113)
+- **Deployment Date:** Latest deployment (2025)
+
+### **🔗 Deployment Transaction Hashes**
+
+| Contract | Transaction Hash | Block |
+|----------|-----------------|-------|
+| **USDT Mock** | [`0xb70afa3718519d2a607b742fd6fa910d8c055892700e9e83df29f606828c7d09`](https://testnet.snowscan.xyz/tx/0xb70afa3718519d2a607b742fd6fa910d8c055892700e9e83df29f606828c7d09) | 45,166,651 |
+| **USDC Mock** | [`0xbd2d970759dd0d428a75072187d96b5ac711e5342bfa9cc4b99c2bf8de880aff`](https://testnet.snowscan.xyz/tx/0xbd2d970759dd0d428a75072187d96b5ac711e5342bfa9cc4b99c2bf8de880aff) | 45,166,651 |
+| **Proplex Token** | [`0xef918cd198def15e4f1eb9da19aea384d6248cd6dd3e9e960a93250a846bab94`](https://testnet.snowscan.xyz/tx/0xef918cd198def15e4f1eb9da19aea384d6248cd6dd3e9e960a93250a846bab94) | 45,166,651 |
+| **Proplex Escrow** | [`0x64bc98ce6032e825052ee8bc63b198f98f6f33c8ed4bbf8ebf9df0512c9850c2`](https://testnet.snowscan.xyz/tx/0x64bc98ce6032e825052ee8bc63b198f98f6f33c8ed4bbf8ebf9df0512c9850c2) | 45,166,652 |
+| **Proplex Company** | [`0x56db2e6322ca4926b415e80605fc8953196e937742c6b5a78df0ba497e3b5249`](https://testnet.snowscan.xyz/tx/0x56db2e6322ca4926b415e80605fc8953196e937742c6b5a78df0ba497e3b5249) | 45,166,652 |
+| **Proplex DAO** | [`0x8e511b97be0595e117dbfcfbedfb09240b738ab7623807eda3b333c47325110a`](https://testnet.snowscan.xyz/tx/0x8e511b97be0595e117dbfcfbedfb09240b738ab7623807eda3b333c47325110a) | 45,166,652 |
+| **Proplex Real Estate Token** | [`0x641e8d893dae0a94841bf157b0177d119f3b5f25a59f990a0ec08bcabc7a97cc`](https://testnet.snowscan.xyz/tx/0x641e8d893dae0a94841bf157b0177d119f3b5f25a59f990a0ec08bcabc7a97cc) | 45,166,652 |
+| **Proplex Order Manager** | [`0x6a8b0c9977f831189292c79cb048b795f0aa71aa5a1656d113f714540d2733b7`](https://testnet.snowscan.xyz/tx/0x6a8b0c9977f831189292c79cb048b795f0aa71aa5a1656d113f714540d2733b7) | 45,166,652 |
+| **Proplex Company Factory** | [`0x22075ce6e9acd9791957227883d928470b6a5c991a21ab2921bd33d7a43e1f71`](https://testnet.snowscan.xyz/tx/0x22075ce6e9acd9791957227883d928470b6a5c991a21ab2921bd33d7a43e1f71) | 45,166,652 |
+| **Modular Compliance** | [`0x26e9ff026f561712004eafd5e1164f352b241271e0d692adfe22b13468f98830`](https://testnet.snowscan.xyz/tx/0x26e9ff026f561712004eafd5e1164f352b241271e0d692adfe22b13468f98830) | 45,166,653 |
+| **Registry Implementation** | [`0x65d517fd689bf2cea720dcc1f279b2b11092f11ec24ec0e4ee2f270143b1452d`](https://testnet.snowscan.xyz/tx/0x65d517fd689bf2cea720dcc1f279b2b11092f11ec24ec0e4ee2f270143b1452d) | 45,166,653 |
+| **Real Estate Factory (Proxy)** | [`0x4b64451714672856a4ff7e454588bb571cb17cbb3e4c78e8d2d7627b7c5df64f`](https://testnet.snowscan.xyz/tx/0x4b64451714672856a4ff7e454588bb571cb17cbb3e4c78e8d2d7627b7c5df64f) | 45,166,653 |
+| **Company Factory (Proxy)** | [`0xc1060d848f5fadb2c3cab8fe65d4b2fbc6e6475a10b12d4cfc4230ae34dceb64`](https://testnet.snowscan.xyz/tx/0xc1060d848f5fadb2c3cab8fe65d4b2fbc6e6475a10b12d4cfc4230ae34dceb64) | 45,166,653 |
+| **Identity Registry** | [`0x3672f811cce0b621e0e3cc99ec569b666330c938ba01b28032c05388497ef18d`](https://testnet.snowscan.xyz/tx/0x3672f811cce0b621e0e3cc99ec569b666330c938ba01b28032c05388497ef18d) | 45,166,653 |
+| **Real Estate Factory Impl** | [`0x5a2079578fc8392aded21b0f5982277a6869f1158cf3babb5c56aabd7c602b36`](https://testnet.snowscan.xyz/tx/0x5a2079578fc8392aded21b0f5982277a6869f1158cf3babb5c56aabd7c602b36) | 45,166,653 |
+| **Registry (Proxy)** | [`0xe6884f80b8bb97a1752e4ae8b74069191f462843656b1b458ee3df3cdf52ec1f`](https://testnet.snowscan.xyz/tx/0xe6884f80b8bb97a1752e4ae8b74069191f462843656b1b458ee3df3cdf52ec1f) | 45,166,653 |
+
+### **🔧 Contract Integration**
+
+To interact with these contracts in your application:
+
+```typescript
+// Contract addresses configuration
+const CONTRACT_ADDRESSES = {
+  // Core Protocol (Proxy Contracts)
+  PROPLEX_REGISTRY: '0x60c977735cfBF44Cf5B33bD02a8B637765E7AbbB',
+  COMPANY_FACTORY: '0x6157DCF5f7E0546706e7153AbEb2Fe48122bEec5',
+  REAL_ESTATE_FACTORY: '0x7d8940bAf8A432E09a30ce762abb3dD9Ab75eF3d',
+  
+  // Implementation Contracts
+  REGISTRY_IMPL: '0x58C9Fc2877679207fB382281b82D18262AcDbbD3',
+  COMPANY_FACTORY_IMPL: '0x2E275Be0Db062c9fC5a0A02Af9084f3b948F7c42',
+  REAL_ESTATE_FACTORY_IMPL: '0x5Ba212974EFF69748811CE57c5ce58eDfeb66B9f',
+  ESCROW_IMPL: '0x2928D9Efe70c4a56a8A3Cff5d304f3626e60e5F3',
+  ORDER_MANAGER_IMPL: '0x0C13bB0C887b6aBdbe6D4301B8dc67886617641a',
+  DAO_IMPL: '0x938749EA4883A4987508b40EE28BB337dBC97c5D',
+  REAL_ESTATE_TOKEN_IMPL: '0xA4bAC58e92D3b5632c4e417430b5eCE0812f600C',
+  COMPANY_IMPL: '0x8285234d4b49C5956cAe7C1b9273B322e74dcE72',
+  
+  // Token Contracts
+  USDT_MOCK: '0xe66ae37Bc0982825b5F8b37821b42d3B2d04D085',
+  USDC_MOCK: '0xa6401adAd919ea6Ec9929716a19DDFf62bc3Bc1C',
+  PROPLEX_TOKEN: '0x0Acc1f0C68150f2928dF9F3B316BD062a5562F8F',
+  
+  // Compliance Framework
+  IDENTITY_REGISTRY: '0xb9694089d485f5Af75cAee1F4447b629f097FF82',
+  MODULAR_COMPLIANCE: '0x7d5299e611990b6d25F48d3954bEB07B1f4E6dE0'
+};
+
+// Network configuration
+const AVALANCHE_FUJI = {
+  chainId: 43113,
+  name: 'Avalanche Fuji',
+  currency: 'AVAX',
+  explorerUrl: 'https://testnet.snowscan.xyz',
+  rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc'
+};
+```
+
+### **⚡ Key Features**
+
+- **🏭 Factory Pattern:** Efficient contract deployment using proxy patterns
+- **🔒 Upgradeable:** ERC1967 proxy standard for future upgrades
+- **🛡️ Security:** Role-based access control and compliance integration
+- **💰 Multi-Token Support:** USDT, USDC, and native AVAX support
+- **🏛️ Governance:** Decentralized decision-making through DAO
+- **📊 Analytics:** On-chain tracking and performance metrics
+
+### **🔗 Verification**
+
+All contracts have been successfully deployed and initialized on Avalanche Fuji testnet. You can verify the deployment by:
+
+1. **Check Explorer:** Visit [Snowscan Testnet](https://testnet.snowscan.xyz/)
+2. **Verify Contracts:** All contract addresses are linked above
+3. **Test Interactions:** Use the provided addresses in your Web3 applications
+
+---
+
 ## 🚀 Getting Started
 
 ### **Prerequisites**

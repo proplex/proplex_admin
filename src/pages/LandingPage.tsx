@@ -244,18 +244,16 @@ export default function LandingPage() {
             {/* Powered by Avalanche */}
             <div className="relative py-12 px-4">
               <motion.div variants={itemVariants} className="text-center">
-                <div className="mb-8">
-                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-                    Powered by Avalanche
-                  </h3>
-
-                </div>
                 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-8">
                   {/* Avalanche Logo/Icon */}
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">A</span>
+                    <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-sm border border-gray-100">
+                      <img 
+                        src="/avax.png" 
+                        alt="Avalanche Logo" 
+                        className="w-10 h-10 object-contain"
+                      />
                     </div>
                     <div className="text-left">
                       <div className="font-bold text-xl text-gray-900">Avalanche</div>
