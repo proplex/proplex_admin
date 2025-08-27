@@ -371,12 +371,6 @@ function Index({ asset }: EnhancedAssetTypeProps) {
           <p className="text-gray-600">Select the company (SPV) that will manage this asset</p>
         </div>
 
-        <Alert>
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            Choose an existing company or create a new SPV (Special Purpose Vehicle) to manage this asset.
-          </AlertDescription>
-        </Alert>
 
         <Card className="p-6">
           <DAO asset={asset} />

@@ -707,7 +707,7 @@ export function Index() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50"
+      className="min-h-screen"
       variants={pageVariants}
       initial="initial"
       animate="animate"

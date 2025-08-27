@@ -475,7 +475,7 @@ function Index() {
         </div>
 
         {/* Controls Section */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/50 p-6">
+        <div className=" rounded-2xl shadow-sm border border-white/50 p-6">
           <div className="flex flex-col lg:flex-row gap-4 items-center">
             {/* Search */}
             <div className="relative flex-1 max-w-md">

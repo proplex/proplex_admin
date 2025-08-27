@@ -378,7 +378,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
 
   return (
     <motion.div
-      className="min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden"
+      className="min-h-[600px] relative overflow-hidden"
       variants={containerVariants}
       initial="initial"
       animate="animate"

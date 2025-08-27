@@ -122,7 +122,7 @@ const index = () => {
       {/* Enhanced Form Grid */}
       <motion.div 
         variants={itemVariants}
-        className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100"
+        className=" rounded-2xl p-6 border border-blue-100"
       >
         <div className="flex items-center gap-3 mb-4">
           <DollarSign className="w-5 h-5 text-blue-600" />

@@ -36,27 +36,7 @@ function Index({ asset }: AssetProps) {
       animate="animate"
     >
       {/* Enhanced Header */}
-      <motion.div
-        variants={itemVariants}
-        className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 border border-green-100"
-      >
-        <div className="flex items-center gap-4">
-          <motion.div
-            className="p-3 bg-gradient-to-br from-green-500 to-blue-600 rounded-xl shadow-lg"
-            whileHover={{ scale: 1.05, rotate: -5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <TrendingUp className="w-6 h-6 text-white" />
-          </motion.div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Investment Details</h2>
-            <p className="text-gray-600 mt-1 flex items-center gap-2">
-              <Calculator className="w-4 h-4" />
-              Configure pricing, fees, and investment calculations
-            </p>
-          </div>
-        </div>
-      </motion.div>
+      
 
       {/* Enhanced Asset Price Component */}
       <motion.div
