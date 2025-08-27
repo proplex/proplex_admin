@@ -141,7 +141,7 @@ const Index: React.FC = () => {
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
         variants={itemVariants}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 bg-gradient-to-r from-purple-50/30 to-violet-50/30 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 border-b border-gray-200">
           <div>
             <h2 className="text-xl font-semibold text-gray-800">Legal Advisors List</h2>
             <p className="text-gray-600 text-sm mt-1">
@@ -151,7 +151,7 @@ const Index: React.FC = () => {
           <Button 
             onClick={() => handleLegalAdvisor()} 
             type="button"
-            className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+            className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
           >
             Add Legal Advisor
           </Button>
@@ -241,7 +241,7 @@ const Index: React.FC = () => {
                         <Button 
                           onClick={() => handleLegalAdvisor()} 
                           type="button"
-                          className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                          className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
                         >
                           Add Legal Advisor
                         </Button>

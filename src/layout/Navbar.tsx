@@ -265,14 +265,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   const chainId = useChainId();
   const { chains, switchChain, error: switchChainError } = useSwitchChain();
   
-  // Debug logging
-  console.log("=== WALLET DEBUG INFO ===");
-  console.log("isConnected:", isConnected);
-  console.log("address:", address);
-  console.log("currentChainId:", chainId);
-  console.log("chains array:", chains);
-  console.log("chains length:", chains?.length);
-  console.log("avalancheFujiChain state:", avalancheFujiChain);
+
   
   // Find Avalanche Fuji chain dynamically from available chains
   useEffect(() => {
@@ -287,10 +280,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
       const fujiById = chains.find(chain => chain.id === 43113);
       const fujiBySymbol = chains.find(chain => chain.nativeCurrency?.symbol === 'AVAX');
       
-      console.log("Search results:");
-      console.log("- By name 'Avalanche Fuji':", fujiByName);
-      console.log("- By ID 43113:", fujiById);
-      console.log("- By symbol 'AVAX':", fujiBySymbol);
+  
       
       const fujiChain = fujiByName || fujiById || fujiBySymbol;
       
@@ -298,10 +288,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
         console.log('✅ Found Avalanche Fuji chain:', fujiChain);
         setAvalancheFujiChain(fujiChain);
       } else {
-        console.log('❌ Avalanche Fuji chain not found in available chains');
-        console.log('Available chain names:', chains.map(c => c.name));
-        console.log('Available chain IDs:', chains.map(c => c.id));
-        console.log('Available chain symbols:', chains.map(c => c.nativeCurrency?.symbol));
+        
       }
     } else {
       console.log('❌ Conditions not met for chain detection');
@@ -314,13 +301,6 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   });
   
   // Debug balance fetching
-  console.log("=== BALANCE DEBUG INFO ===");
-  console.log("Balance fetch params:", {
-    address,
-    chainId: avalancheFujiChain?.id,
-    avalancheFujiChainExists: !!avalancheFujiChain
-  });
-  console.log("Balance result:", { data, isLoading, balanceError });
   
   // Check if currently connected to Avalanche Fuji
   const isOnAvalancheFuji = avalancheFujiChain && chainId === avalancheFujiChain.id;
@@ -435,7 +415,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
         fixed  left-0 right-0 rounded-6xl border border-gray-200/20 drop-shadow-lg dark:border-gray-800/20 h-16 z-50 transition-all duration-500 ease-out
         ${isScrolled 
           ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-gray-200/20 dark:border-gray-800/20' 
-          : 'bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border-b border-transparent'
+          : 'bg-white/60 dark:bg-gray-900/80 backdrop-blur-lg border-b border-transparent'
         }
       `}>
         {/* Animated gradient background */}

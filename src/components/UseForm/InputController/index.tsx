@@ -23,6 +23,8 @@ interface InputControllerProps {
   iconPosition?: "left" | "right";
   placeholder?: string;
   defaultValue?: string | number;
+  bottomText?: string; // Added property
+  bottomTextClass?: string; // Added property for custom bottom text styling
 }
 
 const InputController: React.FC<InputControllerProps> = ({
@@ -37,6 +39,8 @@ const InputController: React.FC<InputControllerProps> = ({
   onChange,
   placeholder,
   defaultValue,
+  bottomText, // Added property
+  bottomTextClass = 'text-gray-500', // Added property with default value
 }) => {
   return (
     <FormField
@@ -107,6 +111,9 @@ const InputController: React.FC<InputControllerProps> = ({
                 )}
               </div>
             </FormControl>
+            {bottomText && (
+              <span className={`text-sm ${bottomTextClass}`}>{bottomText}</span>
+            )}
             {error && <FormMessage>{error.message}</FormMessage>}
           </FormItem>
         );

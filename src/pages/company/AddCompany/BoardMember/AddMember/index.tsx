@@ -91,8 +91,8 @@ const Index: React.FC<ModalProps> = ({
       <DialogContent className="sm:max-w-[500px] rounded-2xl shadow-xl">
         <DialogHeader className="mb-2">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <User className="h-6 w-6 text-blue-600" />
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <User className="h-6 w-6 text-gray-600" />
             </div>
             <div>
               <DialogTitle className="text-2xl font-bold text-gray-900">
@@ -107,18 +107,7 @@ const Index: React.FC<ModalProps> = ({
           </div>
         </DialogHeader>
         
-        {/* Information Banner */}
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 mb-4">
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-blue-800 mb-1">Important Information</h4>
-              <p className="text-sm text-blue-700">
-                All board members must be verified and will receive important company notifications.
-              </p>
-            </div>
-          </div>
-        </div>
+
         
         <div className="space-y-5 py-2">
           <motion.div 
@@ -137,7 +126,7 @@ const Index: React.FC<ModalProps> = ({
               onClick={onSubmit} 
               type="button" 
               disabled={loading}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm disabled:opacity-50"
             >
               {loading ? (
                 <>

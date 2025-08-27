@@ -546,7 +546,7 @@ function Index() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-gray-50/80 to-blue-50/80 backdrop-blur-sm">
+                <thead className="">
                   <tr>
                     <th className="px-6 py-4 text-left">
                       <input

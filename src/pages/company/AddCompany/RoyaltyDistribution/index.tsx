@@ -188,7 +188,7 @@ const Index = () => {
           className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
           variants={itemVariants}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 bg-gradient-to-r from-green-50/30 to-emerald-50/30 border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-md">
                 <Send className="h-5 w-5 text-green-600" />
@@ -200,6 +200,7 @@ const Index = () => {
                 </p>
               </div>
             </div>
+
             <Button
               onClick={handleOpen}
               type="button"

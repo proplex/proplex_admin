@@ -412,23 +412,7 @@ const AssetInformation = ({ tab, step, asset }: Props) => {
           </motion.div>
 
           {/* Enhanced Information Banner */}
-          <motion.div
-            className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-blue-900 mb-1">Complete All Sections</h3>
-                <p className="text-blue-700 text-sm">
-                  Fill out all required information across the tabs to proceed. 
-                  {!id && " Save your asset type first to unlock additional sections."}
-                </p>
-              </div>
-            </div>
-          </motion.div>
+          
 
           {/* Enhanced Tabs Container with better responsive design */}
           <motion.div

@@ -1,5 +1,3 @@
-
-
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   FormControl,
@@ -16,6 +14,8 @@ interface CheckboxControllerProps {
   rules?: any;
   control: any;
   disabled?: boolean;
+  bottomText?: string; // Added property
+  bottomTextClass?: string; // Added property for custom bottom text styling
 }
 
 const CheckboxController: React.FC<CheckboxControllerProps> = ({
@@ -24,6 +24,8 @@ const CheckboxController: React.FC<CheckboxControllerProps> = ({
   rules,
   control,
   disabled = false,
+  bottomText, // Added property
+  bottomTextClass = 'text-gray-500', // Added property with default value
 }) => {
   return (
     <FormField
@@ -50,6 +52,9 @@ const CheckboxController: React.FC<CheckboxControllerProps> = ({
               );
             }}
           />
+          {bottomText && (
+            <span className={`text-sm ${bottomTextClass}`}>{bottomText}</span>
+          )}
           <FormMessage />
         </FormItem>
       )}

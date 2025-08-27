@@ -228,11 +228,11 @@ const StatCard: React.FC<{
   delay?: number;
 }> = ({ title, value, subtitle, icon: Icon, color = 'blue', trend, change, delay = 0 }) => {
   const colorCfg = {
-    blue: { bg: 'bg-blue-50', icon: 'bg-blue-100', iconColor: 'text-blue-600', accent: 'text-blue-600' },
-    emerald: { bg: 'bg-emerald-50', icon: 'bg-emerald-100', iconColor: 'text-emerald-600', accent: 'text-emerald-600' },
-    purple: { bg: 'bg-purple-50', icon: 'bg-purple-100', iconColor: 'text-purple-600', accent: 'text-purple-600' },
-    amber: { bg: 'bg-amber-50', icon: 'bg-amber-100', iconColor: 'text-amber-600', accent: 'text-amber-600' },
-    pink: { bg: 'bg-pink-50', icon: 'bg-pink-100', iconColor: 'text-pink-600', accent: 'text-pink-600' },
+    blue: {  icon: 'bg-blue-100', iconColor: 'text-blue-600', accent: 'text-blue-600' },
+    emerald: {icon: 'bg-emerald-100', iconColor: 'text-emerald-600', accent: 'text-emerald-600' },
+    purple: { icon: 'bg-purple-100', iconColor: 'text-purple-600', accent: 'text-purple-600' },
+    amber: {  icon: 'bg-amber-100', iconColor: 'text-amber-600', accent: 'text-amber-600' },
+    pink: { icon: 'bg-pink-100', iconColor: 'text-pink-600', accent: 'text-pink-600' },
   }[color];
 
   return (
@@ -244,7 +244,7 @@ const StatCard: React.FC<{
       whileHover={{ scale: 1.02, y: -2 }}
     >
       {/* Subtle colored accent bar */}
-      <div className={`absolute top-0 left-0 w-full h-1 ${colorCfg.bg}`} />
+      <div className={`absolute top-0 left-0 w-full h-`} />
       
       <div className="relative z-10">
         <div className="flex items-start justify-between">
@@ -434,7 +434,7 @@ export default function Index() {
 
   /* -------------------- Render -------------------- */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/40 p-4 md:p-6">
+    <div className="min-h-screen p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <motion.header

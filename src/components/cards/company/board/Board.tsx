@@ -41,7 +41,7 @@ const BoardMember = () => {
                         <Users className="h-5 w-5 text-green-600" />
                         <h1 className='text-lg font-bold'>Board Member List</h1>
                     </div>
-                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm">
                         Add Board Member <Plus className='h-4 w-4 ml-2' />
                     </Button>
                 </div>
@@ -90,7 +90,7 @@ const BoardMember = () => {
                                     <Button type='button' variant='outline' onClick={() => setOpen(false)}>
                                         Cancel
                                     </Button>
-                                    <Button type='submit' className='bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700'>
+                                    <Button type='submit' className='bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm'>
                                         Save Member
                                     </Button>
                                 </div>

@@ -134,7 +134,7 @@ const Index: React.FC = () => {
         className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
         variants={itemVariants}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 bg-gradient-to-r from-green-50/30 to-emerald-50/30 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 border-b border-gray-200">
           <div>
             <h2 className="text-xl font-semibold text-gray-800">Board Members List</h2>
             <p className="text-gray-600 text-sm mt-1">
@@ -144,7 +144,7 @@ const Index: React.FC = () => {
           <Button 
             onClick={() => handleMember()} 
             type="button"
-            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+            className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
           >
             Add Board Member
           </Button>
@@ -236,7 +236,7 @@ const Index: React.FC = () => {
                         <Button 
                           onClick={() => handleMember()} 
                           type="button"
-                          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                          className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
                         >
                           Add Board Member
                         </Button>

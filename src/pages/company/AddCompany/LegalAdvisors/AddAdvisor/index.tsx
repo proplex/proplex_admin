@@ -68,11 +68,11 @@ const Index: React.FC<ModalProps> = ({ fields, index, setIndex }) => {
   const isUpdate = index !== -1;
   return (
     <Dialog open={!!isOpen} onOpenChange={(open) => !open && handleOnClose()}>
-      <DialogContent className="sm:max-w-[500px] rounded-2xl shadow-xl">
+      <DialogContent className="sm:max-w-[600px] rounded-2xl shadow-xl">
         <DialogHeader className="mb-2">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Scale className="h-6 w-6 text-purple-600" />
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <Scale className="h-6 w-6 text-gray-600" />
             </div>
             <div>
               <DialogTitle className="text-2xl font-bold text-gray-900">
@@ -88,17 +88,7 @@ const Index: React.FC<ModalProps> = ({ fields, index, setIndex }) => {
         </DialogHeader>
         
         {/* Information Banner */}
-        <div className="bg-purple-50 rounded-lg p-4 border border-purple-100 mb-4">
-          <div className="flex items-start gap-3">
-            <Info className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-purple-800 mb-1">Important Information</h4>
-              <p className="text-sm text-purple-700">
-                Legal advisors play a crucial role in ensuring regulatory compliance and managing legal risks.
-              </p>
-            </div>
-          </div>
-        </div>
+       
         
         <div className="space-y-5 py-2">
           <motion.div 
@@ -116,7 +106,7 @@ const Index: React.FC<ModalProps> = ({ fields, index, setIndex }) => {
             <Button 
               onClick={onFormSubmit} 
               type="button" 
-              className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+              className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
             >
               {isUpdate ? 'Update Advisor' : 'Add Advisor'}
             </Button>

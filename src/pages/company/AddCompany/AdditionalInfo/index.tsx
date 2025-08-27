@@ -28,19 +28,19 @@ const Index = () => {
   const sections = [
     {
       title: "Bank Accounts",
-      icon: <CreditCard className="h-5 w-5 text-blue-600" />,
+      icon: <CreditCard className="h-5 w-5 text-gray-600" />,
       description: "Manage company bank accounts and financial details",
       component: <AddAccount />
     },
     {
       title: "Board Members",
-      icon: <Users className="h-5 w-5 text-green-600" />,
+      icon: <Users className="h-5 w-5 text-gray-600" />,
       description: "Add and manage board members with their permissions",
       component: <BoardMember />
     },
     {
       title: "Legal Advisors",
-      icon: <Scale className="h-5 w-5 text-purple-600" />,
+      icon: <Scale className="h-5 w-5 text-gray-600" />,
       description: "Maintain records of legal advisors and their expertise",
       component: <LegalAdvisor />
     }
@@ -54,24 +54,7 @@ const Index = () => {
       animate="visible"
     >
       {/* Header Section with Enhanced Styling */}
-      <motion.div 
-        className="pb-6 border-b border-gray-200 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 rounded-xl p-6 shadow-sm"
-        variants={itemVariants}
-      >
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <Building2 className="h-6 w-6 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Additional Information
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Manage additional company details including bank accounts, board members, and legal advisors
-            </p>
-          </div>
-        </div>
-      </motion.div>
+
 
       {/* Form Sections with Enhanced Layout */}
       <motion.div 

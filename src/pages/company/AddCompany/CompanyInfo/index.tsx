@@ -49,10 +49,10 @@ const Index = () => {
     >
       {/* Basic Company Information */}
       <motion.div 
-        className="bg-white border border-gray-200"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
         variants={itemVariants}
       >
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-gray-200 ">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 rounded-md">
               <Building2 className="h-5 w-5 text-blue-600" />
@@ -69,13 +69,13 @@ const Index = () => {
 
       {/* Contact Information */}
       <motion.div 
-        className="bg-white border border-gray-200"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
         variants={itemVariants}
       >
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-md">
-              <Mail className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-green-100 rounded-md">
+              <Mail className="h-5 w-5 text-green-600" />
             </div>
             <h2 className="text-lg font-semibold text-gray-800">Contact Information</h2>
           </div>
@@ -89,13 +89,13 @@ const Index = () => {
 
       {/* Document Upload */}
       <motion.div 
-        className="bg-white border border-gray-200"
+        className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
         variants={itemVariants}
       >
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="px-6 py-4 border-b border-gray-200 ">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-md">
-              <FileText className="h-5 w-5 text-blue-600" />
+            <div className="p-2 bg-purple-100 rounded-md">
+              <FileText className="h-5 w-5 text-purple-600" />
             </div>
             <h2 className="text-lg font-semibold text-gray-800">Document Upload</h2>
           </div>
@@ -110,13 +110,13 @@ const Index = () => {
       {/* Document Previews */}
       {(certificateFile?.url || moaFile?.url || aoaFile?.url) && (
         <motion.div 
-          className="bg-white border border-gray-200"
+          className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
           variants={itemVariants}
         >
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50/30 to-slate-50/30">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-md">
-                <FileText className="h-5 w-5 text-blue-600" />
+              <div className="p-2 bg-gray-100 rounded-md">
+                <FileText className="h-5 w-5 text-gray-600" />
               </div>
               <h2 className="text-lg font-semibold text-gray-800">Document Previews</h2>
             </div>
@@ -125,9 +125,9 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Only show preview if files are uploaded */}
               {certificateFile?.url && (
-                <div className="border border-gray-200 p-4">
+                <div className="border rounded-lg p-4">
                   <h3 className="font-medium text-gray-700 mb-2">Certificate of Incorporation</h3>
-                  <div className="bg-gray-50 p-2 text-center">
+                  <div className="bg-gray-100 rounded p-2 text-center">
                     <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                     <p className="text-sm text-gray-600">{certificateFile.name}</p>
                     <a 
@@ -143,9 +143,9 @@ const Index = () => {
               )}
               
               {moaFile?.url && (
-                <div className="border border-gray-200 p-4">
+                <div className="border rounded-lg p-4">
                   <h3 className="font-medium text-gray-700 mb-2">MOA Document</h3>
-                  <div className="bg-gray-50 p-2 text-center">
+                  <div className="bg-gray-100 rounded p-2 text-center">
                     <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                     <p className="text-sm text-gray-600">{moaFile.name}</p>
                     <a 
@@ -161,9 +161,9 @@ const Index = () => {
               )}
               
               {aoaFile?.url && (
-                <div className="border border-gray-200 p-4">
+                <div className="border rounded-lg p-4">
                   <h3 className="font-medium text-gray-700 mb-2">AOA Document</h3>
-                  <div className="bg-gray-50 p-2 text-center">
+                  <div className="bg-gray-100 rounded p-2 text-center">
                     <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                     <p className="text-sm text-gray-600">{aoaFile.name}</p>
                     <a 

@@ -1,12 +1,10 @@
-import formConfig from './formConfig';
-import FormGenerator from '@/components/UseForm/FormGenerator';
-import { useFormContext } from 'react-hook-form';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Info, Building } from 'lucide-react';
+import { Users, Scale } from 'lucide-react';
+import BoardMember from '../BoardMember';
+import LegalAdvisor from '../LegalAdvisors';
 
 const Index = () => {
-  const { control } = useFormContext();
-  
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -15,7 +13,7 @@ const Index = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        staggerChildren: 0.1
+        staggerChildren: 0.2
       }
     }
   };
@@ -27,24 +25,30 @@ const Index = () => {
 
   return (
     <motion.div 
-      className="space-y-6"
+      className="space-y-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-     
-      {/* Main Content */}
+      {/* Board Members Section */}
       <motion.div 
-        className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+        
         variants={itemVariants}
       >
 
+        <div className="p-2">
+          <BoardMember />
+        </div>
+      </motion.div>
+
+      {/* Legal Advisors Section */}
+      <motion.div 
         
-        {/* Information Cards */}
-        <div className="p-6">
-          <div className="max-w-4xl">
-            {FormGenerator(formConfig({ control }))}
-          </div>
+        variants={itemVariants}
+      >
+
+        <div className="p-2">
+          <LegalAdvisor />
         </div>
       </motion.div>
     </motion.div>

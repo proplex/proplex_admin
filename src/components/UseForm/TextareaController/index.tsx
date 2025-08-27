@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import {
   FormField,
@@ -18,6 +16,7 @@ interface TextareaControllerProps {
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   rules?: any;
   bottomText?: string;
+  bottomTextClass?: string; // Added property for custom bottom text styling
 }
 
 const TextareaController: React.FC<TextareaControllerProps> = ({
@@ -26,6 +25,7 @@ const TextareaController: React.FC<TextareaControllerProps> = ({
   control,
   rules,
   bottomText,
+  bottomTextClass = 'text-gray-500', // Default class
   disabled = false,
   onChange,
 }) => {
@@ -58,7 +58,7 @@ const TextareaController: React.FC<TextareaControllerProps> = ({
                   }}
                 />
                 {bottomText && (
-                  <span className='text-sm text-gray-500'>{bottomText}</span>
+                  <span className={`text-sm ${bottomTextClass}`}>{bottomText}</span>
                 )}
               </div>
             </FormControl>

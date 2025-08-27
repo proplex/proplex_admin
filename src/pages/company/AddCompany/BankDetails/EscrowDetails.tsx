@@ -46,7 +46,7 @@ export default function EscrowDetails({ userInfo }: { userInfo: UserInfo }) {
 
   return (
     <motion.div 
-      className="bg-gradient-to-br from-blue-50/80 to-indigo-50/80 rounded-2xl p-6 border border-gray-200 shadow-sm"
+      className="bg-gradient-to-br rounded-xl p-6 border border-gray-200 shadow-sm"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

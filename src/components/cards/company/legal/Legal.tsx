@@ -38,10 +38,10 @@ const LegalAdvisor = () => {
             >
                 <div className='flex justify-between items-center'>
                     <div className="flex items-center gap-2">
-                        <Scale className="h-5 w-5 text-purple-600" />
+                        <Scale className="h-5 w-5 text-gray-600" />
                         <h1 className='text-lg font-bold'>Legal Advisor List</h1>
                     </div>
-                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm">
                         Add Legal Advisor <Plus className='h-4 w-4 ml-2' />
                     </Button>
                 </div>
@@ -51,8 +51,8 @@ const LegalAdvisor = () => {
                 <DialogContent className="sm:max-w-[500px] rounded-2xl shadow-xl">
                     <DialogHeader className="mb-2">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-purple-100 rounded-lg">
-                                <Scale className="h-5 w-5 text-purple-600" />
+                            <div className="p-2 bg-gray-100 rounded-lg">
+                                <Scale className="h-5 w-5 text-gray-600" />
                             </div>
                             <div>
                                 <DialogTitle className='text-xl font-bold text-gray-900'>
@@ -66,10 +66,10 @@ const LegalAdvisor = () => {
                     </DialogHeader>
                     
                     {/* Information Banner */}
-                    <div className="bg-purple-50 rounded-lg p-3 border border-purple-100 mb-4">
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 mb-4">
                         <div className="flex items-start gap-2">
-                            <Info className="h-4 w-4 text-purple-600 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-purple-700">
+                            <Info className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />
+                            <p className="text-sm text-gray-700">
                                 Legal advisors will have access to company documents based on their area of expertise.
                             </p>
                         </div>
@@ -90,7 +90,7 @@ const LegalAdvisor = () => {
                                     <Button type='button' variant='outline' onClick={() => setOpen(false)}>
                                         Cancel
                                     </Button>
-                                    <Button type='submit' className='bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700'>
+                                    <Button type='submit' className='bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm'>
                                         Save Advisor
                                     </Button>
                                 </div>

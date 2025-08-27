@@ -16,7 +16,8 @@ const formConfig = ({control}: { control: any }): FormFieldConfig[] => [
         message: 'SPV Memo should not exceed 1000 characters',
       },
     },
-    bottomText: 'Provide comprehensive details about the SPV including its purpose, structure, and relationship to the main entity'
+    bottomText: 'Provide comprehensive details about the SPV including its purpose, structure, and relationship to the main entity',
+    bottomTextClass: 'text-blue-600' // Changed color to green
   },
 ];
 

@@ -68,32 +68,17 @@ const Index = () => {
 
       <div className="space-y-6">
         {/* Escrow Details Section */}
-        <motion.div 
-          className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
-          variants={itemVariants}
-        >
-          <div className="pb-4 border-b border-gray-200 px-6 py-4 bg-gradient-to-r from-blue-50/30 to-indigo-50/30">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-md">
-                <ShieldCheck className="h-5 w-5 text-blue-600" />
-              </div>
-              <h2 className="text-xl font-semibold text-gray-800">Escrow Details</h2>
-            </div>
-            <p className="text-gray-600 text-sm mt-2 ml-11">
-              Secure account information for royalty distributions
-            </p>
-          </div>
-          <div className="p-6">
+       
+         <div className="p-6">
             <EscrowDetails userInfo={escrowDetails} />
           </div>
-        </motion.div>
         
         {/* Bank Accounts Section */}
         <motion.div 
           className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
           variants={itemVariants}
         >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4 bg-gradient-to-r from-green-50/30 to-emerald-50/30 border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 px-6 py-4  to-emerald-50/30 border-b border-gray-200">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-md">
                 <Building2 className="h-5 w-5 text-green-600" />
@@ -117,37 +102,7 @@ const Index = () => {
           
           <div className="p-6">
             {/* Information Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Info className="h-4 w-4 text-blue-600" />
-                  <h3 className="font-medium text-blue-800">Account Verification</h3>
-                </div>
-                <p className="text-sm text-blue-700">
-                  All bank accounts must be verified before they can receive distributions
-                </p>
-              </div>
-              
-              <div className="bg-amber-50 rounded-lg p-4 border border-amber-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Info className="h-4 w-4 text-amber-600" />
-                  <h3 className="font-medium text-amber-800">Processing Time</h3>
-                </div>
-                <p className="text-sm text-amber-700">
-                  New accounts may take 2-3 business days for verification
-                </p>
-              </div>
-              
-              <div className="bg-purple-50 rounded-lg p-4 border border-purple-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Info className="h-4 w-4 text-purple-600" />
-                  <h3 className="font-medium text-purple-800">Security</h3>
-                </div>
-                <p className="text-sm text-purple-700">
-                  Your banking information is encrypted and securely stored
-                </p>
-              </div>
-            </div>
+           
             
             <div className="rounded-xl border border-gray-200 overflow-hidden shadow-sm">
               <Table>

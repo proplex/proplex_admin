@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, CheckCircle2, Loader2, Building, FileText, Shield, Banknote, Users, Scale, Info } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle2, Loader2, Building, FileText, Banknote, Users } from 'lucide-react';
 import useCreateCompany from '@/hooks/useCreateCompany';
 import useFetchCompany from '@/hooks/useFetchCompany';
 import useUpdateCompany from '@/hooks/useUpdateCompany';
@@ -11,23 +11,17 @@ import toast from 'react-hot-toast';
 
 // Lazy load components with proper default export handling
 const CompanyInfo = lazy(() => import('./CompanyInfo').then(module => ({ default: module.default })));
-const SpvMemo = lazy(() => import('./SpvMemo').then(module => ({ default: module.default })));
-const BankDetails = lazy(() => import('./BankDetails').then(module => ({ default: module.default })));
+const SpvMemoRisk = lazy(() => import('./SpvMemoRisk').then(module => ({ default: module.default })));
 const RoyaltyDistribution = lazy(() => import('./RoyaltyDistribution').then(module => ({ default: module.default })));
-const RiskAndDisclosures = lazy(() => import('./RiskAndDisclosures').then(module => ({ default: module.default })));
-const BoardMember = lazy(() => import('./BoardMember').then(module => ({ default: module.default })));
-const LegalAdvisor = lazy(() => import('./LegalAdvisors').then(module => ({ default: module.default })));
-const AdditionalInfo = lazy(() => import('./AdditionalInfo').then(module => ({ default: module.default })));
+const BoardLegal = lazy(() => import('./BoardLegal').then(module => ({ default: module.default })));
+const PrivacyTerms = lazy(() => import('./PrivacyTerms').then(module => ({ default: module.default })));
 
 const steps = [
   { id: 'company-info', title: 'Company hiii Information', icon: Building },
-  { id: 'spv-memo', title: 'SPV Memo', icon: FileText },
-  { id: 'bank-details', title: 'Bank Details', icon: Banknote },
+  { id: 'spv-memo-risk', title: 'SPV Memo & Risk Disclosure', icon: FileText },
   { id: 'royalty-distributions', title: 'Royalty Distributions', icon: Banknote },
-  { id: 'risk-disclosure', title: 'Risk & Disclosure', icon: Shield },
-  { id: 'board-member', title: 'Board Members', icon: Users },
-  { id: 'legal-advisors', title: 'Legal Advisors', icon: Scale },
-  { id: 'additional-info', title: 'Additional Info', icon: Info },
+  { id: 'board-legal', title: 'Board Members & Legal Advisors', icon: Users },
+  { id: 'privacy-terms', title: 'Privacy Policy & Terms', icon: FileText },
 ];
 
 // Animation variants
@@ -98,23 +92,18 @@ const EnhancedAddCompany = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const disabledSteps = !id ? [
-    'spv-memo',
-    'bank-details',
-    'risk-disclosure',
-    'board-member',
-    'legal-advisors',
+    'spv-memo-risk',
+    'board-legal',
+    'privacy-terms',
   ] : [];
 
   const renderStepContent = () => {
     const StepComponent = {
       'company-info': CompanyInfo,
-      'spv-memo': SpvMemo,
-      'bank-details': BankDetails,
+      'spv-memo-risk': SpvMemoRisk,
       'royalty-distributions': RoyaltyDistribution,
-      'risk-disclosure': RiskAndDisclosures,
-      'board-member': BoardMember,
-      'legal-advisors': LegalAdvisor,
-      'additional-info': AdditionalInfo,
+      'board-legal': BoardLegal,
+      'privacy-terms': PrivacyTerms,
     }[currentStep];
 
     return (
@@ -425,7 +414,7 @@ const EnhancedAddCompany = () => {
                   </div>
                   
                   {/* Mobile Horizontal Step Indicator */}
-                  <div className="lg:hidden flex items-center gap-2 pb-2 mt-4">
+                  <div className="lg:hidden flex items-center gap-2">
                     {steps.map((step, index) => {
                       const isActive = step.id === currentStep;
                       const isCompleted = steps.findIndex(s => s.id === currentStep) > index;

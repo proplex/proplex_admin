@@ -1,5 +1,3 @@
-
-
 import SelectController from './SelectController';
 import InputController from './InputController';
 import CheckboxController from './CheckboxController';
@@ -119,6 +117,7 @@ export type   FormFieldConfig = {
   placeholder?: string;
   maxSize?: number;
   bottomText?: string;
+  bottomTextClass?: string; // Added property for custom bottom text styling
   maxDate?: boolean;
   meta?: {
     refId: string;

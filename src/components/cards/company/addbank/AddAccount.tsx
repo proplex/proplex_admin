@@ -36,10 +36,10 @@ const AddAccount = () => {
             >
                 <div className='flex justify-between items-center'>
                     <div className="flex items-center gap-2">
-                        <CreditCard className="h-5 w-5 text-blue-600" />
+                        <CreditCard className="h-5 w-5 text-gray-600" />
                         <h1 className='text-lg font-bold'>Bank Account List</h1>
                     </div>
-                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                    <Button size='sm' type='button' onClick={() => setOpen(true)} className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm">
                         Add Bank Account <Plus className='h-4 w-4 ml-2' />
                     </Button>
                 </div>
@@ -49,8 +49,8 @@ const AddAccount = () => {
                 <DialogContent className="sm:max-w-[425px] rounded-2xl shadow-xl">
                     <DialogHeader className="mb-2">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-blue-100 rounded-lg">
-                                <CreditCard className="h-5 w-5 text-blue-600" />
+                            <div className="p-2 bg-gray-100 rounded-lg">
+                                <CreditCard className="h-5 w-5 text-gray-600" />
                             </div>
                             <div>
                                 <DialogTitle className='text-xl font-bold text-gray-900'>
@@ -64,10 +64,10 @@ const AddAccount = () => {
                     </DialogHeader>
                     
                     {/* Information Banner */}
-                    <div className="bg-blue-50 rounded-lg p-3 border border-blue-100 mb-4">
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 mb-4">
                         <div className="flex items-start gap-2">
-                            <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-blue-700">
+                            <Info className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />
+                            <p className="text-sm text-gray-700">
                                 All bank accounts must be verified before they can be used for transactions.
                             </p>
                         </div>
@@ -88,7 +88,7 @@ const AddAccount = () => {
                                     <Button type='button' variant='outline' onClick={() => setOpen(false)}>
                                         Cancel
                                     </Button>
-                                    <Button type='submit' className='bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'>
+                                    <Button type='submit' className='bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm'>
                                         Save Account
                                     </Button>
                                 </div>

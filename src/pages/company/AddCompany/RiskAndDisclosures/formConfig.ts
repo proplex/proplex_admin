@@ -17,7 +17,8 @@ export const riskFormConfig = (): FormFieldConfig[] => {
         message: 'Risk disclosure should not exceed 1000 characters',
       },
     },
-    bottomText: 'Provide a comprehensive overview of material risks, including market, operational, and regulatory risks'
+    bottomText: 'Provide a comprehensive overview of material risks, including market, operational, and regulatory risks',
+    bottomTextClass: 'text-blue-600' // Changed color to blue
   },
 ];
 };

@@ -24,6 +24,8 @@ interface IndexProps {
   onChange?: (value: string) => void;
   defaultValue?: string;
   onBlur?: () => void;
+  bottomText?: string; // Added property
+  bottomTextClass?: string; // Added property for custom bottom text styling
 }
 
 const Index: React.FC<IndexProps> = ({
@@ -36,6 +38,8 @@ const Index: React.FC<IndexProps> = ({
   defaultValue = "",
   onChange,
   onBlur,
+  bottomText, // Added property
+  bottomTextClass = 'text-gray-500', // Added property with default value
 }) => {
   return (
     <FormField
@@ -84,6 +88,9 @@ const Index: React.FC<IndexProps> = ({
                 ))}
               </SelectContent>
             </Select>
+            {bottomText && (
+              <span className={`text-sm ${bottomTextClass}`}>{bottomText}</span>
+            )}
             <FormMessage />
           </FormItem>
         );

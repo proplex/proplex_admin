@@ -353,7 +353,7 @@ export default function OrdersPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-6">
+    <div className="min-h-screen  p-6">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Enhanced Header */}
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
