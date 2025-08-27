@@ -16,10 +16,39 @@ export default function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [scale, setScale] = useState<number>(1);
   const [rotation, setRotation] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
+    setError(null);
   }
+  
+  function onDocumentLoadError(error: any) {
+    console.error('PDF Load Error:', error);
+    setError(`Failed to load PDF: ${error?.message || 'Unknown error'}`);
+  }
+  
+  // Prepare the file URL for PDF.js
+  const prepareFileUrl = (url: string) => {
+    // If it's a data URL, return as is
+    if (url.startsWith('data:')) {
+      return { data: url };
+    }
+    
+    // If it's a Cloudinary URL, ensure it has proper CORS headers
+    if (url.includes('cloudinary.com')) {
+      return {
+        url: url,
+        httpHeaders: {
+          'Access-Control-Allow-Origin': '*',
+        },
+        withCredentials: false,
+      };
+    }
+    
+    // For other URLs, return as is
+    return url;
+  };
 
   function changePage(offset: number) {
     setPageNumber(prevPageNumber => {
@@ -84,16 +113,22 @@ export default function PDFViewer({ fileUrl, fileName }: PDFViewerProps) {
 
       <div className="border rounded-lg overflow-hidden">
         <Document
-          file={fileUrl.startsWith('data:application/pdf;base64,') ? { data: fileUrl } : fileUrl}
+          file={prepareFileUrl(fileUrl)}
           onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
           loading={
             <div className="flex items-center justify-center p-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <span className="ml-2">Loading PDF...</span>
             </div>
           }
           error={
-            <div className="flex items-center justify-center p-8 text-red-500">
-              Failed to load PDF
+            <div className="flex flex-col items-center justify-center p-8 text-red-500">
+              <div className="text-center">
+                <p className="font-medium">Failed to load PDF</p>
+                {error && <p className="text-sm mt-1">{error}</p>}
+                <p className="text-xs mt-2 text-gray-500">Please try refreshing or contact support</p>
+              </div>
             </div>
           }
         >

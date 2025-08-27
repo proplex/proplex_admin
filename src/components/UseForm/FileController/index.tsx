@@ -97,17 +97,22 @@ function FileUploadController({
     try {
       setIsUploading(true);
       
-      // Upload to Cloudinary
+      console.log('Starting upload for file:', selectedFile.name, 'Type:', selectedFile.type, 'Size:', selectedFile.size);
+      
+      // Upload to Cloudinary (auto-detects resource type)
       const result = await uploadToCloudinary(selectedFile, `proplex/${name}`);
+      console.log("Upload result:", result);
       
       // Set the form value with Cloudinary file info
       const fileData = {
         name: selectedFile.name,
-        url: result.secure_url,
+        url: result.secure_url, // Use secure_url for both external viewing and PDF viewer
         publicId: result.public_id,
         type: selectedFile.type,
         size: selectedFile.size,
       };
+      
+      console.log('Setting file data:', fileData);
       
       setValue(name, fileData);
       onChange(fileData);

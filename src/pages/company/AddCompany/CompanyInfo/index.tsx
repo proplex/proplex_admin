@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion';
 import FormGenerator from '@/components/UseForm/FormGenerator';
 import formConfig from './formConfig';
-import { Building2, FileText, MapPin, Phone, Mail, Briefcase } from 'lucide-react';
+import { Building2, FileText, MapPin, Mail, Briefcase } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
-import PDFViewer from '@/components/PDFViewer';
 
 const Index = () => {
   const { watch } = useFormContext();
@@ -31,164 +30,157 @@ const Index = () => {
     visible: { opacity: 1, y: 0 }
   };
 
-  // Section configuration for better organization
-  const sections = [
-    {
-      title: "Company Information",
-      icon: <Building2 className="h-5 w-5 text-blue-600" />,
-      description: "Basic details about your company",
-      fields: ['name', 'industry', 'entity_type', 'incorporation_type', 'jurisdiction', 'incorporation_date', 'registration_number']
-    },
-    {
-      title: "Ownership & Structure",
-      icon: <Briefcase className="h-5 w-5 text-green-600" />,
-      description: "Company ownership and structure details",
-      fields: ['instrument_type', 'spv_type', 'parent_entity', 'ubo_details']
-    },
-    {
-      title: "Contact Information",
-      icon: <Mail className="h-5 w-5 text-green-600" />,
-      description: "Official contact details for your company",
-      fields: ['email', 'phone', 'address', 'street_address', 'city', 'state', 'country', 'postal_code']
-    },
-    {
-      title: "Compliance & Regulatory",
-      icon: <FileText className="h-5 w-5 text-amber-600" />,
-      description: "Compliance and regulatory information",
-      fields: ['tax_id', 'company_code', 'regulatory_authority']
-    },
-    {
-      title: "Document Upload",
-      icon: <FileText className="h-5 w-5 text-purple-600" />,
-      description: "Upload required company documents",
-      fields: ['certificate_of_incorporation', 'moa', 'aoa', 'shareholding_agreement', 'kyc_documents']
-    }
-  ];
+  
 
-  // Generate form fields
-  const formFields = FormGenerator(formConfig());
+  // Generate all form fields
+  const formConfigFields = formConfig();
+  
+  // Group fields by type
+  const basicFields = FormGenerator(formConfigFields.slice(0, 4)); // name, industry, incorporation_type, jurisdiction
+  const contactFields = FormGenerator(formConfigFields.slice(4, 7)); // email, phone, address
+  const documentFields = FormGenerator(formConfigFields.slice(8)); // certificate, moa, aoa (skip SPV type)
 
   return (
     <motion.div 
-      className="space-y-8"
+      className="space-y-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      
-      {/* Form Sections with Enhanced Layout */}
+      {/* Basic Company Information */}
       <motion.div 
-        className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+        className="bg-white border border-gray-200"
         variants={itemVariants}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6">
-          {/* Sidebar with Section Navigation */}
-          <div className="lg:col-span-1">
-            <div className="space-y-4">
-              {sections.map((section, index) => (
-                <div 
-                  key={index}
-                  className="p-4 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-white rounded-md shadow-sm">
-                      {section.icon}
-                    </div>
-                    <h3 className="font-semibold text-gray-800">{section.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 ml-11">
-                    {section.description}
-                  </p>
-                </div>
-              ))}
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-md">
+              <Building2 className="h-5 w-5 text-blue-600" />
             </div>
-          </div>
-
-          {/* Form Content */}
-          <div className="lg:col-span-3">
-            <div className="bg-gray-50/50 rounded-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {formFields}
-              </div>
-            </div>
+            <h2 className="text-lg font-semibold text-gray-800">Company Information</h2>
           </div>
         </div>
-      </motion.div>
-
-      {/* PDF Preview Section */}
-      <motion.div 
-        className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
-        variants={itemVariants}
-      >
         <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Document Previews</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {certificateFile?.url && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-medium text-gray-700 mb-2">Certificate of Incorporation</h3>
-                {certificateFile.type === 'application/pdf' || certificateFile.name?.endsWith('.pdf') ? (
-                  <PDFViewer 
-                    fileUrl={certificateFile.url.startsWith('data:') ? certificateFile.url : `data:application/pdf;base64,${certificateFile.url}`} 
-                    fileName={certificateFile.name} 
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-64 bg-gray-100 rounded">
-                    <img 
-                      src={certificateFile.url.startsWith('data:') ? certificateFile.url : `data:${certificateFile.type};base64,${certificateFile.url}`} 
-                      alt="Certificate Preview" 
-                      className="max-h-60 object-contain"
-                      onError={(e) => console.error('Error loading image:', e)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {moaFile?.url && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-medium text-gray-700 mb-2">MOA Document</h3>
-                {moaFile.type === 'application/pdf' || moaFile.name?.endsWith('.pdf') ? (
-                  <PDFViewer 
-                    fileUrl={moaFile.url.startsWith('data:') ? moaFile.url : `data:application/pdf;base64,${moaFile.url}`} 
-                    fileName={moaFile.name} 
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-64 bg-gray-100 rounded">
-                    <img 
-                      src={moaFile.url.startsWith('data:') ? moaFile.url : `data:${moaFile.type};base64,${moaFile.url}`} 
-                      alt="MOA Preview" 
-                      className="max-h-60 object-contain"
-                      onError={(e) => console.error('Error loading image:', e)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            
-            {aoaFile?.url && (
-              <div className="border rounded-lg p-4">
-                <h3 className="font-medium text-gray-700 mb-2">AOA Document</h3>
-                {aoaFile.type === 'application/pdf' || aoaFile.name?.endsWith('.pdf') ? (
-                  <PDFViewer 
-                    fileUrl={aoaFile.url.startsWith('data:') ? aoaFile.url : `data:application/pdf;base64,${aoaFile.url}`} 
-                    fileName={aoaFile.name} 
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-64 bg-gray-100 rounded">
-                    <img 
-                      src={aoaFile.url.startsWith('data:') ? aoaFile.url : `data:${aoaFile.type};base64,${aoaFile.url}`} 
-                      alt="AOA Preview" 
-                      className="max-h-60 object-contain"
-                      onError={(e) => console.error('Error loading image:', e)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {basicFields}
           </div>
         </div>
       </motion.div>
+
+      {/* Contact Information */}
+      <motion.div 
+        className="bg-white border border-gray-200"
+        variants={itemVariants}
+      >
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-md">
+              <Mail className="h-5 w-5 text-blue-600" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-800">Contact Information</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {contactFields}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Document Upload */}
+      <motion.div 
+        className="bg-white border border-gray-200"
+        variants={itemVariants}
+      >
+        <div className="px-6 py-4 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-md">
+              <FileText className="h-5 w-5 text-blue-600" />
+            </div>
+            <h2 className="text-lg font-semibold text-gray-800">Document Upload</h2>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 gap-6">
+            {documentFields}
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Document Previews */}
+      {(certificateFile?.url || moaFile?.url || aoaFile?.url) && (
+        <motion.div 
+          className="bg-white border border-gray-200"
+          variants={itemVariants}
+        >
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-md">
+                <FileText className="h-5 w-5 text-blue-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800">Document Previews</h2>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Only show preview if files are uploaded */}
+              {certificateFile?.url && (
+                <div className="border border-gray-200 p-4">
+                  <h3 className="font-medium text-gray-700 mb-2">Certificate of Incorporation</h3>
+                  <div className="bg-gray-50 p-2 text-center">
+                    <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                    <p className="text-sm text-gray-600">{certificateFile.name}</p>
+                    <a 
+                      href={certificateFile.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                </div>
+              )}
+              
+              {moaFile?.url && (
+                <div className="border border-gray-200 p-4">
+                  <h3 className="font-medium text-gray-700 mb-2">MOA Document</h3>
+                  <div className="bg-gray-50 p-2 text-center">
+                    <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                    <p className="text-sm text-gray-600">{moaFile.name}</p>
+                    <a 
+                      href={moaFile.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                </div>
+              )}
+              
+              {aoaFile?.url && (
+                <div className="border border-gray-200 p-4">
+                  <h3 className="font-medium text-gray-700 mb-2">AOA Document</h3>
+                  <div className="bg-gray-50 p-2 text-center">
+                    <FileText className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                    <p className="text-sm text-gray-600">{aoaFile.name}</p>
+                    <a 
+                      href={aoaFile.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      View Document
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };

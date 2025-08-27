@@ -230,15 +230,28 @@ const NavLink = ({ to, children, className, style, isActive: isActiveProp }: Nav
 interface NavbarProps {
   onMenuToggle?: () => void;
   className?: string;
+  isMobileMenuOpen?: boolean;
+  setIsMobileMenuOpen?: (open: boolean) => void;
 }
 
-const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
+const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobileMenuOpen }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
   const [notifications] = useState<number>(3);
   const [time, setTime] = useState<Date>(new Date());
   const [copied, setCopied] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    if (setIsMobileMenuOpen) {
+      setIsMobileMenuOpen(!mobileMenuOpen);
+    }
+    if (onMenuToggle) {
+      onMenuToggle();
+    }
+  };
 
   const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
@@ -372,44 +385,44 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
 
   const navItems = [
     { 
-      icon: <Home className="h-4 w-4" />, 
+      icon: <Home className="h-6 w-6" />, 
       label: "Home", 
       href: "/", 
       gradient: "from-blue-500 to-cyan-500",
       exact: true
     },
     { 
-      icon: <LayoutDashboard className="h-4 w-4" />, 
+      icon: <LayoutDashboard className="h-6 w-6" />, 
       label: "Dashboard", 
       href: "/dashboard", 
       gradient: "from-purple-500 to-pink-500"
     },
     { 
-      icon: <ShoppingCart className="h-4 w-4" />, 
+      icon: <ShoppingCart className="h-6 w-6" />, 
       label: "Orders", 
       href: "/orders", 
       gradient: "from-teal-500 to-cyan-600"
     },
     { 
-      icon: <Package className="h-4 w-4" />, 
+      icon: <Package className="h-6 w-6" />, 
       label: "Assets", 
       href: "/assets",
       gradient: "from-green-500 to-emerald-500"
     },
     { 
-      icon: <Building2 className="h-4 w-4" />, 
+      icon: <Building2 className="h-6 w-6" />, 
       label: "Companies", 
       href: "/company",
       gradient: "from-orange-500 to-red-500"
     },
     { 
-      icon: <Users2 className="h-4 w-4" />, 
+      icon: <Users2 className="h-6 w-6" />, 
       label: "Investors", 
       href: "/customers",
       gradient: "from-indigo-500 to-purple-500"
     },
     { 
-      icon: <Settings2 className="h-4 w-4" />, 
+      icon: <Settings2 className="h-6 w-6" />, 
       label: "Configuration", 
       href: "/configuration",
       gradient: "from-amber-500 to-orange-500"
@@ -452,7 +465,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             
             {/* Desktop Navigation with enhanced effects - Only when connected */}
             {isConnected && (
-              <div className="hidden lg:flex flex-wrap justify-center gap-1">
+              <div className="hidden lg:flex flex-wrap justify-center gap-2">
                 {navItems.map((item, index) => {
                 const isActive = item.exact 
                   ? location.pathname === item.href
@@ -465,7 +478,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                         <NavLink
                           to={item.href}
                           isActive={isActive}
-                          className={`group relative flex items-center justify-center p-3 h-11 w-11 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
+                          className={`group relative flex items-center justify-center p-4 h-14 w-14 rounded-xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
                             isActive
                               ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg shadow-current/25`
                               : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100/80 dark:hover:bg-gray-800/80'
@@ -480,7 +493,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                           }`} />
                         </NavLink>
                         <TooltipContent 
-                          side="right"
+                          side="bottom"
                           className="bg-gray-800 dark:bg-gray-100 dark:text-gray-900"
                         >
                           <span className="font-semibold">{item.label}</span>
@@ -503,10 +516,10 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="lg:hidden h-10 w-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95"
-                  onClick={onMenuToggle}
+                  className="lg:hidden h-12 w-12 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-110 active:scale-95"
+                  onClick={handleMobileMenuToggle}
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-6 w-6" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
 
@@ -514,8 +527,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                 {isOnAvalancheFuji && data && avalancheFujiChain && (
                   <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm">
                     <div className="flex items-center gap-1">
-                      <div className="h-6 w-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-white text-sm font-bold">
                           {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
                         </span>
                       </div>
@@ -538,8 +551,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-center gap-1">
-                      <div className="h-6 w-6 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                        <span className="text-white text-sm font-bold">
                           {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
                         </span>
                       </div>
@@ -569,12 +582,12 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     className="gap-3 pl-2 pr-4 py-2 h-10 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-105 active:scale-95 group"
                   >
                     <div className="relative">
-                      <Avatar className="h-8 w-8 ring-2 ring-transparent group-hover:ring-blue-500/30 transition-all duration-300">
-                        <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-sm">
+                      <Avatar className="h-10 w-10 ring-2 ring-transparent group-hover:ring-blue-500/30 transition-all duration-300">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-lg">
                           {userInfo?.name ? userInfo.name.charAt(0) : 'U'}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
+                      <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
                     </div>
                     <div className="hidden sm:flex flex-col items-start">
                       <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
@@ -594,30 +607,30 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                             title="Copy full address"
                           >
                             {copied ? (
-                              <Check className="h-3 w-3 text-green-500" />
+                              <Check className="h-4 w-4 text-green-500" />
                             ) : (
-                              <Copy className="h-3 w-3 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                              <Copy className="h-4 w-4 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
                             )}
                           </button>
                         )}
                       </div>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-gray-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-hover:text-gray-600" />
+                    <ChevronDown className="h-5 w-5 text-gray-400 transition-transform duration-200 group-data-[state=open]:rotate-180 group-hover:text-gray-600" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                   className="w-64 rounded-xl border border-gray-200/50 dark:border-gray-800/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl shadow-black/5 animate-in slide-in-from-top-2 duration-200 p-2"
                 >
                   <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-white px-2 py-2 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-blue-500" />
+                    <Sparkles className="h-5 w-5 text-blue-500" />
                     My Account
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-1" />
                   
                   <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                        <User className="h-4 w-4 text-white" />
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <User className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <div className="font-medium text-gray-900 dark:text-white">Profile</div>
@@ -632,11 +645,11 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                       className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
+                        <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 flex items-center justify-center">
                           {copied ? (
-                            <Check className="h-4 w-4 text-white" />
+                            <Check className="h-5 w-5 text-white" />
                           ) : (
-                            <Copy className="h-4 w-4 text-white" />
+                            <Copy className="h-5 w-5 text-white" />
                           )}
                         </div>
                         <div className="flex-1">
@@ -653,8 +666,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                   
                   <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                        <Settings className="h-4 w-4 text-white" />
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <Settings className="h-5 w-5 text-white" />
                       </div>
                       <div>
                         <div className="font-medium text-gray-900 dark:text-white">Settings</div>
@@ -665,8 +678,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                   
                   <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">$</span>
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                        <span className="text-white text-sm font-bold">$</span>
                       </div>
                       <div>
                         <div className="font-medium text-gray-900 dark:text-white">Billing</div>
@@ -683,8 +696,8 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                     className="rounded-lg p-3 text-red-600 dark:text-red-400 transition-all duration-150 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
-                        <LogOut className="h-4 w-4 text-white transition-transform duration-200 group-hover:scale-110" />
+                      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
+                        <LogOut className="h-5 w-5 text-white transition-transform duration-200 group-hover:scale-110" />
                       </div>
                       <div>
                         <div className="font-medium">Sign out</div>
@@ -703,7 +716,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
                 disabled={connectLoading}
                 className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-4 py-2 h-10 transition-all duration-200 hover:scale-105 active:scale-95"
               >
-                <LogIn className="h-4 w-4" />
+                <LogIn className="h-5 w-5" />
                 <span className="hidden sm:inline">Sign In</span>
                 {connectLoading && (
                   <div className="ml-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -717,7 +730,7 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
         {isConnected ? (
           <div className="md:hidden px-6 pb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search..."
@@ -726,6 +739,125 @@ const Navbar = ({ onMenuToggle, className }: NavbarProps) => {
             </div>
           </div>
         ) : null}
+
+        {/* Mobile Navigation Menu - Full screen overlay when logged in */}
+        {isConnected && mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 top-16 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl z-40 border-t border-gray-200/50 dark:border-gray-800/50">
+            <div className="px-6 py-8 space-y-6 max-w-md mx-auto">
+              {/* Mobile Navigation Header */}
+              <div className="text-center border-b border-gray-200/50 dark:border-gray-800/50 pb-6">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Navigation Menu</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Access all platform features</p>
+              </div>
+
+              {/* Mobile Navigation Items */}
+              <div className="grid grid-cols-2 gap-4">
+                {navItems.map((item, index) => {
+                  const isActive = item.exact 
+                    ? location.pathname === item.href
+                    : location.pathname.startsWith(item.href);
+                  
+                  return (
+                    <div
+                      key={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <NavLink
+                        to={item.href}
+                        className={`group relative flex flex-col items-center justify-center p-6 rounded-2xl transition-all duration-300 border-2 ${
+                          isActive
+                            ? `bg-gradient-to-br ${item.gradient} text-white border-transparent shadow-lg`
+                            : 'text-gray-600 dark:text-gray-400 border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50/50 dark:bg-gray-800/50 hover:bg-gray-100/80 dark:hover:bg-gray-700/80'
+                        }`}
+                      >
+                        <div className={`mb-3 p-3 rounded-xl transition-all duration-300 ${
+                          isActive 
+                            ? 'bg-white/20 shadow-lg' 
+                            : 'bg-white dark:bg-gray-800 shadow-sm group-hover:shadow-md group-hover:scale-110'
+                        }`}>
+                          <div className={`transition-colors duration-300 ${
+                            isActive ? 'text-white' : `text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400`
+                          }`}>
+                            {React.cloneElement(item.icon, { className: "h-8 w-8" })}
+                          </div>
+                        </div>
+                        <span className={`text-sm font-semibold transition-colors duration-300 ${
+                          isActive ? 'text-white' : 'text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white'
+                        }`}>
+                          {item.label}
+                        </span>
+                        {isActive && (
+                          <div className="absolute top-2 right-2 w-2 h-2 bg-white rounded-full animate-pulse" />
+                        )}
+                      </NavLink>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Mobile User Info Section */}
+              <div className="border-t border-gray-200/50 dark:border-gray-800/50 pt-6">
+                <div className="flex items-center gap-4 p-4 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl border border-gray-200/50 dark:border-gray-700/50">
+                  <Avatar className="h-12 w-12 ring-2 ring-blue-500/30">
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-lg">
+                      {userInfo?.name ? userInfo.name.charAt(0) : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 dark:text-white">
+                      {userInfo?.name || 'User'}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400 font-mono">
+                      {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : 'Connected'}
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleLogout}
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                {/* Mobile Balance Display */}
+                {isOnAvalancheFuji && data && avalancheFujiChain && (
+                  <div className="mt-4 p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl border border-blue-200/50 dark:border-blue-800/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">
+                            {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900 dark:text-white">
+                            {parseFloat(formatUnits(data.value, data.decimals)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'AVAX'}
+                          </div>
+                          <div className="text-sm text-blue-600 dark:text-blue-400">
+                            {avalancheFujiChain.name}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Close Menu Button */}
+              <div className="pt-4 text-center">
+                <Button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="px-8 py-3 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl transition-all duration-200 hover:scale-105"
+                >
+                  Close Menu
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </nav>
     </TooltipProvider>

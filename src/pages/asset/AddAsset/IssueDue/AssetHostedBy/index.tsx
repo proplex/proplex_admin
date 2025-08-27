@@ -314,7 +314,7 @@ const AssetHostedBy = () => {
         
         {/* Contact Information */}
         <FormSection
-          title="Contact Details"
+          title="Contact  Details"
           description="Location and communication"
           icon={Phone}
           isCompleted={isContactInfoCompleted}

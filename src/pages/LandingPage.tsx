@@ -242,11 +242,10 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Powered by Avalanche */}
-            <div className="relative py-12 px-4">
+            {/* <div className="relative py-12 px-4">
               <motion.div variants={itemVariants} className="text-center">
                 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-                  {/* Avalanche Logo/Icon */}
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-sm border border-gray-100">
                       <img 
@@ -261,7 +260,6 @@ export default function LandingPage() {
                     </div>
                   </div>
                   
-                  {/* Key Benefits */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="text-center">
                       <div className="font-semibold text-gray-900">Sub-Second</div>
@@ -278,7 +276,7 @@ export default function LandingPage() {
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </div> */}
           </div>
         </div>
       </motion.section>

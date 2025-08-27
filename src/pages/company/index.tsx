@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Eye, Pencil, Trash2, Trash, ArrowUpDown, TrendingUp, Building2 } from 'lucide-react';
 import { Search as SearchIcon, Plus, Database, Filter, ChevronDown, RefreshCw, Loader2, MoreHorizontal, Calendar, Users, Activity } from 'lucide-react';
 import { useNavigate  } from 'react-router-dom';
-import Cloudinary from 'cloudinary';
 // Define types for the company data
 interface Company {
   id: string;
@@ -406,14 +405,14 @@ function Index() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/40 p-6">
+    <div className="min-h-screen  p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header Section */}
         <div className="space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
-                Companies hiii Dashboard
+                Companies Dashboard
               </h1>
               <p className="text-gray-600 mt-2 text-lg">Manage and monitor your company portfolio</p>
             </div>

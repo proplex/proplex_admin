@@ -9,18 +9,18 @@ import useFetchCompany from '@/hooks/useFetchCompany';
 import useUpdateCompany from '@/hooks/useUpdateCompany';
 import toast from 'react-hot-toast';
 
-// Lazy load components
-const CompanyInfo = lazy(() => import('./CompanyInfo'));
-const SpvMemo = lazy(() => import('./SpvMemo'));
-const BankDetails = lazy(() => import('./BankDetails'));
-const RoyaltyDistribution = lazy(() => import('./RoyaltyDistribution'));
-const RiskAndDisclosures = lazy(() => import('./RiskAndDisclosures'));
-const BoardMember = lazy(() => import('./BoardMember'));
-const LegalAdvisor = lazy(() => import('./LegalAdvisors'));
-const AdditionalInfo = lazy(() => import('./AdditionalInfo'));
+// Lazy load components with proper default export handling
+const CompanyInfo = lazy(() => import('./CompanyInfo').then(module => ({ default: module.default })));
+const SpvMemo = lazy(() => import('./SpvMemo').then(module => ({ default: module.default })));
+const BankDetails = lazy(() => import('./BankDetails').then(module => ({ default: module.default })));
+const RoyaltyDistribution = lazy(() => import('./RoyaltyDistribution').then(module => ({ default: module.default })));
+const RiskAndDisclosures = lazy(() => import('./RiskAndDisclosures').then(module => ({ default: module.default })));
+const BoardMember = lazy(() => import('./BoardMember').then(module => ({ default: module.default })));
+const LegalAdvisor = lazy(() => import('./LegalAdvisors').then(module => ({ default: module.default })));
+const AdditionalInfo = lazy(() => import('./AdditionalInfo').then(module => ({ default: module.default })));
 
 const steps = [
-  { id: 'company-info', title: 'Company Information', icon: Building },
+  { id: 'company-info', title: 'Company hiii Information', icon: Building },
   { id: 'spv-memo', title: 'SPV Memo', icon: FileText },
   { id: 'bank-details', title: 'Bank Details', icon: Banknote },
   { id: 'royalty-distributions', title: 'Royalty Distributions', icon: Banknote },
@@ -129,7 +129,10 @@ const EnhancedAddCompany = () => {
         >
           <Suspense fallback={
             <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-2" />
+                <p className="text-gray-600">Loading form...</p>
+              </div>
             </div>
           }>
             {StepComponent && <StepComponent />}
@@ -198,16 +201,16 @@ const EnhancedAddCompany = () => {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-2 sm:p-4 md:p-6"
+      className="min-h-screen p-4 sm:p-6 md:p-8"
       variants={pageVariants}
       initial="initial"
       animate="animate"
     >
       <div className="max-w-[1600px] mx-auto">
-        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 min-h-[calc(100vh-1rem)] md:min-h-[calc(100vh-3rem)]">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
           {/* Icon-Based Sidebar */}
           <motion.div 
-            className="lg:w-20 flex-shrink-0 bg-white rounded-2xl shadow-lg border border-gray-200 p-3 lg:sticky lg:top-6 lg:h-fit lg:max-h-[calc(100vh-3rem)] overflow-y-auto"
+            className="lg:w-32 flex-shrink-0 bg-white border border-gray-200 rounded-xl shadow-sm p-4 lg:sticky lg:top-6 lg:h-fit"
             variants={sidebarVariants}
           >
             {/* Header Icon */}
@@ -231,7 +234,7 @@ const EnhancedAddCompany = () => {
             </motion.div>
             
             {/* Step Icons */}
-            <div className="flex lg:flex-col gap-2 lg:gap-3 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0">
+            <div className="flex lg:flex-col gap-3 lg:gap-4 pb-2 lg:pb-0">
               {steps.map((step, index) => {
                 const Icon = step.icon || Building;
                 const isActive = step.id === currentStep;
@@ -239,7 +242,7 @@ const EnhancedAddCompany = () => {
                 const isDisabled = disabledSteps.includes(step.id);
                 
                 return (
-                  <div key={step.id} className="relative flex lg:flex-col items-center">
+                  <div key={step.id} className="relative flex flex-col lg:flex-col items-center">
                     {/* Connecting Line - Only for desktop vertical layout */}
                     {index < steps.length - 1 && (
                       <motion.div 
@@ -325,7 +328,7 @@ const EnhancedAddCompany = () => {
             
             {/* Compact Progress Indicator */}
             <motion.div 
-              className="mt-4 lg:mt-6 p-3 bg-white rounded-xl border border-gray-200 shadow-sm"
+              className="mt-4 lg:mt-6 p-3 bg-white border border-gray-200"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -358,12 +361,12 @@ const EnhancedAddCompany = () => {
           <div className="flex-1 min-w-0">
             <FormProvider {...methods}>
               <motion.form
-                className="h-full flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+                className="bg-white border border-gray-200 rounded-xl shadow-sm"
                 onSubmit={methods.handleSubmit(onSubmit)}
                 variants={formVariants}
               >
                 {/* Content Header with Mobile Step Indicator */}
-                <div className="border-b border-gray-200 p-4 sm:p-6 bg-gradient-to-r from-white to-gray-50">
+                <div className="border-b border-gray-200 p-6 sm:p-8">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -422,7 +425,7 @@ const EnhancedAddCompany = () => {
                   </div>
                   
                   {/* Mobile Horizontal Step Indicator */}
-                  <div className="lg:hidden flex items-center gap-2 overflow-x-auto pb-2 mt-4">
+                  <div className="lg:hidden flex items-center gap-2 pb-2 mt-4">
                     {steps.map((step, index) => {
                       const isActive = step.id === currentStep;
                       const isCompleted = steps.findIndex(s => s.id === currentStep) > index;
@@ -455,13 +458,13 @@ const EnhancedAddCompany = () => {
                 </div>
                 
                 {/* Form Content */}
-                <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+                <div className="p-6 sm:p-8 min-h-[600px]">
                   {renderStepContent()}
                 </div>
                 
                 {/* Action Buttons */}
                 <motion.div 
-                  className="border-t border-gray-200 p-4 sm:p-6 bg-gradient-to-r from-white to-gray-50"
+                  className="border-t border-gray-200 p-6 sm:p-8"
                   variants={buttonVariants}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

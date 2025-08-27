@@ -20,7 +20,6 @@ const formConfig = (): FormFieldConfig[] => {
       placeholder: 'Enter company name',
       rules: { required: 'Company name is required' },
       disabled: isEdit,
-      fullWidth: true,
     },
     {
       name: 'industry',
@@ -30,15 +29,6 @@ const formConfig = (): FormFieldConfig[] => {
       control,
       placeholder: 'Select industry',
       rules: { required: 'Industry is required' },
-    },
-    {
-      name: 'instrument',
-      label: 'Instrument',
-      type: 'select',
-      options: InstrumentOptions,
-      control,
-      placeholder: 'Select instrument',
-      rules: { required: 'Instrument is required' },
     },
     {
       name: 'incorporation_type',
@@ -57,23 +47,7 @@ const formConfig = (): FormFieldConfig[] => {
       rules: { required: 'Jurisdiction is required' },
     },
 
-    // SPV Info
-    {
-      name: 'spv_type',
-      label: 'SPV Type',
-      type: 'select',
-      options: [
-        { value: 'asset_holding', label: 'Asset-Holding SPV' },
-        { value: 'project_specific', label: 'Project-Specific SPV' },
-        { value: 'investment', label: 'Investment SPV' },
-        { value: 'joint_venture', label: 'Joint-Venture SPV' },
-      ],
-      control,
-      placeholder: 'Select SPV type',
-      rules: { required: 'SPV type is required' },
-    },
-
-    // Contact
+    // Contact Information
     {
       name: 'email',
       label: 'Email Address',
@@ -82,7 +56,6 @@ const formConfig = (): FormFieldConfig[] => {
       placeholder: 'company@example.com',
       rules: { required: 'Email is required' },
       disabled: isEdit,
-      fullWidth: true,
     },
     {
       name: 'phone',
@@ -103,14 +76,20 @@ const formConfig = (): FormFieldConfig[] => {
       rules: { required: 'Address is required' },
     },
 
-    // Compliance
+    // SPV Info (moved after contact)
     {
-      name: 'registration_number',
-      label: 'Company Registration Number / Tax ID',
-      type: 'text',
+      name: 'spv_type',
+      label: 'SPV Type',
+      type: 'select',
+      options: [
+        { value: 'asset_holding', label: 'Asset-Holding SPV' },
+        { value: 'project_specific', label: 'Project-Specific SPV' },
+        { value: 'investment', label: 'Investment SPV' },
+        { value: 'joint_venture', label: 'Joint-Venture SPV' },
+      ],
       control,
-      placeholder: 'Enter registration number',
-      rules: { required: 'Registration number is required' },
+      placeholder: 'Select SPV type',
+      rules: { required: 'SPV type is required' },
     },
 
     // Documents
