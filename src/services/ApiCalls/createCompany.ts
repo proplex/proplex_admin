@@ -1,7 +1,10 @@
-import api from "@/lib/httpClient"
+import { createCompany } from '@/services/supabaseService';
 
-export const createCompany = (body:any) => {
-  return api.post('company/create', {
-    ...body
-  })
-}
+export const createCompanyApi = async (body: any) => {
+  try {
+    const result = await createCompany(body);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};

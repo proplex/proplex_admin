@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { supabase } from './supabaseClient';
 
 // Create an Axios instance
 const api = axios.create({
-  // baseURL: 'http://localhost:3000/api', 
-  baseURL: 'https://dev.ryzer.app/api',
+  baseURL: 'http://localhost:8000/api', 
   headers: {
     'Content-Type': 'application/json',
   },
@@ -11,8 +11,11 @@ const api = axios.create({
 
 // Request Interceptor: Attach Token to Requests
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('accessToken'); // Fetch token from storage
+  async (config) => {
+    // Get the Supabase session token
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -38,20 +41,21 @@ api.interceptors.response.use(
       console.warn('Unauthorized request: Attempting to refresh token.');
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-
-        if (!refreshToken) {
-          console.error('No refresh token found. Redirecting to login.');
+        // Try to refresh the Supabase session
+        const { data, error: refreshError } = await supabase.auth.refreshSession();
+        
+        if (refreshError) {
+          console.error('Session refresh failed:', refreshError);
           return handleLogout();
         }
 
-        const { data } = await axios.post('https://test.fandora.app/api/v2/admin/refresh', { refreshToken });
-
-        localStorage.setItem('accessToken', data.data.accessToken);
-
-        // Retry the original request with new token
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        return api(originalRequest);
+        if (data?.session) {
+          // Retry the original request with new token
+          originalRequest.headers.Authorization = `Bearer ${data.session.access_token}`;
+          return api(originalRequest);
+        } else {
+          return handleLogout();
+        }
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
         return handleLogout();
@@ -63,11 +67,10 @@ api.interceptors.response.use(
 );
 
 const handleLogout = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
+  // Sign out from Supabase
+  supabase.auth.signOut();
   window.location.href = '/sign-in'; // Redirect to login page
   return Promise.reject({ message: 'Session expired. Redirecting to login.' });
 };
-
 
 export default api;

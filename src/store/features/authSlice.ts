@@ -1,6 +1,5 @@
-
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { supabase } from '@/lib/supabaseClient';
 
 // Define types for the response data
 interface AuthData {
@@ -45,17 +44,25 @@ export const sendOtp = createAsyncThunk<
   { rejectValue: string }
 >('auth/sendOtp', async ({ phone, country_code }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(
-      'https://api.fandora.app/api/auth/login',
-      { phone, country_code }
-    );
-    if (response.status === 200 || response.status === 201) {
-      return response.data; // Return the successful response
-    } else {
-      return rejectWithValue(response.data.message); // Return error message if the request fails
+    // Using Supabase for authentication
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone: `${country_code}${phone}`,
+    });
+
+    if (error) {
+      return rejectWithValue(error.message);
     }
+
+    // Return success response
+    return {
+      message: 'OTP sent successfully',
+      data: {
+        phone: `${country_code}${phone}`,
+        otpExpireAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // 5 minutes from now
+      }
+    };
   } catch (error) {
-    return rejectWithValue('An error occurred. Please try again.'); // Handle any network errors
+    return rejectWithValue('An error occurred. Please try again.');
   }
 });
 
@@ -66,42 +73,56 @@ export const resendOtp = createAsyncThunk<
   { rejectValue: string }
 >('auth/resendOtp', async ({ phone }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(
-      'https://api.fandora.app/api/auth/resend',
-      { phone }
-    );
-    if (response.status === 200 || response.status === 201) {
-      return response.data; // Return the successful response
-    } else {
-      return rejectWithValue(response.data.message); // Return error message if the request fails
+    // Using Supabase for authentication
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone: phone,
+    });
+
+    if (error) {
+      return rejectWithValue(error.message);
     }
+
+    // Return success response
+    return {
+      message: 'OTP resent successfully',
+      data: {
+        phone: phone,
+        otpExpireAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // 5 minutes from now
+      }
+    };
   } catch (error) {
-    return rejectWithValue('An error occurred. Please try again.'); // Handle any network errors
+    return rejectWithValue('An error occurred. Please try again.');
   }
 });
 
 // Async thunk to handle the verify OTP API request
 export const verifyOtp = createAsyncThunk<
   { message: string },
-  { otp: string; user_id: number },
+  { otp: string; phone: string },
   { rejectValue: string }
->('auth/verifyOtp', async ({ otp, user_id }, { rejectWithValue }) => {
+>('auth/verifyOtp', async ({ otp, phone }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(
-      'https://api.fandora.app/api/auth/verify',
-      {
-        otp,
-        user_id,
-      }
-    );
-    if (response.status === 200 || response.status === 201) {
-      localStorage.setItem('authToken', response.data.data.token);
-      return response.data;
+    // Using Supabase for authentication
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone: phone,
+      token: otp,
+      type: 'sms',
+    });
+
+    if (error) {
+      return rejectWithValue(error.message);
+    }
+
+    // Store user data in Redux state
+    if (data?.user) {
+      return {
+        message: 'OTP verified successfully',
+      };
     } else {
-      return rejectWithValue(response.data.message); // Return error message if the request fails
+      return rejectWithValue('Verification failed');
     }
   } catch (error) {
-    return rejectWithValue('An error occurred. Please try again.'); // Handle any network errors
+    return rejectWithValue('An error occurred. Please try again.');
   }
 });
 
@@ -114,22 +135,35 @@ export const registerUser = createAsyncThunk<
   'auth/registerUser',
   async ({ phone, country_code, name, email }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        'https://api.fandora.app/api/auth/register',
-        {
-          phone,
-          country_code,
-          name,
-          email,
+      // Using Supabase for user registration
+      const { data, error } = await supabase.auth.signUp({
+        phone: `${country_code}${phone}`,
+        email: email,
+        options: {
+          data: {
+            name: name,
+            country_code: country_code,
+          }
         }
-      );
-      if (response.status === 200 || response.status === 201) {
-        return response.data; // Return the successful response
-      } else {
-        return rejectWithValue(response.data.message); // Return error message if the request fails
+      });
+
+      if (error) {
+        return rejectWithValue(error.message);
       }
+
+      // Return success response
+      return {
+        message: 'User registered successfully',
+        data: {
+          user_id: data.user?.id || '',
+          phone: `${country_code}${phone}`,
+          countryCode: country_code,
+          name: name,
+          email: email,
+        }
+      };
     } catch (error) {
-      return rejectWithValue('An error occurred. Please try again.'); // Handle any network errors
+      return rejectWithValue('An error occurred. Please try again.');
     }
   }
 );

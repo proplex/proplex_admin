@@ -2,21 +2,21 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSupabase } from './useSupabase';
 
-const useUpdateCompany = () => {
-  const { updateCompany: updateCompanySupabase } = useSupabase();
+const useUpdateAsset = () => {
+  const { updateAsset: updateAssetSupabase } = useSupabase();
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState<any>(null); 
   const [error, setError] = useState<string | null>(null);
   
-  const updateCompany = async (companyId: string, data: any) => {
+  const updateAsset = async (assetId: string, data: any) => {
     setLoading(true);
     setError(null); 
     setResponseData(null);
     try {
-      const result = await updateCompanySupabase(companyId, data);
+      const result = await updateAssetSupabase(assetId, data);
       if (result) {
         setResponseData(result.data);
-        toast.success('Company updated successfully!');
+        toast.success('Asset updated successfully!');
       } else {
         toast.error('Something went wrong');
       }
@@ -29,7 +29,7 @@ const useUpdateCompany = () => {
     }
   };
 
-  return { updateCompany, loading, responseData, error };
+  return { updateAsset, loading, responseData, error };
 };
 
-export default useUpdateCompany;
+export default useUpdateAsset;

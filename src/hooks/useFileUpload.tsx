@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -17,7 +15,8 @@ const useFileUpload = () => {
       formData.append('file', file);
 
       const response = await axios.post(
-        'https://dev.ryzer.app/api/asset',
+        'http://localhost:8000/api/asset',
+        // 'https://dev.ryzer.app/api/asset',
         formData,
         {
           headers: {

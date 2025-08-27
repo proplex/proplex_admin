@@ -1,13 +1,8 @@
-
-
 import { useRef, type ChangeEvent, type DragEvent } from 'react';
 import get from 'lodash/get';
 import { X, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Controller, useFormContext } from 'react-hook-form';
-import useSinglePresignedUrl from '@/hooks/file/useSinglePresignedUrl';
-import useSingleFileUpload from '@/hooks/file/useSingleFileUpload';
-import useGetSingleFileUrl from '@/hooks/file/useGetSingleFileUrl';
 
 interface ImageUploaderProps {
   name: string;
@@ -32,9 +27,6 @@ export default function ImageUploader({
   maxSize = 5 * 1024 * 1024,
   meta,
 }: ImageUploaderProps) {
-  const { getSinglePresignedUrl } = useSinglePresignedUrl();
-  const { uploadFile } = useSingleFileUpload();
-  const { getFileUrl } = useGetSingleFileUrl();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     setError,
@@ -45,10 +37,25 @@ export default function ImageUploader({
     setValue,
   } = useFormContext();
   const file = watch(name);
-  const processFile = async (file: File | null) => {
+  
+  const processFile = (file: File | null) => {
     if (!file) return;
 
-    if (!accept.includes(file.type.split('/')[1])) {
+    // Validate file type
+    const isValidFileType = accept.some((type) => {
+      if (type === '*') return true;
+      if (type.startsWith('.')) {
+        const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+        return type === fileExtension;
+      }
+      if (type.includes('/*')) {
+        const baseType = type.split('/')[0];
+        return file.type.startsWith(baseType);
+      }
+      return type === file.type;
+    });
+    
+    if (!isValidFileType) {
       setError(name, {
         type: 'manual',
         message: `Unsupported format. Allowed: ${accept.join(', ')}`,
@@ -64,22 +71,9 @@ export default function ImageUploader({
       return;
     }
 
-    await getSinglePresignedUrl({
-      fileName: file.name,
-      mimeType: file.type,
-      fileSize: file.size,
-      refId: meta?.refId || '',
-      belongsTo: meta?.belongsTo || '',
-      isPubilc: meta?.isPublic || false,
-    }).then(async (res) => {
-      await uploadFile({ url: res.uploadUrl, file }).then(async (r) => {
-        if (r.status === 200) {
-          await getFileUrl(res.savedS3Object._id).then((fileReponse) => {
-            setValue(name, fileReponse.s3Url);
-          });
-        }
-      });
-    });
+    // Create a local URL for the file
+    const localUrl = URL.createObjectURL(file);
+    setValue(name, localUrl);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -95,6 +89,10 @@ export default function ImageUploader({
   };
 
   const removeImage = () => {
+    // Clean up the object URL to prevent memory leaks
+    if (file && file.startsWith('blob:')) {
+      URL.revokeObjectURL(file);
+    }
     setValue(name, null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -131,7 +129,7 @@ export default function ImageUploader({
                   type='file'
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept={accept.map((ext) => `.${ext}`).join(',')}
+                  accept={accept.map((ext) => ext.startsWith('.') || ext.includes('/') ? ext : `.${ext}`).join(',')}
                   className='hidden'
                   disabled={disabled}
                 />

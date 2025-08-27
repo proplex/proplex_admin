@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Eye, Pencil, Trash2, Trash, ArrowUpDown, TrendingUp, Building2 } from 'lucide-react';
 import { Search as SearchIcon, Plus, Database, Filter, ChevronDown, RefreshCw, Loader2, MoreHorizontal, Calendar, Users, Activity } from 'lucide-react';
 import { useNavigate  } from 'react-router-dom';
+import Cloudinary from 'cloudinary';
 // Define types for the company data
 interface Company {
   id: string;

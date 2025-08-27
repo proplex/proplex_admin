@@ -3,9 +3,6 @@ import get from 'lodash/get';
 import { X, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Controller, useFormContext } from 'react-hook-form';
-import useMultiplePresignedUrl from '@/hooks/file/useMultiplePresignedUrl';
-import useMultipleFileUpload from '@/hooks/file/useMultipleFileUpload';
-import useGetMultipleFileUrl from '@/hooks/file/useGetMultipleFileUrl';
 
 interface MultiImageUploaderProps {
   name: string;
@@ -30,9 +27,6 @@ export default function MultiImageUploader({
   maxSize = 5 * 1024 * 1024,
   meta,
 }: MultiImageUploaderProps) {
-  const { getMultiplePresignedUrl } = useMultiplePresignedUrl();
-  const { uploadFile } = useMultipleFileUpload();
-  const { getFileUrl } = useGetMultipleFileUrl();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
@@ -44,48 +38,54 @@ export default function MultiImageUploader({
     setValue,
   } = useFormContext();
 
-  const files: string[] = watch(name) || [];
+  const files: { name: string; url: string; fileObject: File }[] = watch(name) || [];
 
   const error = get(errors, name)?.message as string;
 
-  const processFiles = async (selectedFiles: File[]) => {
-  const fileInputs = selectedFiles.map((file) => ({
-    fileName: file.name,
-    mimeType: file.type,
-    fileSize: file.size,
-    refId: meta?.refId || '',
-    belongsTo: meta?.belongsTo || '',
-    isPubilc: meta?.isPublic || false,
-    metadata: {}, // optional metadata if needed
-  }));
-
-  try {
-    const presignedResponses = await getMultiplePresignedUrl(fileInputs); // returns array
-
-    const uploadedUrls: string[] = [];
-
-    await Promise.all(
-      presignedResponses.map(async (res, index) => {
-        const uploadRes = await uploadFile({ url: res.uploadUrl, file: selectedFiles[index] });
-        if (uploadRes.status === 200) {
-          const fileUrlRes = await getFileUrl(res.savedS3Object._id);
-          uploadedUrls.push(fileUrlRes.s3Url);
+  const processFiles = (selectedFiles: File[]) => {
+    // Validate each file
+    for (const file of selectedFiles) {
+      // Validate file type
+      const isValidFileType = accept.some((type) => {
+        if (type === '*') return true;
+        if (type.startsWith('.')) {
+          const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+          return type === fileExtension;
         }
-      })
-    );
+        if (type.includes('/*')) {
+          const baseType = type.split('/')[0];
+          return file.type.startsWith(baseType);
+        }
+        return type === file.type;
+      });
+      
+      if (!isValidFileType) {
+        setError(name, {
+          type: 'manual',
+          message: `Unsupported format. Allowed: ${accept.join(', ')}`,
+        });
+        return;
+      }
 
-    if (uploadedUrls.length > 0) {
-      setValue(name, [...files, ...uploadedUrls]);
-      clearErrors(name);
+      if (file.size > maxSize) {
+        setError(name, {
+          type: 'manual',
+          message: `File exceeds ${maxSize / 1024 / 1024} MB`,
+        });
+        return;
+      }
     }
-  } catch (error) {
-    setError(name, {
-      type: 'manual',
-      message: 'Upload failed. Try again.',
-    });
-  }
-};
 
+    // Create local URLs for the files
+    const newFiles = selectedFiles.map((file) => ({
+      name: file.name,
+      url: URL.createObjectURL(file),
+      fileObject: file,
+    }));
+
+    setValue(name, [...files, ...newFiles]);
+    clearErrors(name);
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     clearErrors(name);
@@ -101,6 +101,12 @@ export default function MultiImageUploader({
   };
 
   const removeImage = (index: number) => {
+    // Clean up the object URL to prevent memory leaks
+    const fileToRemove = files[index];
+    if (fileToRemove && fileToRemove.url.startsWith('blob:')) {
+      URL.revokeObjectURL(fileToRemove.url);
+    }
+    
     const updated = [...files];
     updated.splice(index, 1);
     setValue(name, updated);
@@ -135,7 +141,7 @@ export default function MultiImageUploader({
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                accept={accept.map((ext) => `.${ext}`).join(',')}
+                accept={accept.map((ext) => ext.startsWith('.') || ext.includes('/') ? ext : `.${ext}`).join(',')}
                 className="hidden"
                 multiple
                 disabled={disabled}
@@ -156,9 +162,9 @@ export default function MultiImageUploader({
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {files.length > 0 ? (
-            files.map((url, index) => (
+            files.map((fileObj, index) => (
               <div key={index} className="relative border rounded-md h-32 overflow-hidden">
-                <img src={url} alt={`Uploaded ${index}`} className="w-full h-full object-contain" />
+                <img src={fileObj.url} alt={`Uploaded ${index}`} className="w-full h-full object-contain" />
                 <button
                   type="button"
                   className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center"

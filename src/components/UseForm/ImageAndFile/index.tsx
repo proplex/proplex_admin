@@ -1,5 +1,3 @@
-
-
 import { useState, useRef, type ChangeEvent, type DragEvent } from 'react';
 import { X, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -27,6 +25,7 @@ export default function ImageAndFileUploader({
   const [fileName, setFileName] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const {
+    setValue,
     setError,
     control,
     formState: { errors },
@@ -38,9 +37,19 @@ export default function ImageAndFileUploader({
   const processFile = (file: File | null) => {
     if (!file) return;
     
-    const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+    // Validate file type
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    const isValidFileType = accept.some((type) => {
+      if (type === '*') return true;
+      if (type.startsWith('.')) return type === fileExtension;
+      if (type.includes('/*')) {
+        const baseType = type.split('/')[0];
+        return file.type.startsWith(baseType);
+      }
+      return type === file.type;
+    });
     
-    if (!accept.includes(fileExtension)) {
+    if (!isValidFileType) {
       setError(name, {
         type: 'manual',
         message: `Unsupported format. Allowed: ${accept.join(', ')}`,
@@ -56,9 +65,19 @@ export default function ImageAndFileUploader({
       return;
     }
 
-    setFileType(fileExtension);
+    const localUrl = URL.createObjectURL(file);
+    setFileType(fileExtension.substring(1)); // Remove the dot
     setFileName(file.name);
-    setPreview(URL.createObjectURL(file));
+    setPreview(localUrl);
+    
+    // Set the form value
+    setValue(name, {
+      name: file.name,
+      url: localUrl,
+      fileObject: file,
+      type: file.type,
+      size: file.size,
+    });
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,9 +93,15 @@ export default function ImageAndFileUploader({
   };
 
   const removeImage = () => {
+    // Clean up the object URL to prevent memory leaks
     if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
+    setFileType('');
+    setFileName('');
     if (fileInputRef.current) fileInputRef.current.value = '';
+    
+    // Clear the form value
+    setValue(name, null);
   };
 
   return (
@@ -107,7 +132,7 @@ export default function ImageAndFileUploader({
                   type='file'
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept={accept.map((ext) => `.${ext}`).join(',')}
+                  accept={accept.map((ext) => ext.startsWith('.') || ext.includes('/') ? ext : `.${ext}`).join(',')}
                   className='hidden'
                   disabled={disabled}
                 />

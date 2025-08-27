@@ -1,5 +1,3 @@
-
-
 import axios from 'axios';
 
 const useSinglePresignedUrl = () => {
@@ -20,7 +18,8 @@ const useSinglePresignedUrl = () => {
   }) => {
     try {
       const response = await axios.post(
-        'https://dev.ryzer.app/api/s3-file/upload-single',
+        'http://localhost:8000/api/s3-file/upload-single',
+        // 'https://dev.ryzer.app/api/s3-file/upload-single',
         {
           fileName,
           mimeType,

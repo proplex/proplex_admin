@@ -1,20 +1,17 @@
-
-
-import type React from 'react';
+import React, { useState } from 'react';
 import get from 'lodash/get';
 import { useFormContext, Controller, RegisterOptions } from 'react-hook-form';
-import { Upload, Check, FileIcon, X, ExternalLink } from 'lucide-react';
+import { Upload, Check, FileIcon, X, ExternalLink, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { toast } from 'react-hot-toast';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import useSinglePresignedUrl from '@/hooks/file/useSinglePresignedUrl';
-import useSingleFileUpload from '@/hooks/file/useSingleFileUpload';
-import useGetSingleFileUrl from '@/hooks/file/useGetSingleFileUrl';
 
 interface FileUploadProps {
   name: string;
@@ -39,9 +36,6 @@ function FileUploadController({
   rules,
   meta,
 }: FileUploadProps) {
-  const { getSinglePresignedUrl } = useSinglePresignedUrl();
-  const { uploadFile } = useSingleFileUpload();
-  const { getFileUrl } = useGetSingleFileUrl();
   const {
     setValue,
     watch,
@@ -52,13 +46,17 @@ function FileUploadController({
   const values = watch(name);
   const file = values?.name;
   const fileUrl = values?.url;
+  const fileObject = values?.fileObject; // Store the actual file object
+
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    onChange: (value: File | null) => void
+    onChange: (value: any) => void
   ) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
+    
     // Validate file size if maxSize is provided
     if (maxSize && selectedFile.size > maxSize) {
       setError(
@@ -71,42 +69,95 @@ function FileUploadController({
       );
       return;
     }
-    await getSinglePresignedUrl({
-      fileName: selectedFile.name,
-      mimeType: selectedFile.type,
-      fileSize: selectedFile.size,
-      refId: meta?.refId || '',
-      belongsTo: meta?.belongsTo || '',
-      isPubilc: meta?.isPublic || false,
-    }).then(async (res) => {
-      await uploadFile({ url: res.uploadUrl, file: selectedFile }).then(
-        async (r) => {
-          if (r.status === 200) {
-            await getFileUrl(res.savedS3Object._id).then((fileReponse) => {
-              setValue(name, {
-                name: selectedFile.name,
-                url: fileReponse.s3Url,
-              });
-            });
-          }
-        }
-      );
+    
+    // Validate file type
+    const fileExtension = '.' + selectedFile.name.split('.').pop()?.toLowerCase();
+    const isValidFileType = accept.some((type) => {
+      if (type === '*') return true;
+      if (type.startsWith('.')) return type === fileExtension;
+      if (type.includes('/*')) {
+        const baseType = type.split('/')[0];
+        return selectedFile.type.startsWith(baseType);
+      }
+      return type === selectedFile.type;
     });
-    // onChange(selectedFile);
+    
+    if (!isValidFileType) {
+      setError(
+        name,
+        {
+          type: 'manual',
+          message: `Invalid file type. Accepted types: ${accept.join(', ')}`,
+        },
+        { shouldFocus: true }
+      );
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      
+      // Upload to Cloudinary
+      const result = await uploadToCloudinary(selectedFile, `proplex/${name}`);
+      
+      // Set the form value with Cloudinary file info
+      const fileData = {
+        name: selectedFile.name,
+        url: result.secure_url,
+        publicId: result.public_id,
+        type: selectedFile.type,
+        size: selectedFile.size,
+      };
+      
+      setValue(name, fileData);
+      onChange(fileData);
+      
+      toast.success('File uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Failed to upload file');
+      setError(name, {
+        type: 'manual',
+        message: 'Failed to upload file. Please try again.',
+      });
+    } finally {
+      setIsUploading(false);
+    }
   };
 
-  const handleRemove = (onChange: (value: null) => void) => {
-    setValue(
-      name,
-      {
-        name: null,
-        url: null,
-      },
-      {
-        shouldValidate: true,
+  const handleRemove = async (onChange: (value: null) => void) => {
+    try {
+      // If there's a publicId, delete the file from Cloudinary
+      if (values?.publicId) {
+        await fetch(`/api/cloudinary/delete?publicId=${encodeURIComponent(values.publicId)}`, {
+          method: 'DELETE',
+        });
       }
-    );
-    onChange(null);
+      
+      // Clean up the object URL to prevent memory leaks
+      if (fileUrl && fileUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(fileUrl);
+      }
+      
+      setValue(
+        name,
+        {
+          name: null,
+          url: null,
+          publicId: null,
+          fileObject: null,
+        },
+        {
+          shouldValidate: true,
+        }
+      );
+      onChange(null);
+      
+      toast.success('File removed successfully');
+    } catch (error) {
+      console.error('Error removing file:', error);
+      toast.error('Failed to remove file');
+    }
   };
 
   const description = `Accepts: ${accept?.map((ext) => `${ext}`).join(', ')}${
@@ -199,12 +250,22 @@ function FileUploadController({
                   type='button'
                   variant='secondary'
                   size='sm'
-                  className='h-8'
+                  className='h-8 min-w-[80px]'
+                  disabled={isUploading}
                   asChild
                 >
                   <label htmlFor={`file-${name}`} className='cursor-pointer'>
-                    <Upload className='h-4 w-4 mr-1' />
-                    <span>{file ? 'Replace' : 'Upload'}</span>
+                    {isUploading ? (
+                      <>
+                        <Loader2 className='h-4 w-4 mr-1 animate-spin' />
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className='h-4 w-4 mr-1' />
+                        <span>{file ? 'Replace' : 'Upload'}</span>
+                      </>
+                    )}
                   </label>
                 </Button>
 
@@ -212,7 +273,7 @@ function FileUploadController({
                   type='file'
                   className='sr-only'
                   id={`file-${name}`}
-                  accept={accept?.map((ext) => `.${ext}`).join(',')}
+                  accept={accept?.map((ext) => ext.startsWith('.') || ext.includes('/') ? ext : `.${ext}`).join(',')}
                   onChange={(e) => handleFileChange(e, onChange)}
                   aria-describedby={`${name}-error`}
                 />

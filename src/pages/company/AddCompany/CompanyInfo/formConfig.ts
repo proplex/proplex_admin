@@ -1,6 +1,5 @@
 import { FormFieldConfig } from '@/components/UseForm/ControllerMap';
 import { IncorporationType, InstrumentOptions, IndustryOptions } from '@/constants/global';
-import { capitalizeFirstLetter } from '@/helpers/global';
 import { useFormContext } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
@@ -12,19 +11,14 @@ const formConfig = (): FormFieldConfig[] => {
   const isEdit = id ? true : false;
   
   return [
+    // Company Info
     {
       name: 'name',
       label: 'Company Name',
       type: 'text',
       control,
       placeholder: 'Enter company name',
-      rules: {
-        required: 'Company name is required',
-        pattern: {
-          value: /^[A-Za-z\s]+$/i,
-          message: 'Only letters are allowed',
-        },
-      },
+      rules: { required: 'Company name is required' },
       disabled: isEdit,
       fullWidth: true,
     },
@@ -35,9 +29,7 @@ const formConfig = (): FormFieldConfig[] => {
       options: IndustryOptions,
       control,
       placeholder: 'Select industry',
-      rules: {
-        required: 'Industry is required',
-      },
+      rules: { required: 'Industry is required' },
     },
     {
       name: 'instrument',
@@ -46,9 +38,7 @@ const formConfig = (): FormFieldConfig[] => {
       options: InstrumentOptions,
       control,
       placeholder: 'Select instrument',
-      rules: {
-        required: 'Instrument is required',
-      },
+      rules: { required: 'Instrument is required' },
     },
     {
       name: 'incorporation_type',
@@ -58,120 +48,81 @@ const formConfig = (): FormFieldConfig[] => {
       control,
       placeholder: 'Select incorporation type',
     },
-    
-    // Contact Information
+    {
+      name: 'jurisdiction',
+      label: 'Jurisdiction / Country',
+      type: 'text',
+      control,
+      placeholder: 'Enter jurisdiction',
+      rules: { required: 'Jurisdiction is required' },
+    },
+
+    // SPV Info
+    {
+      name: 'spv_type',
+      label: 'SPV Type',
+      type: 'select',
+      options: [
+        { value: 'asset_holding', label: 'Asset-Holding SPV' },
+        { value: 'project_specific', label: 'Project-Specific SPV' },
+        { value: 'investment', label: 'Investment SPV' },
+        { value: 'joint_venture', label: 'Joint-Venture SPV' },
+      ],
+      control,
+      placeholder: 'Select SPV type',
+      rules: { required: 'SPV type is required' },
+    },
+
+    // Contact
     {
       name: 'email',
       label: 'Email Address',
       type: 'email',
       control,
       placeholder: 'company@example.com',
-      rules: {
-        required: 'Email is required',
-        pattern: {
-          value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
-          message: 'Invalid email address',
-        },
-      },
+      rules: { required: 'Email is required' },
       disabled: isEdit,
       fullWidth: true,
-    },
-    {
-      name: 'pan_number',
-      label: 'PAN Number',
-      type: 'text',
-      control,
-      placeholder: 'ABCDE1234F',
-      rules: {
-        required: 'PAN number is required',
-        pattern: {
-          value: /[A-Z]{5}[0-9]{4}[A-Z]{1}/,
-          message: 'Invalid PAN number (e.g. ABCDE1234F)',
-        },
-      },
-      disabled: isEdit,
     },
     {
       name: 'phone',
       label: 'Phone Number',
       type: 'tel',
       control,
-      placeholder: '9876543210',
-      rules: {
-        required: 'Phone number is required',
-        pattern: {
-          value: /^[0-9]{10}$/i,
-          message: 'Invalid phone number (10 digits required)',
-        },
-      },
+      placeholder: '+1 234 567 890',
+      rules: { required: 'Phone number is required' },
       disabled: isEdit,
     },
-    
-    // Location Information
     {
       name: 'address',
-      label: 'Address',
+      label: 'Registered Address',
       type: 'textarea',
       control,
-      placeholder: 'Enter complete address',
+      placeholder: 'Enter full address',
       fullWidth: true,
-      rules: {
-        required: 'Address is required',
-      },
+      rules: { required: 'Address is required' },
     },
+
+    // Compliance
     {
-      name: 'city',
-      label: 'City',
+      name: 'registration_number',
+      label: 'Company Registration Number / Tax ID',
       type: 'text',
       control,
-      placeholder: 'Enter city',
-      rules: {
-        required: 'City is required',
-        pattern: {
-          value: /^[A-Za-z\s]+$/i,
-          message: 'Only letters are allowed',
-        },
-      },
+      placeholder: 'Enter registration number',
+      rules: { required: 'Registration number is required' },
     },
+
+    // Documents
     {
-      name: 'state',
-      label: 'State',
-      type: 'text',
-      control,
-      placeholder: 'Enter state',
-      rules: {
-        required: 'State is required',
-        pattern: {
-          value: /^[A-Za-z\s]+$/i,
-          message: 'Only letters are allowed',
-        },
-      },
-    },
-    {
-      name: 'pincode',
-      label: 'Pincode',
-      type: 'text',
-      control,
-      placeholder: '123456',
-      rules: {
-        required: 'Pincode is required',
-        pattern: {
-          value: /^[0-9]{6}$/i,
-          message: 'Invalid pincode (6 digits required)',
-        },
-      },
-    },
-    
-    // Document Uploads
-    {
-      name: 'llp_agreement_copy',
-      label: `Upload ${capitalizeFirstLetter(incorporation_type)} Document`,
+      name: 'certificate_of_incorporation',
+      label: 'Certificate of Incorporation',
       type: 'file',
       noOfFiles: 1,
       accept: ['image/*', '.pdf'],
       control,
-      hidden: isPrivate,
       fullWidth: true,
+      rules: { required: 'Certificate of Incorporation is required' },
     },
     {
       name: 'moa',
@@ -184,8 +135,8 @@ const formConfig = (): FormFieldConfig[] => {
       fullWidth: true,
     },
     {
-      name: 'aoi',
-      label: 'AOI Document',
+      name: 'aoa',
+      label: 'AOA Document',
       type: 'file',
       noOfFiles: 1,
       accept: ['image/*', '.pdf'],
