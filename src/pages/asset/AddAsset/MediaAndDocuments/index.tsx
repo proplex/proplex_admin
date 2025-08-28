@@ -129,7 +129,7 @@ const MediaAndDocumentsComponent = memo(({ tab, step }: Props) => {
 
   return (
     <motion.div
-      className="min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-blue-50"
+      className="min-h-[600px]"
       variants={containerVariants}
       initial="initial"
       animate="animate"

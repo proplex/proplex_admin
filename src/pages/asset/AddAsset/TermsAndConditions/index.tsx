@@ -134,7 +134,7 @@ const TermsAndConditions = memo(({ tab }: Props) => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-indigo-50 via-blue-50 to-teal-50 rounded-xl p-6 border border-indigo-100 shadow-sm overflow-hidden relative"
+        className="rounded-xl p-6 m-4 border shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -178,63 +178,12 @@ const TermsAndConditions = memo(({ tab }: Props) => {
           </div>
           
           {/* Enhanced Features Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            {tabs.map((tab, index) => {
-              const Icon = tab.icon;
-              const colors = ['indigo', 'blue'];
-              const color = colors[index % colors.length];
-              
-              return (
-                <motion.div
-                  key={tab.id}
-                  variants={featureVariants}
-                  className={`bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-${color}-200 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer`}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  onClick={() => handleTabChange(tab.id)}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 bg-${color}-100 rounded-lg flex-shrink-0`}>
-                      <Icon className={`w-4 h-4 text-${color}-600`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-semibold text-gray-800 block truncate">{tab.title}</span>
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{tab.description}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+          
         </div>
       </motion.div>
       
       {/* Quick Stats */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, staggerChildren: 0.1 }}
-      >
-        <StatsCard
-          icon={Shield}
-          label="Legal Compliance"
-          value="Active"
-          color="indigo"
-        />
-        <StatsCard
-          icon={MessageSquare}
-          label="Support Ready"
-          value="Available"
-          color="blue"
-        />
-        <StatsCard
-          icon={CheckCircle2}
-          label="Documentation"
-          value="Complete"
-          color="emerald"
-        />
-      </motion.div>
-
+      
       {/* Enhanced Content */}
       <motion.div
         variants={contentVariants}

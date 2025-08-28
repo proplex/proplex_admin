@@ -93,7 +93,7 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
 
   return (
     <Suspense fallback={<div>Loading Token Information...</div>}>
-      <div className="min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-blue-50 relative overflow-hidden">
+      <div className="min-h-[600px]  relative overflow-hidden">
         <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
           {/* Header */}
           <motion.div
@@ -131,7 +131,7 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
                     onClick={() => handleTabChange(tabItem.id)}
                     className={`flex items-center gap-3 px-6 py-4 text-sm font-medium rounded-t-lg border-b-2 transition-all duration-200 ${
                       isActive 
-                        ? 'border-blue-500 text-blue-600 bg-blue-50' 
+                        ? ' text-blue-600 ' 
                         : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-300'
                     }`}
                     whileHover={{ scale: 1.02 }}
@@ -144,7 +144,7 @@ const TokenInformationComponent = ({ tab, step, asset }: Props) => {
                     </div>
                     {/* Active indicator */}
                     {isActive && (
-                      <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
+                      <span className="ml-2 w-2 h-2 bg-blue-50 rounded-full"></span>
                     )}
                   </motion.button>
                 );

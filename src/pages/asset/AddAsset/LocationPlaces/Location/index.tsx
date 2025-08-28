@@ -185,8 +185,8 @@ const Index: React.FC = () => {
     >
       {/* Enhanced Map Card */}
       <motion.div variants={mapVariants}>
-        <Card className='overflow-hidden shadow-lg border-0 bg-gradient-to-br from-white to-blue-50'>
-          <CardHeader className='pb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100'>
+        <Card className='overflow-hidden shadow-lg border-0 '>
+          <CardHeader className='pb-4  border-b '>
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
                 <motion.div
@@ -459,6 +459,7 @@ const Index: React.FC = () => {
           </Tabs>
         </motion.div>
       </motion.div>
+      
     </motion.div>
   );
 };

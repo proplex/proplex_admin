@@ -89,11 +89,11 @@ const FeeStructure: React.FC = () => {
       {/* ------------------------------------------------------------------ */}
       <motion.header
         variants={fadeUp}
-        className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 shadow-sm border border-blue-100"
+        className="relative overflow-hidden rounded-xl  p-6 m-4 shadow-sm border"
       >
         {/* subtle animated blobs */}
-        <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" />
+        {/* <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" /> */}
 
         <div className="relative flex items-center gap-4">
           <motion.div
@@ -103,7 +103,7 @@ const FeeStructure: React.FC = () => {
             <Calculator className="w-7 h-7 text-white" />
           </motion.div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-60\ bg-clip-text text-transparent">
               Tokenisation Fee Structure
             </h1>
             <p className="text-gray-600 mt-1 flex items-center gap-2">
@@ -117,7 +117,7 @@ const FeeStructure: React.FC = () => {
       {/* ------------------------------------------------------------------ */}
       {/* Key Benefits */}
       {/* ------------------------------------------------------------------ */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 m-4">
         {benefitCards.map(({ Icon, title, desc, color, bg }, idx) => (
           <motion.div
             key={title}

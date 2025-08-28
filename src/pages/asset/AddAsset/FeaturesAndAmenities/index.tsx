@@ -96,7 +96,7 @@ const FeaturesAndAmenities = memo(({ tab, step }: Props) => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-emerald-50 via-green-50 to-teal-50 rounded-xl p-6 border border-emerald-100 shadow-sm overflow-hidden relative"
+        className="rounded-xl p-6 border m-4 shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -133,7 +133,7 @@ const FeaturesAndAmenities = memo(({ tab, step }: Props) => {
       
       {/* Feature Overview Cards */}
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 m-4 lg:grid-cols-4 gap-4"
         variants={contentVariants}
       >
         {[

@@ -125,7 +125,7 @@ const LocationPlaces = memo(({ tab, step }: Props) => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-xl p-6 border border-blue-100 shadow-sm overflow-hidden relative"
+        className="m-4 rounded-xl p-6 border shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -238,44 +238,19 @@ const LocationPlaces = memo(({ tab, step }: Props) => {
       </motion.div>
       
       {/* Quick Stats */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, staggerChildren: 0.1 }}
-      >
-        <StatsCard
-          icon={Search}
-          label="Location Search"
-          value="Active"
-          color="blue"
-          trend="up"
-        />
-        <StatsCard
-          icon={Layers}
-          label="Map Layers"
-          value="Loaded"
-          color="indigo"
-        />
-        <StatsCard
-          icon={CheckCircle2}
-          label="Places Found"
-          value="Ready"
-          color="emerald"
-        />
-      </motion.div>
+     
 
       {/* Content */}
       <motion.div
         variants={contentVariants}
-        className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden"
+        className="bg-white rounded-xl m-4 border  shadow-lg overflow-hidden"
       >
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center p-16 space-y-6">
             {/* Enhanced Loading Animation */}
             <div className="relative">
               <motion.div
-                className="w-16 h-16 border-4 border-blue-200 rounded-full"
+                className="w-16 h-16 border-4 rounded-full"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
               />

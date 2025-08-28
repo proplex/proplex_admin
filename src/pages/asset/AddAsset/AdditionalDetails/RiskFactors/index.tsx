@@ -186,7 +186,7 @@ const RiskFactor = memo(() => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border border-red-100 shadow-sm overflow-hidden relative"
+        className="rounded-xl m-4 p-6 border  shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -220,15 +220,7 @@ const RiskFactor = memo(() => {
             </div>
             
             {/* Add Button */}
-            <motion.button
-              onClick={handleAdd}
-              className="bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white px-6 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Plus className="w-4 h-4" />
-              <span className="font-medium">Add Risk Factor</span>
-            </motion.button>
+            
           </div>
         </div>
       </motion.div>

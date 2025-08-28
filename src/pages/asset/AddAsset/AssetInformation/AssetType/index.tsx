@@ -132,6 +132,14 @@ function Index({ asset }: EnhancedAssetTypeProps) {
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Asset Category</h2>
           <p className="text-gray-600">Choose the type of asset you want to list</p>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <span className="flex items-center text-sm">
+              <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-1"></span> Available Categories
+            </span>
+            <span className="flex items-center text-sm ml-4">
+              <span className="inline-block w-3 h-3 bg-gray-300 rounded-full mr-1"></span> Coming Soon
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -152,7 +160,10 @@ function Index({ asset }: EnhancedAssetTypeProps) {
                   } ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:shadow-md'}`}
                   onClick={() => !option.disabled && handleCategorySelect(option.value)}
                 >
-                  <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+                  <CardContent className="p-4 text-center h-full flex flex-col justify-center relative">
+                    {!option.disabled && (
+                      <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full"></div>
+                    )}
                     <div className="w-10 h-10 mx-auto mb-3 text-gray-700">
                       {option.icon}
                     </div>

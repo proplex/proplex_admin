@@ -47,27 +47,7 @@ const Index = () => {
       animate="animate"
     >
       {/* Enhanced Header */}
-      <motion.div
-        variants={headerVariants}
-        className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg"
-      >
-        <div className="flex items-center gap-4">
-          <motion.div
-            className="p-3 bg-gray-100 rounded-xl shadow-sm"
-            whileHover={{ scale: 1.05, rotate: -5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Camera className="w-6 h-6 text-gray-700" />
-          </motion.div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Media Gallery</h2>
-            <p className="text-gray-600 mt-1 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-gray-500" />
-              Upload images, videos, and showcase your asset
-            </p>
-          </div>
-        </div>
-      </motion.div>
+      
 
       {/* Enhanced Form Grid with Cards */}
       <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -125,37 +105,7 @@ const Index = () => {
       </motion.div>
 
       {/* Tips Card */}
-      <motion.div
-        variants={cardVariants}
-        className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg"
-      >
-        <div className="flex items-start gap-4">
-          <motion.div
-            className="p-2 bg-amber-100 rounded-lg"
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <FileText className="w-5 h-5 text-amber-600" />
-          </motion.div>
-          <div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-2">Media Upload Tips</h4>
-            <ul className="text-gray-700 space-y-1 text-sm">
-              <li className="flex items-center gap-2">
-                <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                Upload high-resolution images (minimum 1920x1080 for main image)
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                Video links should be from YouTube or Vimeo for best compatibility
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                Gallery images will be displayed in the order they are uploaded
-              </li>
-            </ul>
-          </div>
-        </div>
-      </motion.div>
+
     </motion.div>
   );
 };

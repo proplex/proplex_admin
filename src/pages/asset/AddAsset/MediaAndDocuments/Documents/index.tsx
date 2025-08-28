@@ -117,7 +117,7 @@ const Index = () => {
       {/* Enhanced Header */}
       <motion.div
         variants={itemVariants}
-        className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100"
+        className="rounded-2xl p-6 border"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

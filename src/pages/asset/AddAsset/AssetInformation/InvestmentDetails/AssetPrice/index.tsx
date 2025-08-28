@@ -3,10 +3,7 @@ import FormGenerator from "@/components/UseForm/FormGenerator";
 import { feeFormConfig, formConfig } from "./formConfig";
 import { useFormContext } from "react-hook-form";
 import InfoTag from "@/components/cards/asset/InfoTag";
-import Registration from "./Registration";
-import Legal from "./Legal";
-import Platform from "./Platform";
-import Brokerage from './Brokerage';
+import FeesTable from "./FeesTable";
 import { Calculator, DollarSign, TrendingUp, Receipt } from 'lucide-react';
 
 
@@ -129,7 +126,7 @@ const index = () => {
         />
       </motion.div>
 
-      {/* Enhanced Fee Sections */}
+      {/* Unified Fee Structure Table */}
       <motion.div 
         variants={itemVariants}
         className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
@@ -141,18 +138,9 @@ const index = () => {
           </div>
           <p className="text-sm text-amber-700 mt-1">Configure all applicable fees and charges</p>
         </div>
-        <div className="p-6 space-y-6">
+        <div className="p-6">
           <motion.div variants={feeCardVariants}>
-            <Registration />
-          </motion.div>
-          <motion.div variants={feeCardVariants}>
-            <Legal />
-          </motion.div>
-          <motion.div variants={feeCardVariants}>
-            <Platform />
-          </motion.div>
-          <motion.div variants={feeCardVariants}>
-            <Brokerage />
+            <FeesTable />
           </motion.div>
         </div>
       </motion.div>

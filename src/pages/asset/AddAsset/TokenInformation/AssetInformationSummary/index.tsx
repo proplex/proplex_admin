@@ -157,25 +157,7 @@ const AssetInformationSummary = ({ asset }: { asset?: any }) => {
       </motion.div>
 
       {/* Information Note */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="bg-blue-50 border border-blue-200 rounded-xl p-4"
-      >
-        <div className="flex items-start gap-3">
-          <div className="p-1 bg-blue-100 rounded-full mt-0.5">
-            <FileText className="w-4 h-4 text-blue-600" />
-          </div>
-          <div>
-            <h4 className="font-medium text-blue-900 mb-1">Complete Asset Configuration</h4>
-            <p className="text-blue-800 text-sm">
-              For detailed asset configuration including tenant information, legal details, and escrow setup, 
-              visit the main Asset Information section in the previous step.
-            </p>
-          </div>
-        </div>
-      </motion.div>
+     
     </div>
   );
 };

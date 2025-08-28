@@ -136,7 +136,7 @@ export const FeeStructureComponent: React.FC<FeeStructureComponentProps> = ({
     >
       {/* Header */}
       <motion.div variants={itemVariants}>
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+        <Card className=" m-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
