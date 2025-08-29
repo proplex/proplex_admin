@@ -1,209 +1,183 @@
-// =========================================================================
-//  FeeStructure.tsx – Tokenisation Cost Calculator (Fully Updated)
-//  Built with React 18, Framer-motion, TailwindCSS, shadcn/ui
-// =========================================================================
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-
 import { FeeStructureComponent } from '@/components/FeeStructure';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-
-import {
-  Calculator,
-  DollarSign,
-  TrendingUp,
-  Shield,
-  Info,
+import { Input } from '@/components/ui/input';
+import { 
+  Calculator, 
+  DollarSign, 
+  TrendingUp, 
+  Shield, 
+  Info, 
   CheckCircle2,
-  AlertTriangle,
+  LucideIcon
 } from 'lucide-react';
 
-// -------------------------------------------------------------------------
-// Animation presets
-// -------------------------------------------------------------------------
-const container = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
-};
+// Feature Card Component
+interface FeatureCardProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description }) => (
+  <div className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 shadow-sm bg-white">
+    <div className={`p-2 rounded-lg ${Icon === TrendingUp ? 'bg-green-100' : 
+                              Icon === Shield ? 'bg-blue-100' :
+                              Icon === Calculator ? 'bg-purple-100' :
+                              'bg-orange-100'}`}>
+      <Icon className={`w-4 h-4 ${Icon === TrendingUp ? 'text-green-600' : 
+                              Icon === Shield ? 'text-blue-600' :
+                              Icon === Calculator ? 'text-purple-600' :
+                              'text-orange-600'}`} />
+    </div>
+    <div>
+      <div className="font-medium text-sm">{title}</div>
+      <div className="text-xs text-gray-500">{description}</div>
+    </div>
+  </div>
+);
 
-// -------------------------------------------------------------------------
-// Component
-// -------------------------------------------------------------------------
 const FeeStructure: React.FC = () => {
-  const { watch } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const category = watch('category');
-  const basePropertyValue = watch('basePropertyValue');
+  const [propertyValue, setPropertyValue] = useState("");
 
-  const benefitCards = [
+  const handlePropertyValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPropertyValue(value);
+    setValue('basePropertyValue', value ? Number(value) : 0);
+  };
+
+  // Features data
+  const features = [
     {
-      Icon: TrendingUp,
-      title: 'Transparent Pricing',
-      desc: 'Category-specific fee structures',
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-100',
+      icon: TrendingUp,
+      title: "Transparent Pricing",
+      description: "Category-specific fee structures"
     },
     {
-      Icon: Shield,
-      title: 'Regulatory Compliant',
-      desc: 'All legal & compliance costs included',
-      color: 'text-blue-600',
-      bg: 'bg-blue-100',
+      icon: Shield,
+      title: "Regulatory Compliant",
+      description: "All legal & compliance costs included"
     },
     {
-      Icon: Calculator,
-      title: 'Real-Time Calculation',
-      desc: 'Instant updates on value change',
-      color: 'text-purple-600',
-      bg: 'bg-purple-100',
+      icon: Calculator,
+      title: "Real-Time Calculation",
+      description: "Instant updates on value change"
     },
     {
-      Icon: CheckCircle2,
-      title: 'All-Inclusive',
-      desc: 'Zero hidden or surprise fees',
-      color: 'text-orange-600',
-      bg: 'bg-orange-100',
-    },
+      icon: CheckCircle2,
+      title: "All-Inclusive",
+      description: "Zero hidden or surprise fees"
+    }
   ];
 
   return (
-    <motion.section
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      className="flex flex-col w-full space-y-8"
-    >
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Hero Header */}
-      {/* ------------------------------------------------------------------ */}
-      <motion.header
-        variants={fadeUp}
-        className="relative overflow-hidden rounded-xl  p-6 m-4 shadow-sm border"
-      >
-        {/* subtle animated blobs */}
-        {/* <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-1000" /> */}
-
-        <div className="relative flex items-center gap-4">
-          <motion.div
-            whileHover={{ scale: 1.05, rotate: 3 }}
-            className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
-          >
-            <Calculator className="w-7 h-7 text-white" />
-          </motion.div>
+    <div className="flex flex-col w-full space-y-6">
+      {/* Header */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-blue-100 rounded-lg">
+            <Calculator className="w-5 h-5 text-blue-600" />
+          </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-60\ bg-clip-text text-transparent">
-              Tokenisation Fee Structure
-            </h1>
-            <p className="text-gray-600 mt-1 flex items-center gap-2">
-              <DollarSign className="w-4 h-4" />
-              Understand the total cost of digitalising your real-estate asset.
+            <h1 className="text-xl font-bold text-gray-900">Tokenisation Fee Structure</h1>
+            <p className="text-sm text-gray-600">$ Understand the total cost of digitalising your real-estate asset.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {features.map((feature, index) => (
+          <FeatureCard 
+            key={index}
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+          />
+        ))}
+      </div>
+
+      {/* Fee Structure */}
+      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <DollarSign className="w-4 h-4 text-blue-600" />
+          </div>
+          <h2 className="text-lg font-semibold text-gray-900">Fee Structure</h2>
+          <Badge className="ml-1 bg-blue-100 text-blue-700 hover:bg-blue-200">Asset Category Fees</Badge>
+        </div>
+        
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <DollarSign className="w-4 h-4 text-gray-500" />
+            <h3 className="text-base font-medium text-gray-800">Base Property Value</h3>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-medium text-gray-700 w-32">Property Value (USD)</div>
+            <Input 
+              type="text"
+              value={propertyValue}
+              onChange={handlePropertyValueChange}
+              placeholder="Enter property value"
+              className="w-full max-w-md"
+            />
+          </div>
+        </div>
+        
+        {/* Fee Structure Component */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 bg-blue-100 flex items-center justify-center rounded-full">
+              <span className="text-blue-600 text-sm font-semibold">$</span>
+            </div>
+            <h3 className="text-base font-medium text-gray-800">Fee Structure</h3>
+            <Badge className="ml-1 bg-blue-50 text-blue-700">Asset Category Fees</Badge>
+          </div>
+          
+          {category && (
+            <FeeStructureComponent
+              showComparison={false}
+              allowCustomization={false}
+              compactMode={true}
+            />
+          )}
+        </div>
+      </div>
+
+      {/* Need-to-Know Information */}
+      <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
+        <div className="flex items-center mb-4">
+          <Info className="w-5 h-5 text-blue-600 mr-2" />
+          <h3 className="text-lg font-semibold text-gray-900">Need-to-Know</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          <div>
+            <h4 className="font-medium text-gray-800 mb-1">Token Supply Basis</h4>
+            <p className="text-sm text-gray-600">
+              Tokens are issued against the Gross Total Property Value (i.e. purchase price plus all fees—no surprises).
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium text-gray-800 mb-1">Payment Milestones</h4>
+            <p className="text-sm text-gray-600">
+              Registration & legal fees are due at closing; platform fees are settled at token issuance.
             </p>
           </div>
         </div>
-      </motion.header>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Key Benefits */}
-      {/* ------------------------------------------------------------------ */}
-      <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 m-4">
-        {benefitCards.map(({ Icon, title, desc, color, bg }, idx) => (
-          <motion.div
-            key={title}
-            variants={fadeUp}
-            whileHover={{ scale: 1.03, y: -2 }}
-            className={`p-4 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all ${bg}`}
-          >
-            <div className="flex items-center gap-3">
-              <Icon className={`w-6 h-6 ${color}`} />
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm">{title}</h3>
-                <p className="text-xs text-gray-600 mt-0.5">{desc}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Missing Category Alert */}
-      {/* ------------------------------------------------------------------ */}
-      {!category && (
-        <motion.div variants={fadeUp}>
-          <Alert className="bg-amber-50 border-amber-300 text-amber-800">
-            <AlertTriangle className="w-5 h-5" />
-            <AlertDescription>
-              <strong>Asset category required.</strong>
-              Please select the asset category in the previous step to load the correct fee schedule.
-            </AlertDescription>
-          </Alert>
-        </motion.div>
-      )}
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Core Fee Component */}
-      {/* ------------------------------------------------------------------ */}
-      {category && (
-        <motion.div variants={fadeUp}>
-          <FeeStructureComponent
-            showComparison
-            allowCustomization={false}
-            compactMode={false}
-          />
-        </motion.div>
-      )}
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Important Information Card */}
-      {/* ------------------------------------------------------------------ */}
-      {category && (
-        <motion.div variants={fadeUp}>
-          <Card className="border-l-4 border-l-blue-500 bg-blue-50/60">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="w-5 h-5 text-blue-600" />
-                Need-to-Know
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Token Supply Basis</h4>
-                  <p className="text-sm text-gray-600">
-                    Tokens are issued against the <strong>Gross Total Property Value</strong>,
-                    i.e. purchase price plus all fees—no surprises.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">Payment Milestones</h4>
-                  <p className="text-sm text-gray-600">
-                    Registration & legal fees are due at closing; platform fees are settled at token issuance.
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-lg border">
-                <Badge className="bg-blue-100 text-blue-700 mb-2">Pro Tip</Badge>
-                <p className="text-sm text-gray-700">
-                  Fee percentages are pre-optimised per asset category and jurisdiction; adjust base value to see live updates.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-    </motion.section>
+        
+        <div className="bg-white p-4 rounded-lg border border-blue-100">
+          <Badge className="bg-blue-100 text-blue-700 mb-2">Pro Tip</Badge>
+          <p className="text-sm text-gray-700">
+            Fee percentages are pre-optimised per asset category and jurisdiction; adjust base value to see live updates.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
 

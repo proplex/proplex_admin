@@ -186,13 +186,10 @@ const Terms = memo(() => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl p-6 border border-slate-100 shadow-sm overflow-hidden relative"
+        className=" rounded-xl p-6 border  shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-4 right-4 w-32 h-32 bg-slate-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-4 left-4 w-24 h-24 bg-gray-500 rounded-full blur-2xl" />
-        </div>
+
         
         <div className="relative">
           <div className="flex justify-between items-start">

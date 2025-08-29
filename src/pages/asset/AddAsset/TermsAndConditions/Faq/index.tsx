@@ -186,13 +186,10 @@ const Faq = memo(() => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-cyan-50 via-blue-50 to-indigo-50 rounded-xl p-6 border border-cyan-100 shadow-sm overflow-hidden relative"
+        className="rounded-xl p-6 border  shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-4 right-4 w-32 h-32 bg-cyan-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-4 left-4 w-24 h-24 bg-blue-500 rounded-full blur-2xl" />
-        </div>
+       
         
         <div className="relative">
           <div className="flex justify-between items-start">
@@ -211,7 +208,7 @@ const Faq = memo(() => {
               </motion.div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                  Frequently Asked Questions
+                  Frequently  Asked Questions
                 </h1>
                 <p className="text-gray-600 text-sm font-medium mt-1">
                   Comprehensive Q&A to address investor inquiries and enhance transparency
@@ -262,37 +259,7 @@ const Faq = memo(() => {
         </motion.div>
       )}
       
-      {/* Feature Overview Cards */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
-        variants={contentVariants}
-      >
-        {[
-          { icon: MessageSquare, title: "Q&A Management", desc: "Organize questions and answers" },
-          { icon: Lightbulb, title: "Knowledge Base", desc: "Build comprehensive documentation" },
-          { icon: Users, title: "User Support", desc: "Address common concerns" },
-          { icon: CheckCircle2, title: "Transparency", desc: "Enhance investor confidence" },
-        ].map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
-            whileHover={{ scale: 1.02, y: -2 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + index * 0.1 }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-lg">
-                <feature.icon className="w-5 h-5 text-cyan-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm">{feature.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{feature.desc}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+     
       
       {/* Enhanced Content Area */}
       <motion.div

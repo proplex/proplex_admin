@@ -350,38 +350,7 @@ const AssetHostedBy = () => {
       </div>
       
       {/* Completion Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
-        className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-xl p-6 border border-emerald-200"
-      >
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-emerald-100 rounded-xl">
-            <Shield className="w-6 h-6 text-emerald-600" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-1">
-              Hosting Configuration Status
-            </h3>
-            <p className="text-gray-600 text-sm">
-              {completedFields === totalFields 
-                ? 'All hosting information has been configured successfully.' 
-                : `Complete ${totalFields - completedFields} more fields to finish setup.`
-              }
-            </p>
-          </div>
-          {completedFields === totalFields && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 1, type: "spring" }}
-            >
-              <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-            </motion.div>
-          )}
-        </div>
-      </motion.div>
+
     </motion.div>
   );
 }
