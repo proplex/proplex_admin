@@ -378,8 +378,8 @@ export default function OrdersPage() {
               Refresh
             </button>
             <button 
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-md"
               onClick={() => navigate('/orders/new')}
+              className=" inline-flex items-center  px-6 py-3 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 group" 
             >
               <Plus className="h-4 w-4" />
               New Order

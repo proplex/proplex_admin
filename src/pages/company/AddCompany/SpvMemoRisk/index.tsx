@@ -33,7 +33,7 @@ const Index = () => {
       {/* SPV Memo Section */}
 
 
-              <div className="p-4">
+       <div className="p-4">
           <SpvMemo />
         </div>
 

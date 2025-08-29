@@ -411,7 +411,7 @@ function Index() {
         <div className="space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-900 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold text-gray-900">
                 Companies Dashboard
               </h1>
               <p className="text-gray-600 mt-2 text-lg">Manage and monitor your company portfolio</p>

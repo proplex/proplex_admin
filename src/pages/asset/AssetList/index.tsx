@@ -464,7 +464,7 @@ export default function Index() {
 
             <button 
               onClick={() => navigate('/add-asset')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium flex items-center gap-2 text-sm"
+              className="px-6 py-3 bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 group" 
             >
               <Plus className="w-4 h-4" />
               Add Asset
