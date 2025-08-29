@@ -195,7 +195,7 @@ const Terms = memo(() => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <motion.div
-                className="p-3 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl shadow-lg relative overflow-hidden"
+                className="p-3 bg-gradient-to-br from-blue-500 to-purple-600  rounded-xl shadow-lg relative overflow-hidden"
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
@@ -207,7 +207,7 @@ const Terms = memo(() => {
                 <ScrollText className="w-6 h-6 text-white relative z-10" />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-700 to-gray-700 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-gray-900 bg-clip-text">
                   Terms & Conditions
                 </h1>
                 <p className="text-gray-600 text-sm font-medium mt-1">
@@ -219,7 +219,7 @@ const Terms = memo(() => {
             {/* Add Button */}
             <motion.button
               onClick={handleAdd}
-              className="bg-gradient-to-r from-slate-600 to-gray-700 hover:from-slate-700 hover:to-gray-800 text-white px-6 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
+              className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm px-6 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

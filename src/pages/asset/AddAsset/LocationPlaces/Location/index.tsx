@@ -190,7 +190,7 @@ const Index: React.FC = () => {
             <div className='flex items-center justify-between'>
               <div className='flex items-center gap-3'>
                 <motion.div
-                  className='p-2 bg-blue-500 rounded-lg shadow-md'
+                  className='p-2 bg-gradient-to-br from-blue-500 to-purple-600  rounded-lg shadow-md'
                   whileHover={{ scale: 1.1, rotate: 5 }}
                 >
                   <MapPin className='w-5 h-5 text-white' />
@@ -371,7 +371,7 @@ const Index: React.FC = () => {
             onValueChange={setActiveTab}
             className='w-full'
           >
-            <div className='bg-gradient-to-r from-gray-50 to-blue-50 p-4 border-b border-gray-200'>
+            <div className=' p-4 border-b'>
               <div className='flex items-center gap-3 mb-3'>
                 <Filter className='w-4 h-4 text-gray-600' />
                 <span className='text-sm font-medium text-gray-700'>Filter by Category</span>
@@ -381,7 +381,7 @@ const Index: React.FC = () => {
                   <TabsTrigger 
                     key={type} 
                     value={type} 
-                    className='flex-shrink-0 px-4 py-2 text-sm font-medium transition-all duration-200 data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-md hover:bg-blue-50'
+                    className='flex-shrink-0 px-4 py-2 text-sm font-medium transition-all duration-200 data-[state=active]:bg-gray-50  data-[state=active]:text-gray-900 data-[state=active]:shadow-md hover:bg-blue-50'
                   >
                     <span className='capitalize'>{type.replace(/-/g, ' ')}</span>
                     {type !== 'all' && (

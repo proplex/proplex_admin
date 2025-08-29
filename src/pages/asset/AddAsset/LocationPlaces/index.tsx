@@ -137,7 +137,7 @@ const LocationPlaces = memo(({ tab, step }: Props) => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <motion.div
-                className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg relative overflow-hidden"
+                className="p-3 bg-gradient-to-br from-blue-500 to-purple-600  rounded-xl shadow-lg relative overflow-hidden"
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
@@ -149,7 +149,7 @@ const LocationPlaces = memo(({ tab, step }: Props) => {
                 <MapPin className="w-6 h-6 text-white relative z-10" />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-gray-900">
                   Location & Places
                 </h1>
                 <p className="text-gray-600 text-sm font-medium mt-1">
@@ -169,71 +169,7 @@ const LocationPlaces = memo(({ tab, step }: Props) => {
           </div>
           
           {/* Enhanced Features Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-            <motion.div
-              variants={featureVariants}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm hover:shadow-md transition-all duration-300"
-              whileHover={{ scale: 1.02, y: -2 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Globe className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-gray-800">Interactive Maps</span>
-                  <p className="text-xs text-gray-500">Google Maps integration</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              variants={featureVariants}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-indigo-200 shadow-sm hover:shadow-md transition-all duration-300"
-              whileHover={{ scale: 1.02, y: -2 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <Building2 className="w-4 h-4 text-indigo-600" />
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-gray-800">Nearby Places</span>
-                  <p className="text-xs text-gray-500">Schools, hospitals, amenities</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              variants={featureVariants}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-purple-200 shadow-sm hover:shadow-md transition-all duration-300"
-              whileHover={{ scale: 1.02, y: -2 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Navigation className="w-4 h-4 text-purple-600" />
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-gray-800">Navigation</span>
-                  <p className="text-xs text-gray-500">Distance & accessibility</p>
-                </div>
-              </div>
-            </motion.div>
-            
-            <motion.div
-              variants={featureVariants}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-emerald-200 shadow-sm hover:shadow-md transition-all duration-300"
-              whileHover={{ scale: 1.02, y: -2 }}
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-emerald-100 rounded-lg">
-                  <Target className="w-4 h-4 text-emerald-600" />
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-gray-800">POI Analysis</span>
-                  <p className="text-xs text-gray-500">Points of interest</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+         
         </div>
       </motion.div>
       

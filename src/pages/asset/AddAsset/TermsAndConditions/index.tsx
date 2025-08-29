@@ -146,7 +146,7 @@ const TermsAndConditions = memo(({ tab }: Props) => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <motion.div
-                className="p-3 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl shadow-lg relative overflow-hidden"
+                className="p-3 bg-gradient-to-br from-blue-500 to-purple-600  rounded-xl shadow-lg relative overflow-hidden"
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
@@ -158,7 +158,7 @@ const TermsAndConditions = memo(({ tab }: Props) => {
                 <BookOpen className="w-6 h-6 text-white relative z-10" />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-teal-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-gray-900">
                   Terms & Conditions, FAQ
                 </h1>
                 <p className="text-gray-600 text-sm font-medium mt-1">

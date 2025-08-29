@@ -146,7 +146,7 @@ const Index: React.FC = () => {
             type="button"
             className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
           >
-            Add Board Member
+            Add Board  Member
           </Button>
         </div>
         

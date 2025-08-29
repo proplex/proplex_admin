@@ -187,7 +187,7 @@ const RiskDisclosure = memo(() => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-100 shadow-sm overflow-hidden relative"
+        className="m-4 rounded-xl p-6 border shadow-sm overflow-hidden relative"
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
@@ -199,7 +199,7 @@ const RiskDisclosure = memo(() => {
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <motion.div
-                className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg relative overflow-hidden"
+                className="p-3 bg-gradient-to-br from-blue-500 to-purple-600  rounded-xl shadow-lg relative overflow-hidden"
                 whileHover={{ scale: 1.05, rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
@@ -211,7 +211,7 @@ const RiskDisclosure = memo(() => {
                 <FileText className="w-6 h-6 text-white relative z-10" />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold text-gray-900 ">
                   Risk Disclosures
                 </h1>
                 <p className="text-gray-600 text-sm font-medium mt-1">
@@ -223,7 +223,7 @@ const RiskDisclosure = memo(() => {
             {/* Add Button */}
             <motion.button
               onClick={handleAdd}
-              className="bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white px-6 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl"
+              className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm px-6 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg "
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -266,7 +266,7 @@ const RiskDisclosure = memo(() => {
       {/* Content */}
       <motion.div
         variants={contentVariants}
-        className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden"
+        className="bg-white m-4 rounded-xl border border-gray-200 shadow-lg overflow-hidden"
       >
         <Suspense fallback={
           <div className="flex items-center justify-center p-12">

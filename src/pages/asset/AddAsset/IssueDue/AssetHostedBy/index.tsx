@@ -230,7 +230,7 @@ const AssetHostedBy = () => {
       {/* Enhanced Header */}
       <motion.div
         variants={headerVariants}
-        className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100"
+        className="m-4 rounded-2xl p-6 border"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -242,7 +242,7 @@ const AssetHostedBy = () => {
               <Building2 className="w-7 h-7 text-white" />
             </motion.div>
             <div>
-              <h1 className='text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1'>
+              <h1 className='text-3xl font-bold text-gray-900 bg-clip-text mb-1'>
                 Asset Hosting Information
               </h1>
               <p className="text-gray-600 text-sm font-medium">
@@ -299,7 +299,7 @@ const AssetHostedBy = () => {
       </motion.div>
 
       {/* Form Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 m-4">
         {/* Basic Information */}
         <FormSection
           title="Basic Information"

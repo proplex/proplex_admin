@@ -149,7 +149,7 @@ const TenantManagement = () => {
         <h1 className='text-lg font-bold text-gray-800'>Amenities</h1>
         <Button
           type='button'
-          className='text-white px-4 py-2 rounded-md transition-colors duration-200 flex items-center gap-2'
+          className='bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm'
           onClick={handleAdd}
         >
           <Plus className='w-4 h-4' />

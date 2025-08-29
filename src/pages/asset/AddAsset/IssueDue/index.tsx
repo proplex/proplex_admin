@@ -274,7 +274,7 @@ const IssuesDue = memo(({ tab, step, asset }: Props) => {
         {/* Enhanced Header Section */}
         <motion.div
           variants={headerVariants}
-          className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-6 mb-6 border border-indigo-100 shadow-sm"
+          className="m-4 rounded-2xl p-6 mb-6 border  shadow-sm"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -286,8 +286,8 @@ const IssuesDue = memo(({ tab, step, asset }: Props) => {
                 <Shield className="w-7 h-7 text-white" />
               </motion.div>
               <div>
-                <h1 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-1'>
-                  Due Diligence & Asset Hosting
+                <h1 className='text-3xl  font-bold text-gray-900  mb-1'>
+                  Due Diligence hiii & Asset Hosting
                 </h1>
                 <p className="text-gray-600 text-sm font-medium">
                   Complete verification and hosting requirements for your asset

@@ -103,7 +103,7 @@ export const EmbeddedFinanceComponent: React.FC<EmbeddedFinanceComponentProps> =
 
   if (!category || !financeConfig) {
     return (
-      <Card className="border-2 border-dashed border-gray-300">
+      <Card className="border-2 m-4 border-dashed border-gray-300">
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Wallet className="w-12 h-12 text-gray-400 mb-4" />
           <h3 className="text-lg font-semibold text-gray-600 mb-2">

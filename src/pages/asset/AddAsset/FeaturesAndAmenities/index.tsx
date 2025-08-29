@@ -107,7 +107,7 @@ const FeaturesAndAmenities = memo(({ tab, step }: Props) => {
         <div className="relative">
           <div className="flex items-center gap-4">
             <motion.div
-              className="p-3 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl shadow-lg relative overflow-hidden"
+              className="p-3 bg-gradient-to-br from-blue-500 to-purple-600  rounded-xl shadow-lg relative overflow-hidden"
               whileHover={{ scale: 1.05, rotate: 5 }}
               transition={{ duration: 0.2 }}
             >
@@ -119,7 +119,7 @@ const FeaturesAndAmenities = memo(({ tab, step }: Props) => {
               <Home className="w-6 h-6 text-white relative z-10" />
             </motion.div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold text-gray-900 bg-clip-text">
                 Features & Amenities
               </h1>
               <p className="text-gray-600 text-sm font-medium mt-1 flex items-center gap-2">
@@ -131,37 +131,7 @@ const FeaturesAndAmenities = memo(({ tab, step }: Props) => {
         </div>
       </motion.div>
       
-      {/* Feature Overview Cards */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 m-4 lg:grid-cols-4 gap-4"
-        variants={contentVariants}
-      >
-        {[
-          { icon: Settings, title: "Core Features", desc: "Essential property characteristics" },
-          { icon: Star, title: "Premium Amenities", desc: "Luxury facilities and services" },
-          { icon: CheckCircle2, title: "Quality Standards", desc: "High-end specifications" },
-          { icon: Layers, title: "Value Enhancement", desc: "Features that add property value" },
-        ].map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
-            whileHover={{ scale: 1.02, y: -2 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + index * 0.1 }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg">
-                <feature.icon className="w-5 h-5 text-emerald-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 text-sm">{feature.title}</h3>
-                <p className="text-xs text-gray-600 mt-1">{feature.desc}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
+      
       
       {/* Enhanced Content Area */}
       <motion.div
