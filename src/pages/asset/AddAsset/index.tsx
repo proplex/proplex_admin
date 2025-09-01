@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, Component, ErrorInfo, ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState, Component, ErrorInfo, ReactNode } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 // Error Boundary Component
@@ -312,6 +312,7 @@ interface StepIconProps {
 
 const IconStepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, changeStep, disabledSteps }) => {
   const currentIndex = steps.findIndex(step => step.id === currentStep);
+  const [hoveredStep, setHoveredStep] = useState<string | null>(null);
 
   return (
     <motion.div
@@ -326,6 +327,7 @@ const IconStepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, c
         const isCompleted = index < currentIndex;
         const isDisabled = disabledSteps.includes(step.id);
         const isNext = index === currentIndex + 1;
+        const isHovered = hoveredStep === step.id;
 
         return (
           <div key={step.id} className="relative flex flex-col items-center">
@@ -355,11 +357,13 @@ const IconStepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, c
 
             {/* Step Icon Container */}
             <motion.div
-              className="relative mb-4 group cursor-pointer"
+              className="relative mb-4 group cursor-pointer z-10" 
               variants={stepIconVariants}
               whileHover={!isDisabled ? "hover" : undefined}
               animate={isActive ? "active" : "animate"}
               onClick={() => !isDisabled && changeStep(step.id)}
+              onMouseEnter={() => setHoveredStep(step.id)}
+              onMouseLeave={() => setHoveredStep(null)}
             >
               {/* Glow effect for active step */}
               {isActive && (
@@ -413,15 +417,13 @@ const IconStepIndicator: React.FC<StepIndicatorProps> = ({ steps, currentStep, c
                 )}
               </motion.div>
 
-              {/* Tooltip */}
-              <motion.div
-                className="absolute left-20 top-1/2 transform -translate-y-1/2 bg-gray-900 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10"
-                initial={{ x: -10 }}
-                whileHover={{ x: 0 }}
-              >
-                {step.title}
-                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1 w-2 h-2 bg-gray-900 rotate-45" />
-              </motion.div>
+              {/* Floating tooltip - only shown when hovering */}
+              {isHovered && (
+                <div className="fixed left-28 min-w-[150px] bg-gray-900 text-white px-4 py-2 rounded-md shadow-lg z-50">
+                  <div className="absolute left-0 top-1/2 transform -translate-x-2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-t-transparent border-r-[6px] border-r-gray-900 border-b-[6px] border-b-transparent"></div>
+                  <p className="text-sm font-medium">{step.title}</p>
+                </div>
+              )}
             </motion.div>
           </div>
         );
@@ -716,7 +718,7 @@ export function Index() {
       <div className="max-w-[1600px] mx-auto flex">
         {/* Enhanced Icon Sidebar */}
         <motion.div
-          className="w-24 flex-shrink-0 bg-white/80 backdrop-blur-sm border-r border-white/50 shadow-xl"
+          className="w-24 flex-shrink-0 bg-white/80 backdrop-blur-sm border-r border-white/50 shadow-xl relative z-20"
           variants={sidebarVariants}
         >
           <div className="sticky top-0 p-6">
@@ -779,7 +781,7 @@ export function Index() {
 
         {/* Enhanced Main Content - Much Wider */}
         <motion.div
-          className="flex-1 min-w-0 p-8"
+          className="flex-1 min-w-0 p-8 z-10"
           variants={formVariants}
         >
           <FormProvider {...methods}>

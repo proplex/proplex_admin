@@ -656,18 +656,6 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                     </div>
                   </DropdownMenuItem>
                   
-                  <DropdownMenuItem className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">$</span>
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-900 dark:text-white">Billing</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Plans & payments</div>
-                      </div>
-                    </div>
-                  </DropdownMenuItem>
-
                   
                   <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-2" />
                   

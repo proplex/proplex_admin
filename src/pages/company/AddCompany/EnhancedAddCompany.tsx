@@ -8,6 +8,7 @@ import useCreateCompany from '@/hooks/useCreateCompany';
 import useFetchCompany from '@/hooks/useFetchCompany';
 import useUpdateCompany from '@/hooks/useUpdateCompany';
 import toast from 'react-hot-toast';
+import useIPFSUpload from "@/hooks/useIPFSUpload";
 
 // Lazy load components with proper default export handling
 const CompanyInfo = lazy(() => import('./CompanyInfo').then(module => ({ default: module.default })));
@@ -17,7 +18,7 @@ const BoardLegal = lazy(() => import('./BoardLegal').then(module => ({ default: 
 const PrivacyTerms = lazy(() => import('./PrivacyTerms').then(module => ({ default: module.default })));
 
 const steps = [
-  { id: 'company-info', title: 'Company Information', icon: Building },
+  { id: 'company-info', title: 'Company hii Information', icon: Building },
   { id: 'spv-memo-risk', title: 'SPV Memo & Risk Disclosure', icon: FileText },
   { id: 'royalty-distributions', title: 'Royalty Distributions', icon: Banknote },
   { id: 'board-legal', title: 'Board Members & Legal Advisors', icon: Users },
@@ -90,6 +91,7 @@ const EnhancedAddCompany = () => {
   const { updateCompany } = useUpdateCompany();
   const [currentStep, setCurrentStep] = useState(steps[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { uploadSpaFiles, loading: ipfsLoading } = useIPFSUpload();
 
   const disabledSteps = !id ? [
     'spv-memo-risk',
@@ -153,10 +155,39 @@ const EnhancedAddCompany = () => {
     console.log("data is here paylaod data :",data);
     setIsSubmitting(true);
     try {
+      // Check if we have the necessary SPV memo and risk disclosure data
+      // These fields are available after the 'spv-memo-risk' step
+      const hasSpvMemoAndRisk = data.spv_memo && data.risk_disclosure;
+      let ipfsCid = null;
+      
+      // Only call IPFS upload when we have SPV memo and risk disclosure data
+      // or when we're at the final step (or updating existing SPV)
+      if (hasSpvMemoAndRisk || id || currentStep === steps[steps.length - 1].id || currentStep === 'spv-memo-risk') {
+        // Format data for IPFS
+        const spaMetadata = {
+          name: data.name,
+          address: data.address,
+          industry: data.industry,
+          email: data.email,
+          incorporation_type: data.incorporation_type,
+          jurisdiction: data.jurisdiction,
+          certificateincorporation: data.certificate_of_incorporation?.url || '',
+          spvMemodetails: data.spv_memo || '',
+          riskdisclosureStatement: data.risk_disclosure || ''
+        };
+        
+        // Upload to IPFS
+        const ipfsResult = await uploadSpaFiles(spaMetadata);
+        console.log("ipfsResult is here :", ipfsResult);
+        ipfsCid = ipfsResult.metadata;
+      }
+
       const { llp_agreement_copy_file, ...rest } = data;
       const payload = {
         ...rest,
         llp_agreement_copy: llp_agreement_copy_file,
+        // Include IPFS CID in the payload if we have it
+        ...(ipfsCid ? { ipfs_cid: ipfsCid } : {})
       };
       console.log("payload is here :",payload);
 
@@ -501,7 +532,7 @@ const EnhancedAddCompany = () => {
                           ) : currentStep === steps[steps.length - 1].id ? (
                             <>
                               <Save className="w-4 h-4 mr-2" />
-                              {id ? 'Update' : 'Create'} Company
+                              {id ? 'Update' : 'Create'} hiii Company
                             </>
                           ) : (
                             <>

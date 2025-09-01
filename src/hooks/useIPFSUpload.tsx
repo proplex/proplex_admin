@@ -6,15 +6,14 @@ import toast from 'react-hot-toast';
 
 interface SpaMetadata {
   name: string;
-  spa_type: string;
-  currency: string;
+  address: string;
+  industry:string;
+  email: string;
+  incorporation_type: string;
   jurisdiction: string;
-  businessPurpose: string;
-  llcOperatingAgreement: string;
-  articlesOfAssociation: string;
-  memorandumOfAssociation: string;
-  otherDocuments: string;
-
+  certificateincorporation: string;
+  spvMemodetails: string;
+  riskdisclosureStatement: string;
 }
 
 interface ProjectMetadata {
