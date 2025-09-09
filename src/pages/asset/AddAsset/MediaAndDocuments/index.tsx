@@ -151,7 +151,7 @@ const MediaAndDocumentsComponent = memo(({ tab, step }: Props) => {
                 <FileImage className="w-8 h-8 text-white" />
               </motion.div>
               <div>
-                <h1 className='text-3xl font-bold text-gray-900 mb-1'>Media hiii & Documents</h1>
+                <h1 className='text-3xl font-bold text-gray-900 mb-1'>Media  & Documents</h1>
                 <p className="text-gray-600 flex items-center gap-2">
                   <Sparkles className="w-4 h-4" />
                   Upload images, videos, and important documents for your asset

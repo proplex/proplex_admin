@@ -49,34 +49,11 @@ const FeeStructure: React.FC = () => {
     setValue('basePropertyValue', value ? Number(value) : 0);
   };
 
-  // Features data
-  const features = [
-    {
-      icon: TrendingUp,
-      title: "Transparent Pricing",
-      description: "Category-specific fee structures"
-    },
-    {
-      icon: Shield,
-      title: "Regulatory Compliant",
-      description: "All legal & compliance costs included"
-    },
-    {
-      icon: Calculator,
-      title: "Real-Time Calculation",
-      description: "Instant updates on value change"
-    },
-    {
-      icon: CheckCircle2,
-      title: "All-Inclusive",
-      description: "Zero hidden or surprise fees"
-    }
-  ];
 
   return (
-    <div className="flex flex-col w-full space-y-6">
+    <div className="flex flex-col w-full space-y-6 ">
       {/* Header */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-xl p-6 m-4 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-blue-100 rounded-lg">
             <Calculator className="w-5 h-5 text-blue-600" />
@@ -88,20 +65,9 @@ const FeeStructure: React.FC = () => {
         </div>
       </div>
 
-      {/* Features */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {features.map((feature, index) => (
-          <FeatureCard 
-            key={index}
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-          />
-        ))}
-      </div>
 
       {/* Fee Structure */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-xl p-6 m-4 shadow-sm border border-gray-100">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-100 rounded-lg">
             <DollarSign className="w-4 h-4 text-blue-600" />
@@ -148,35 +114,7 @@ const FeeStructure: React.FC = () => {
         </div>
       </div>
 
-      {/* Need-to-Know Information */}
-      <div className="bg-blue-50 rounded-xl p-6 border border-blue-100">
-        <div className="flex items-center mb-4">
-          <Info className="w-5 h-5 text-blue-600 mr-2" />
-          <h3 className="text-lg font-semibold text-gray-900">Need-to-Know</h3>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-          <div>
-            <h4 className="font-medium text-gray-800 mb-1">Token Supply Basis</h4>
-            <p className="text-sm text-gray-600">
-              Tokens are issued against the Gross Total Property Value (i.e. purchase price plus all fees—no surprises).
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-800 mb-1">Payment Milestones</h4>
-            <p className="text-sm text-gray-600">
-              Registration & legal fees are due at closing; platform fees are settled at token issuance.
-            </p>
-          </div>
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg border border-blue-100">
-          <Badge className="bg-blue-100 text-blue-700 mb-2">Pro Tip</Badge>
-          <p className="text-sm text-gray-700">
-            Fee percentages are pre-optimised per asset category and jurisdiction; adjust base value to see live updates.
-          </p>
-        </div>
-      </div>
+     
     </div>
   );
 };

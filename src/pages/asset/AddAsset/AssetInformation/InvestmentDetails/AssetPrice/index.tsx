@@ -120,7 +120,7 @@ const index = () => {
       {/* Enhanced Base Property Value */}
       <motion.div variants={itemVariants}>
         <InfoTag
-          info="Base Property Value"
+          info="Base  Property Value"
           amount={`${currnecy === "INR" ? "₹" : "$"}${basePropertyValue || 0}`}
           icon={<TrendingUp className="w-5 h-5 text-green-600" />}
         />
@@ -131,12 +131,12 @@ const index = () => {
         variants={itemVariants}
         className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
       >
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 border-b border-amber-100">
+        <div className="p-4 border-b border-amber-100">
           <div className="flex items-center gap-3">
             <Receipt className="w-5 h-5 text-amber-600" />
             <h3 className="text-lg font-semibold text-gray-900">Fee Structure</h3>
           </div>
-          <p className="text-sm text-amber-700 mt-1">Configure all applicable fees and charges</p>
+          <p className="text-sm text-gray mt-1">Configure all applicable fees and charges</p>
         </div>
         <div className="p-6">
           <motion.div variants={feeCardVariants}>
@@ -148,7 +148,7 @@ const index = () => {
       {/* Enhanced Final Total */}
       <motion.div 
         variants={itemVariants}
-        className="bg-gradient-to-r  rounded-xl p-4 "
+        className=" rounded-xl p-4 "
       >
         <InfoTag
           info="Gross Total Property Value"

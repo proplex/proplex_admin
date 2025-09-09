@@ -267,7 +267,7 @@ const ExitOpportunity = memo(() => {
       {/* Content */}
       <motion.div
         variants={contentVariants}
-        className="bg-white rounded-xl border border-gray-200 shadow-lg  overflow-hidden"
+        className="bg-white m-4 rounded-xl border border-gray-200 shadow-lg  overflow-hidden"
       >
         <Suspense fallback={
           <div className="flex items-center justify-center p-12">
@@ -281,7 +281,7 @@ const ExitOpportunity = memo(() => {
             </div>
           </div>
         }>
-          <div className="p-6">
+          <div className="p-6 ">
             <VerticleTable
               items={fields}
               handleEdit={handleEdit}

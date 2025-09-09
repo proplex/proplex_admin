@@ -136,7 +136,7 @@ const Index = () => {
           
           <motion.button
             onClick={handleAdd}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 px-6 py-3 font-semibold rounded-xl shadow-lg hover:shadow-xl bg-white  text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, x: 20 }}
@@ -144,7 +144,7 @@ const Index = () => {
             transition={{ delay: 0.3 }}
           >
             <Plus className="w-5 h-5" />
-            <span>Add Document</span>
+            <span>Add  Document</span>
           </motion.button>
         </div>
       </motion.div>
@@ -193,7 +193,7 @@ const Index = () => {
                 </p>
                 <motion.button
                   onClick={handleAdd}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-6 py-3 font-semibold rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 shadow-sm  shadow-lg hover:shadow-xl"
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
