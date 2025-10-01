@@ -9,6 +9,7 @@ import useFetchCompany from '@/hooks/useFetchCompany';
 import useUpdateCompany from '@/hooks/useUpdateCompany';
 import toast from 'react-hot-toast';
 import useIPFSUpload from "@/hooks/useIPFSUpload";
+import { useAccount } from "wagmi";
 
 // Lazy load components with proper default export handling
 const CompanyInfo = lazy(() => import('./CompanyInfo').then(module => ({ default: module.default })));
@@ -87,11 +88,12 @@ const EnhancedAddCompany = () => {
   const navigate = useNavigate();
   const methods = useForm();
   const { loading: fetchLoading } = useFetchCompany(id, methods.reset);
-  const { createCompany, loading: createLoading } = useCreateCompany();
+  const { createCompany, loading: createLoading, responseData } = useCreateCompany();
   const { updateCompany } = useUpdateCompany();
   const [currentStep, setCurrentStep] = useState(steps[0].id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { uploadSpaFiles, loading: ipfsLoading } = useIPFSUpload();
+  const { isConnected } = useAccount();
 
   const disabledSteps = !id ? [
     'spv-memo-risk',
@@ -175,7 +177,7 @@ const EnhancedAddCompany = () => {
           spvMemodetails: data.spv_memo || '',
           riskdisclosureStatement: data.risk_disclosure || ''
         };
-        
+      
         // Upload to IPFS
         const ipfsResult = await uploadSpaFiles(spaMetadata);
         console.log("ipfsResult is here :", ipfsResult);
@@ -192,13 +194,14 @@ const EnhancedAddCompany = () => {
       console.log("payload is here :",payload);
 
       if (!id) {
+        // Create company in database (this will also deploy to blockchain if wallet is connected)
         await createCompany(payload);
         toast.success('Company created successfully!');
       } else {
         await updateCompany(id, payload);
         toast.success('Company updated successfully!');
       }
-      
+    
       if (currentStep === steps[steps.length - 1].id) {
         navigate('/company');
       } else {

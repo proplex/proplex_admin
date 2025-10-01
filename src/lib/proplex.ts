@@ -1,472 +1,421 @@
-// proplex.ts - Frontend integration for Proplex Smart Contracts using Ethers v5
-// To use this file, you need to install ethers.js:
-// npm install ethers@5.7.2
 import { ethers } from 'ethers';
-
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
-
-// Contract Addresses (Avalanche Fuji Testnet)
-export const CONTRACT_ADDRESSES = {
-  PROPLEX_TOKEN: '0x0Acc1f0C68150f2928dF9F3B316BD062a5562F8F',
-  USDC_MOCK: '0xa6401adAd919ea6Ec9929716a19DDFf62bc3Bc1C',
-  USDT_MOCK: '0xe66ae37Bc0982825b5F8b37821b42d3B2d04D085',
-  REGISTRY: '0x58C9Fc2877679207fB382281b82D18262AcDbbD3',
-  COMPANY_FACTORY: '0x2E275Be0Db062c9fC5a0A02Af9084f3b948F7c42',
-  REAL_ESTATE_TOKEN_FACTORY: '0x5Ba212974EFF69748811CE57c5ce58eDfeb66B9f',
-  ESCROW: '0x2928D9Efe70c4a56a8A3Cff5d304f3626e60e5F3',
-  ORDER_MANAGER: '0x0C13bB0C887b6aBdbe6D4301B8dc67886617641a',
-  DAO: '0x938749EA4883A4987508b40EE28BB337dBC97c5D'
-};
+import { JsonRpcProvider } from '@ethersproject/providers';
 
 // Contract ABIs
-export const PROPLEX_TOKEN_ABI = [
-  'constructor()',
-  'function mint(address to, uint256 amount)',
-  'function decimals() view returns (uint8)',
-  'function name() view returns (string)',
-  'function symbol() view returns (string)',
-  'function totalSupply() view returns (uint256)',
-  'function balanceOf(address account) view returns (uint256)',
-  'function transfer(address to, uint256 amount) returns (bool)',
-  'function transferFrom(address from, address to, uint256 amount) returns (bool)',
-  'function approve(address spender, uint256 amount) returns (bool)',
-  'function allowance(address owner, address spender) view returns (uint256)',
-  'function DOMAIN_SEPARATOR() view returns (bytes32)',
-  'function nonces(address owner) view returns (uint256)',
-  'function owner() view returns (address)',
-  'function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s)',
-  'function renounceOwnership()',
-  'function setNameSymbol(string name_, string symbol_)',
-  'function transferOwnership(address newOwner)',
-  'function decreaseAllowance(address spender, uint256 subtractedValue) returns (bool)'
-];
 
-export const COMPANY_FACTORY_ABI = [
-  'constructor(address _impl)',
-  'function initialize(address _impl)',
-  'function setImpl(address _new)',
-  'function deployCompany(uint8 companyType, bytes32 name, bytes32 jurisdiction) returns (uint256 id, address proxy)',
-  'function companiesOf(address owner) view returns (uint256[])',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address impl)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function VERSION() view returns (string)',
-  'function companyAt(uint256) view returns (address)',
-  'function ownerIds(address, uint256) view returns (uint256)',
-  'function companyImpl() view returns (address)',
-  'function companyCounter() view returns (uint256)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)'
-];
+import proplexCompany from './ABIs/ProplexCompany.json';
+import ProplexCompanyFactoryABI  from './ABIs/ProplexCompanyFactory.json';
+import ProplexDao from './ABIs/ProplexDao.json';
+import ProplexEscrow from './ABIs/ProplexEscrow.json';
+import ProplexOrderManagerABI from './ABIs/ProplexOrderManager.json';
+import ProplexProjectToken from './ABIs/ProplexProjectToken.json';
+import ProplexRealEstateToken from './ABIs/ProplexRealEstateToken.json';
+import ProplexRealEstateTokenFactoryABI from './ABIs/ProplexRealEstateTokenFactory.json';
+import ProplexRegistry from './ABIs/ProplexRegistry.json';
 
-export const REGISTRY_ABI = [
-  'constructor()',
-  'function initialize()',
-  'function registerCompany(address owner, bytes32 name, bytes32 jurisdiction, uint8 companyType) returns (uint256 id)',
-  'function registerProject(uint256 companyId, bytes32 name, bytes32 symbol, bytes32 metadataCID, bytes32 legalCID, uint8 assetType, address projectAddress, address escrow, address orderManager, address dao) returns (uint256 id)',
-  'function deactivateProject(uint256 projectId)',
-  'function updateMetadata(uint256 projectId, bool isLegal, bytes32 newCID)',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address impl)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function VERSION() view returns (string)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)',
-  'function getCompany(uint256 id) view returns (tuple)',
-  'function getProject(uint256 id) view returns (tuple)',
-  'function projectIdsByCompany(uint256 companyId) view returns (uint256[])',
-  'function companyOf(address) view returns (uint256)',
-  'function projectIdsOf(uint256, uint256) view returns (uint256)',
-  'function companies(uint256) view returns (address owner, uint8 companyType, bool isActive, bytes24 __gap, bytes32 name, bytes32 jurisdiction)',
-  'function projects(uint256) view returns (address projectAddress, address escrow, address orderManager, address dao, uint8 assetType, bool isActive, bytes10 __gap, bytes32 name, bytes32 symbol, bytes32 metadataCID, bytes32 legalCID)',
-  'function companyCount() view returns (uint256)',
-  'function projectCount() view returns (uint256)'
-];
 
-export const REAL_ESTATE_TOKEN_FACTORY_ABI = [
-  'constructor()',
-  'function initialize(address _usdc, address _usdt, address _proplexXToken, address _projectTemplate, address _escrowTemplate, address _orderManagerTemplate, address _daoTemplate)',
-  'function deployProject(tuple p, uint8 coin) returns (address project, address escrow, address orderManager, address dao)',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address newImpl)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function usdc() view returns (address)',
-  'function usdt() view returns (address)',
-  'function proplexXToken() view returns (address)',
-  'function projectTemplate() view returns (address)',
-  'function escrowTemplate() view returns (address)',
-  'function orderManagerTemplate() view returns (address)',
-  'function daoTemplate() view returns (address)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)'
-];
 
-export const ESCROW_ABI = [
-  'constructor()',
-  'function initialize(address _usdt, address _usdc, address _project, address _owner)',
-  'function setCoreContracts(address _usdt, address _usdc, address _project)',
-  'function setRequiredSignatures(uint8 _sigs)',
-  'function deposit(bytes32 orderId, address buyer, uint128 amount, uint8 token, bytes32 assetId)',
-  'function signRelease(bytes32 orderId, address to, uint128 amount)',
-  'function depositDividend(uint8 token, uint128 amount)',
-  'function distributeDividend(address recipient, uint8 token, uint128 amount)',
-  'function raiseDispute(bytes32 orderId, string reason) returns (bytes32 disputeId)',
-  'function signDisputeResolution(bytes32 disputeId, address resolvedTo)',
-  'function emergencyWithdraw(address recipient, uint8 token, uint128 amount)',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address newImpl)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function usdt() view returns (address)',
-  'function usdc() view returns (address)',
-  'function project() view returns (address)',
-  'function disputeNonce() view returns (uint32)',
-  'function requiredSigs() view returns (uint8)',
-  'function dividendPoolUSDT() view returns (uint128)',
-  'function dividendPoolUSDC() view returns (uint128)',
-  'function deposits(bytes32) view returns (address buyer, uint128 amount, uint8 token, bytes32 assetId)',
-  'function disputes(bytes32) view returns (address buyer, uint8 token, uint128 amount, bytes32 assetId, bytes32 orderId, uint48 disputeTimeout, uint48 disputeExpiration, address resolvedTo, bool resolved)',
-  'function releaseSigCount(bytes32) view returns (uint256)',
-  'function disputeSigCount(bytes32) view returns (uint256)',
-  'function releaseSigned(bytes32, address) view returns (bool)',
-  'function disputeSigned(bytes32, address) view returns (bool)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)',
-  'function getDisputeStatus(bytes32 id) view returns (tuple)',
-  'function dividendPoolBalance(uint8 token) view returns (uint128)'
-];
+// Contract addresses
+export const CONTRACT_ADDRESSES = {
+  ProplexRegistry: '0xCb3057b67856f41106ca84eac0EA901D9cC6A81b',
+  ProplexCompanyFactory: '0x8180b9273371fDce9c80B1F2DE7d54158FAc6eb9',
+  ProplexRealEstateTokenFactory: '0x851eB7027dB7baBbbC1EFF22c4b0566d31B0cF38',
 
-export const ORDER_MANAGER_ABI = [
-  'constructor()',
-  'function initialize(address _escrow, address _project, address _owner)',
-  'function setCurrency(uint8 c, address token, bool active)',
-  'function setProjectContracts(address _escrow, address _project)',
-  'function setRequiredSignatures(uint8 n)',
-  'function setPlatformFee(uint16 bps)',
-  'function setFeeRecipient(address a)',
-  'function placeOrder(tuple p) returns (bytes32 id)',
-  'function signDocuments(bytes32 id)',
-  'function finalizeOrder(bytes32 id)',
-  'function cancelOrder(bytes32 id)',
-  'function signRelease(bytes32 id)',
-  'function resolveStuckOrder(bytes32 id)',
-  'function emergencyWithdraw(uint8 c, address to, uint128 amount)',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address impl)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function OPERATOR_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function currencies(uint8) view returns (address token, uint8 decimals, bool active)',
-  'function escrow() view returns (address)',
-  'function project() view returns (address)',
-  'function requiredSigs() view returns (uint8)',
-  'function platformFeeBps() view returns (uint16)',
-  'function feeRecipient() view returns (address)',
-  'function orders(bytes32) view returns (address buyer, uint128 amountTokens, uint128 totalCurrency, uint128 fees, bytes32 assetId, uint48 createdAt, uint48 orderExpiry, uint48 releaseAfter, uint8 status, uint8 currency, address projectAddress, address escrowAddress, bool released)',
-  'function releaseSig(bytes32, address) view returns (bool)',
-  'function releaseSigCount(bytes32) view returns (uint8)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)',
-  'function getOrder(bytes32 id) view returns (tuple)',
-  'function currencyInfo(uint8 c) view returns (tuple)',
-  'function isSupported(uint8 c) view returns (bool)',
-  'function hasSignedRelease(bytes32 id, address signer) view returns (bool)'
-];
+};
 
-export const DAO_ABI = [
-  'constructor()',
-  'function initialize(address _project, address _proplexXToken, uint8 _quorumThreshold)',
-  'function setCoreContracts(address _proplexXToken, address _project)',
-  'function setGovernanceParams(uint8 _requiredSignatures, uint8 _quorumThreshold)',
-  'function propose(string description, uint48 delay)',
-  'function vote(uint256 proposalId, bool support)',
-  'function signProposal(uint256 proposalId)',
-  'function executeFallback(uint256 proposalId)',
-  'function addSigner(address signer)',
-  'function revokeSigner(address signer)',
-  'function pause()',
-  'function unpause()',
-  'function _authorizeUpgrade(address newImplementation)',
-  'function ADMIN_ROLE() view returns (bytes32)',
-  'function DEFAULT_ADMIN_ROLE() view returns (bytes32)',
-  'function proplexXToken() view returns (address)',
-  'function project() view returns (address)',
-  'function proposalCount() view returns (uint16)',
-  'function requiredSatures() view returns (uint8)',
-  'function quorumThreshold() view returns (uint8)',
-  'function proposals(uint256) view returns (uint48 startTime, uint48 endTime, uint48 deadline, uint40 forVotes, uint40 againstVotes, uint8 signatureCount, bool executed)',
-  'function getRoleAdmin(bytes32 role) view returns (bytes32)',
-  'function grantRole(bytes32 role, address account)',
-  'function hasRole(bytes32 role, address account) view returns (bool)',
-  'function renounceRole(bytes32 role, address account)',
-  'function revokeRole(bytes32 role, address account)',
-  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
-  'function upgradeToAndCall(address newImplementation, bytes data) payable',
-  'function proxiableUUID() view returns (bytes32)',
-  'function paused() view returns (bool)',
-  'function getProposalStatus(uint256 proposalId) view returns (tuple)'
-];
+// Network configuration
+const NETWORK_CONFIG = {
+  name: 'U2U Testnet',
+  chainId: 2484,
+  rpcUrl: 'https://rpc-testnet.uniultra.xyz',
+  blockExplorer: 'https://testnet.u2uscan.xyz',};
 
-// Utility functions for interacting with contracts
+// Initialize provider and signer
+const provider = new JsonRpcProvider(NETWORK_CONFIG.rpcUrl, {
+  chainId: NETWORK_CONFIG.chainId,
+  name: NETWORK_CONFIG.name,
+});
+
+// Initialize contract instances
+const getContract = (address: string, abi: any, signer?: ethers.Signer) => {
+  return new ethers.Contract(address, abi, signer || provider);
+};
+
+// Main Proplex class for interacting with the protocol
 export class ProplexSDK {
-  private provider: ethers.providers.Web3Provider;
-  private signer: ethers.Signer;
-  
-  public registry: ethers.Contract;
-  public companyFactory: ethers.Contract;
-  public proplexToken: ethers.Contract;
-  public usdcMock: ethers.Contract;
-  public usdtMock: ethers.Contract;
-  public realEstateTokenFactory: ethers.Contract;
-  public escrow: ethers.Contract;
-  public orderManager: ethers.Contract;
-  public dao: ethers.Contract;
-  
-  constructor(provider: ethers.providers.Web3Provider) {
+  private provider: ethers.providers.Provider;
+  private signer?: ethers.Signer;
+
+  constructor(privateKeyOrSigner: string | ethers.Signer) {
+    // Initialize the provider
     this.provider = provider;
-    this.signer = provider.getSigner();
     
-    // Initialize contracts
-    this.registry = new ethers.Contract(
-      CONTRACT_ADDRESSES.REGISTRY,
-      REGISTRY_ABI,
-      this.signer
-    );
-    
-    this.companyFactory = new ethers.Contract(
-      CONTRACT_ADDRESSES.COMPANY_FACTORY,
-      COMPANY_FACTORY_ABI,
-      this.signer
-    );
-    
-    this.proplexToken = new ethers.Contract(
-      CONTRACT_ADDRESSES.PROPLEX_TOKEN,
-      PROPLEX_TOKEN_ABI,
-      this.signer
-    );
-    
-    this.usdcMock = new ethers.Contract(
-      CONTRACT_ADDRESSES.USDC_MOCK,
-      PROPLEX_TOKEN_ABI,
-      this.signer
-    );
-    
-    this.usdtMock = new ethers.Contract(
-      CONTRACT_ADDRESSES.USDT_MOCK,
-      PROPLEX_TOKEN_ABI,
-      this.signer
-    );
-    
-    this.realEstateTokenFactory = new ethers.Contract(
-      CONTRACT_ADDRESSES.REAL_ESTATE_TOKEN_FACTORY,
-      REAL_ESTATE_TOKEN_FACTORY_ABI,
-      this.signer
-    );
-    
-    this.escrow = new ethers.Contract(
-      CONTRACT_ADDRESSES.ESCROW,
-      ESCROW_ABI,
-      this.signer
-    );
-    
-    this.orderManager = new ethers.Contract(
-      CONTRACT_ADDRESSES.ORDER_MANAGER,
-      ORDER_MANAGER_ABI,
-      this.signer
-    );
-    
-    this.dao = new ethers.Contract(
-      CONTRACT_ADDRESSES.DAO,
-      DAO_ABI,
-      this.signer
-    );
+    if (typeof privateKeyOrSigner === 'string') {
+      this.signer = new ethers.Wallet(privateKeyOrSigner, provider);
+    } else {
+      this.signer = privateKeyOrSigner;
+    }
   }
-  
-  // Get signer address
+
+  // Method to get the signer address
   async getSignerAddress(): Promise<string> {
+    if (!this.signer) {
+      throw new Error('No signer available');
+    }
     return await this.signer.getAddress();
   }
-  
-  // Register a new company
-  async registerCompany(
-    owner: string,
-    name: string,
-    jurisdiction: string,
-    companyType: number
-  ): Promise<ethers.ContractTransaction> {
-    const nameBytes32 = ethers.utils.formatBytes32String(name);
-    const jurisdictionBytes32 = ethers.utils.formatBytes32String(jurisdiction);
-    
-    return await this.registry.registerCompany(
-      owner,
-      nameBytes32,
-      jurisdictionBytes32,
-      companyType
-    );
-  }
-  
-  // Deploy a new company using the factory
+
+  // Company Factory Methods
+  /**
+   * Deploys a new ProplexCompany contract
+   * @param companyType Type of the company (0 = Developer, 1 = Builder, 2 = Broker, 3 = FinancialInstitution)
+   * @param name Name of the company (max 32 bytes)
+   * @param jurisdiction Jurisdiction of the company (max 32 bytes)
+   * @param overrides Optional transaction overrides (gas limit, gas price, etc.)
+   * @returns Promise with the transaction receipt and the company ID
+   */
   async deployCompany(
     companyType: number,
     name: string,
-    jurisdiction: string
-  ): Promise<ethers.ContractTransaction> {
+    jurisdiction: string,
+    overrides?: ethers.Overrides
+  ): Promise<{ id: number; proxy: string }> {
+    const companyFactory = getContract(
+      CONTRACT_ADDRESSES.ProplexCompanyFactory,
+      ProplexCompanyFactoryABI.abi,
+      this.signer
+    );
+
+    // Convert strings to bytes32
     const nameBytes32 = ethers.utils.formatBytes32String(name);
     const jurisdictionBytes32 = ethers.utils.formatBytes32String(jurisdiction);
-    
-    return await this.companyFactory.deployCompany(
-      companyType,
-      nameBytes32,
-      jurisdictionBytes32
+
+    // Set default gas limit if not provided
+    const txOverrides = overrides || {
+      gasLimit: 5000000 // Set a reasonable default gas limit
+    };
+
+    try {
+      const tx = await companyFactory.deployCompany(
+        companyType,
+        nameBytes32,
+        jurisdictionBytes32,
+        txOverrides
+      );
+
+      const receipt = await tx.wait();
+      const event = receipt.events?.find((e: any) => e.event === 'CompanyDeployed');
+      
+      if (!event) {
+        throw new Error('Company deployment event not found');
+      }
+
+      return {
+        id: event.args.id.toNumber(),
+        proxy: event.args.proxy
+      };
+    } catch (error: any) {
+      console.error('Error deploying company:', error);
+      // Re-throw with more context
+      if (error.code === 'UNPREDICTABLE_GAS_LIMIT') {
+        throw new Error(`Cannot estimate gas for company deployment. This may be due to invalid parameters or contract issues. Details: ${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  // Real Estate Token Factory Methods
+  /**
+   * Deploys a new real estate token project with all required contracts
+   * @param params Deployment parameters for the project
+   * @returns Promise with the deployed contract addresses
+   */
+  async deployProject(params: {
+    identityRegistry: string;
+    compliance: string;
+    onchainID: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    maxSupply: string;
+    tokenPrice: string;
+    cancelDelay: number;
+    projectOwner: string;
+    assetId: string;
+    metadataCID: string;
+    assetType: number; // 0 = Residential, 1 = Commercial, etc.
+    legalMetadataCID: string;
+    dividendPct: number;
+    preMintAmount: string;
+    minInvestment: string;
+    maxInvestment: string;
+  }): Promise<{
+    project: string;
+    escrow: string;
+    orderManager: string;
+    dao: string;
+  }> {
+    const tokenFactory = getContract(
+      CONTRACT_ADDRESSES.ProplexRealEstateTokenFactory,
+      ProplexRealEstateTokenFactoryABI.abi,
+      this.signer
     );
-  }
-  
-  // Get company details
-  async getCompany(id: number): Promise<any> {
-    return await this.registry.getCompany(id);
-  }
-  
-  // Get companies owned by an address
-  async getCompaniesOf(owner: string): Promise<number[]> {
-    return await this.companyFactory.companiesOf(owner);
-  }
-  
-  // Mint tokens (for testing purposes)
-  async mintTokens(tokenAddress: string, to: string, amount: ethers.BigNumberish): Promise<ethers.ContractTransaction> {
-    const token = new ethers.Contract(tokenAddress, PROPLEX_TOKEN_ABI, this.signer);
-    return await token.mint(to, amount);
-  }
-  
-  // Approve token spending
-  async approveToken(tokenAddress: string, spender: string, amount: ethers.BigNumberish): Promise<ethers.ContractTransaction> {
-    const token = new ethers.Contract(tokenAddress, PROPLEX_TOKEN_ABI, this.signer);
-    return await token.approve(spender, amount);
-  }
-  
-  // Get token balance
-  async getTokenBalance(tokenAddress: string, account: string): Promise<ethers.BigNumber> {
-    const token = new ethers.Contract(tokenAddress, PROPLEX_TOKEN_ABI, this.provider);
-    return await token.balanceOf(account);
-  }
-  
-  // Register a new project/asset
-  async registerProject(
-    companyId: number,
-    name: string,
-    symbol: string,
-    metadataCID: string,
-    legalCID: string,
-    assetType: number
-  ): Promise<ethers.ContractTransaction> {
-    const nameBytes32 = ethers.utils.formatBytes32String(name);
-    const symbolBytes32 = ethers.utils.formatBytes32String(symbol);
-    const metadataCIDBytes32 = ethers.utils.formatBytes32String(metadataCID);
-    const legalCIDBytes32 = ethers.utils.formatBytes32String(legalCID);
+
+    // Convert string parameters to proper types
+    const deployParams = {
+      ...params,
+      maxSupply: ethers.utils.parseEther(params.maxSupply),
+      tokenPrice: ethers.utils.parseEther(params.tokenPrice),
+      cancelDelay: params.cancelDelay,
+      metadataCID: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(params.metadataCID)),
+      legalMetadataCID: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(params.legalMetadataCID)),
+      preMintAmount: ethers.utils.parseEther(params.preMintAmount),
+      minInvestment: ethers.utils.parseEther(params.minInvestment),
+      maxInvestment: ethers.utils.parseEther(params.maxInvestment),
+      assetId: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(params.assetId)),
+      // Convert assetType to enum
+      assetType: params.assetType as any
+    };
+
+    const tx = await tokenFactory.deployProject(deployParams);
+    const receipt = await tx.wait();
     
-    // Get the deployed contract addresses from the real estate token factory
-    const deployedContracts = await this.realEstateTokenFactory.deployProject({
-      name: nameBytes32,
-      symbol: symbolBytes32,
-      metadataCID: metadataCIDBytes32,
-      legalCID: legalCIDBytes32,
-      assetType: assetType,
-      companyId: companyId
-    }, 0); // 0 for USDC as default currency
+    const event = receipt.events?.find((e: any) => e.event === 'ProjectDeployed');
+    if (!event) {
+      throw new Error('Project deployment event not found');
+    }
+
+    return {
+      project: event.args.project,
+      escrow: event.args.escrow,
+      orderManager: event.args.orderManager,
+      dao: event.args.dao
+    };
+  }
+
+  // Order Manager Methods
+  /**
+   * Places a new order for a real estate token
+   * @param params Order parameters
+   * @returns Promise with the order ID
+  //  */
+  // async placeOrder(params: {
+  //   projectAddress: string;
+  //   escrowAddress: string;
+  //   assetId: string;
+  //   amountTokens: string; // in wei
+  //   feesWei: string; // in wei
+  // }): Promise<string> {
+  //   const orderManager = getContract(
+  //     CONTRACT_ADDRESSES.ProplexOrderManager,
+  //     ProplexOrderManagerABI.abi,
+  //     this.signer
+  //   );
+
+  //   // Convert string parameters to proper types
+  //   const orderParams = {
+  //     projectAddress: params.projectAddress,
+  //     escrowAddress: params.escrowAddress,
+  //     assetId: ethers.utils.hexlify(ethers.utils.toUtf8Bytes(params.assetId)),
+  //     amountTokens: params.amountTokens,
+  //     feesWei: params.feesWei
+  //   };
+
+  //   // Calculate the total ETH value needed for the order
+  //   const tokenPrice = await this.getTokenPrice(params.projectAddress);
+  //   const value = BigInt(params.amountTokens) * BigInt(tokenPrice) / BigInt(1e18);
+  //   const platformFee = await this.getPlatformFee(value);
+  //   const totalValue = value + platformFee + BigInt(params.feesWei);
+
+  //   const tx = await orderManager.placeOrder(
+  //     orderParams,
+  //     { value: totalValue.toString() }
+  //   );
+
+  //   const receipt = await tx.wait();
+  //   const event = receipt.events?.find((e: any) => e.event === 'OrderPlaced');
     
-    return await this.registry.registerProject(
-      companyId,
-      nameBytes32,
-      symbolBytes32,
-      metadataCIDBytes32,
-      legalCIDBytes32,
-      assetType,
-      deployedContracts.project,
-      deployedContracts.escrow,
-      deployedContracts.orderManager,
-      deployedContracts.dao
+  //   if (!event) {
+  //     throw new Error('Order placement event not found');
+  //   }
+
+  //   return event.args.id;
+  // }
+
+  /**
+   * Gets the token price from the ProplexRealEstateToken contract
+   * @param tokenAddress Address of the token
+   * @returns Token price in wei
+   */
+  private async getTokenPrice(tokenAddress: string): Promise<string> {
+    const token = new ethers.Contract(
+      tokenAddress,
+      ['function tokenPrice() view returns (uint256)'],
+      provider
     );
+    return (await token.tokenPrice()).toString();
+  }
+
+  /**
+   * Gets the platform fee for an order
+   * @param value Value of the order in wei
+   * @returns Platform fee in wei
+   */
+  // private async getPlatformFee(value: bigint): Promise<bigint> {
+  //   const orderManager = getContract(
+  //     CONTRACT_ADDRESSES.ProplexOrderManager,
+  //     ProplexOrderManagerABI.abi,
+  //     this.signer
+  //   );
+  //   const platformFeeBps = await orderManager.platformFeeBps();
+  //   return (value * BigInt(platformFeeBps)) / BigInt(10000); // 10000 = 100%
+  // }
+
+  /**
+   * Finalizes an existing order
+   * @param orderId ID of the order to finalize
+   * @returns Promise that resolves when the transaction is mined
+  //  */
+  // async finalizeOrder(orderId: string): Promise<ethers.ContractReceipt> {
+  //   const orderManager = getContract(
+  //     CONTRACT_ADDRESSES.ProplexOrderManager,
+  //     ProplexOrderManagerABI.abi,
+  //     this.signer
+  //   );
+
+  //   const tx = await orderManager.finalizeOrder(orderId);
+  //   const receipt = await tx.wait();
+    
+  //   if (receipt.status !== 1) {
+  //     throw new Error('Transaction failed');
+  //   }
+    
+  //   return receipt;
+  // }
+
+  // Utility Methods
+  async getBalance(tokenAddress: string, address?: string) {
+    const token = new ethers.Contract(
+      tokenAddress,
+      ['function balanceOf(address) view returns (uint256)'],
+      this.provider
+    );
+    
+    let useAddress: string;
+    if (address) {
+      useAddress = address;
+    } else if (this.signer) {
+      useAddress = await this.signer.getAddress();
+    } else {
+      throw new Error('No address provided and no signer available');
+    }
+    
+    const balance = await token.balanceOf(useAddress);
+    return ethers.utils.formatEther(balance);
+  }
+
+  /**
+   * Utility method to check if the contract is deployed at the expected address
+   */
+  async isContractDeployed(address: string): Promise<boolean> {
+    try {
+      const code = await this.provider.getCode(address);
+      return code !== '0x';
+    } catch (error) {
+      console.error('Error checking contract deployment:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Utility method to get the signer's balance
+   */
+  async getSignerBalance(): Promise<string> {
+    if (!this.signer) {
+      throw new Error('No signer available');
+    }
+    const address = await this.signer.getAddress();
+    const balance = await this.provider.getBalance(address);
+    return ethers.utils.formatEther(balance);
+  }
+
+  /**
+   * Utility method to validate contract parameters before deployment
+   */
+  static validateCompanyParams(name: string, jurisdiction: string): { valid: boolean; error?: string } {
+    if (!name || name.trim().length === 0) {
+      return { valid: false, error: 'Company name is required' };
+    }
+    
+    if (name.length > 32) {
+      return { valid: false, error: 'Company name must be less than 32 characters' };
+    }
+    
+    if (!jurisdiction || jurisdiction.trim().length === 0) {
+      return { valid: false, error: 'Jurisdiction is required' };
+    }
+    
+    if (jurisdiction.length > 32) {
+      return { valid: false, error: 'Jurisdiction must be less than 32 characters' };
+    }
+    
+    return { valid: true };
+  }
+
+  // Static helper methods
+  static getProvider() {
+    return provider;
+  }
+
+  static getContractAddresses() {
+    return CONTRACT_ADDRESSES;
   }
 }
 
-// Export types for convenience
-export type CompanyType = 
-  | "LLC"
-  | "PRIVATELIMITED"
-  | "DAOLLC"
-  | "CORPORATION"
-  | "PUBLICENTITY"
-  | "PARTNERSHIP";
+// Example usage:
+/*
+async function example() {
+  // Initialize SDK with private key (in production, use environment variables or secure storage)
+  const privateKey = 'YOUR_PRIVATE_KEY';
+  const sdk = new ProplexSDK(privateKey);
 
-export type AssetType = 
-  | "Commercial"
-  | "Residential"
-  | "Holiday"
-  | "Land";
+  try {
+    // Deploy a new company
+    const companyAddress = await sdk.deployCompany(
+      'My Real Estate Company',
+      'REC',
+      '1000000', // 1M tokens
+      'https://api.proplex.xyz/company/'
+    );
+    console.log('Company deployed at:', companyAddress);
 
-export interface Company {
-  owner: string;
-  companyType: CompanyType;
-  isActive: boolean;
-  name: string;
-  jurisdiction: string;
+    // Deploy a new project
+    const tokenAddress = await sdk.deployProject(
+      'Luxury Apartments',
+      'LUX',
+      '100', // 1K tokens
+      'https://api.proplex.xyz/project/luxury-apts/',
+      'Luxury apartments in downtown'
+    );
+    console.log('Project token deployed at:', tokenAddress);
+
+    // Place an order
+    const orderId = await sdk.placeOrder(
+      tokenAddress,
+      '100', // 100 tokens
+      '1.5', // 1.5 ETH per token
+      Math.floor(Date.now() / 1000) + 86400 // 24 hours from now
+    );
+    console.log('Order placed with ID:', orderId);
+
+    // Finalize order (would typically be called by the buyer)
+    // const success = await sdk.finalizeOrder(orderId);
+    // console.log('Order finalized:', success);
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
-export interface Project {
-  projectAddress: string;
-  escrow: string;
-  orderManager: string;
-  dao: string;
-  assetType: AssetType;
-  isActive: boolean;
-  name: string;
-  symbol: string;
-  metadataCID: string;
-  legalCID: string;
-}
+example();
+*/

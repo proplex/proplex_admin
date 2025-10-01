@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FileText, Shield, AlertCircle, CheckCircle2 } from 'lucide-react';
 import FormGenerator from '@/components/UseForm/FormGenerator';
-import formConfig from './formConfig.ts';
+import formConfig from './formConfig';
 
 const Index = () => {
   const { control } = useFormContext();

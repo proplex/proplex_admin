@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -256,7 +256,9 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   const { connect, isConnected, connectorName, loading: connectLoading, error: connectError } = useWeb3AuthConnect();
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
+  console.log("user info is here L:",userInfo);
   const { address } = useAccount();
+  console.log("address is here L:",address);
   
 
 
@@ -264,55 +266,92 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   
   const chainId = useChainId();
   const { chains, switchChain, error: switchChainError } = useSwitchChain();
+  console.log("chains are here @####@@",chains);
   
 
   
-  // Find Avalanche Fuji chain dynamically from available chains
+  // Find Unicorn Ultra Nebulas Testnet chain dynamically from available chains
   useEffect(() => {
     console.log("=== CHAIN DETECTION USEEFFECT ===");
     console.log("Conditions - isConnected:", isConnected, "address:", address, "chains:", chains, "chains.length:", chains?.length);
     
     if (isConnected && address && chains && chains.length > 0) {
-      console.log("Searching for Avalanche Fuji in chains:", chains);
+      console.log("Searching for Unicorn Ultra Nebulas Testnet in chains:", chains);
       
       // Try multiple search criteria
-      const fujiByName = chains.find(chain => chain.name === 'Avalanche Fuji');
-      const fujiById = chains.find(chain => chain.id === 43113);
-      const fujiBySymbol = chains.find(chain => chain.nativeCurrency?.symbol === 'AVAX');
+      const unicornByName = chains.find(chain => chain.name === 'Unicorn Ultra Nebulas Testnet');
+      const unicornById = chains.find(chain => chain.id === 2484);
+      const unicornBySymbol = chains.find(chain => 
+        chain.nativeCurrency?.symbol === 'U2U' || 
+        chain.nativeCurrency?.symbol === 'U2u'
+      );
       
-  
+      const unicornChain = unicornByName || unicornById || unicornBySymbol;
       
-      const fujiChain = fujiByName || fujiById || fujiBySymbol;
-      
-      if (fujiChain) {
-        console.log('✅ Found Avalanche Fuji chain:', fujiChain);
-        setAvalancheFujiChain(fujiChain);
+      if (unicornChain) {
+        console.log('✅ Found Unicorn Ultra Nebulas Testnet chain:', unicornChain);
+        setAvalancheFujiChain(unicornChain); // Reusing the state variable but for Unicorn Ultra
       } else {
-        
+        console.log('❌ Unicorn Ultra Nebulas Testnet chain not found');
+        // Log all chain names for debugging
+        console.log('Available chains:', chains.map(c => ({ 
+          id: c.id, 
+          name: c.name, 
+          symbol: c.nativeCurrency?.symbol,
+          decimals: c.nativeCurrency?.decimals
+        })));
       }
     } else {
       console.log('❌ Conditions not met for chain detection');
+      // Reset chain states when not connected
+      setAvalancheFujiChain(null);
     }
-  }, [isConnected, address, chains]);
+  }, [isConnected, address, chains, chainId]);
   
-  const {data, isLoading, error: balanceError} = useBalance({
-    address,
-    chainId: avalancheFujiChain?.id
-  });
+  // Update balance hook to use Unicorn Ultra Nebulas Testnet
+  const {data, isLoading, error: balanceError} = useBalance(
+    address && avalancheFujiChain?.id 
+      ? {
+          address,
+          chainId: avalancheFujiChain.id
+        }
+      : undefined
+  );
+  console.log("balance data is here",data);
+  console.log("balance loading:", isLoading);
+  console.log("balance error:", balanceError);
+  console.log("address:", address);
+  console.log("avalancheFujiChain:", avalancheFujiChain);
   
-  // Debug balance fetching
+  // Check if the error is related to RPC issues
+  const isRpcError = balanceError?.message?.includes('HTTP request failed') || 
+                     balanceError?.message?.includes('Failed to fetch') ||
+                     balanceError?.message?.includes('RPC');
+  const isCorsError = balanceError?.message?.includes('CORS') ||
+                      balanceError?.message?.includes('Access-Control-Allow-Origin');
+  console.log("isRpcError:", isRpcError);
+  console.log("isCorsError:", isCorsError);
   
-  // Check if currently connected to Avalanche Fuji
+  // Check if currently connected to Unicorn Ultra Nebulas Testnet
   const isOnAvalancheFuji = avalancheFujiChain && chainId === avalancheFujiChain.id;
   console.log("=== CHAIN COMPARISON ===");
   console.log("Current chainId:", chainId);
-  console.log("Fuji chainId:", avalancheFujiChain?.id);
-  console.log("isOnAvalancheFuji:", isOnAvalancheFuji);
+  console.log("Unicorn Ultra chainId:", avalancheFujiChain?.id);
+  console.log("isOnUnicornUltra:", isOnAvalancheFuji);
+  console.log("Unicorn Ultra Chain Object:", avalancheFujiChain);
+  
+  // Additional check for direct chain ID matching
+  const isOnAvalancheFujiById = chainId === 2484;
+  console.log("Direct chain ID check (2484):", isOnAvalancheFujiById);
+  
+  // Use either method for determining if we're on the correct chain
+  const isOnCorrectChain = isOnAvalancheFuji || isOnAvalancheFujiById;
+  console.log("Final chain check (isOnCorrectChain):", isOnCorrectChain);
   
   // Final summary logging
   console.log("=== FINAL SUMMARY ===");
-  console.log("Should show balance?", isOnAvalancheFuji && data && avalancheFujiChain);
-  console.log("Should show switch button?", !isOnAvalancheFuji && isConnected && avalancheFujiChain);
+  console.log("Should show balance?", isOnCorrectChain && avalancheFujiChain);
+  console.log("Should show switch button?", !isOnCorrectChain && isConnected && avalancheFujiChain);
 
   // useEffect(() => {
   //   const timer = setInterval(() => setTime(new Date()), 1000);
@@ -504,7 +543,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                 </Button>
 
                 {/* AVAX Balance Display - Clean white design to match website */}
-                {isOnAvalancheFuji && data && avalancheFujiChain && (
+                {isOnCorrectChain && avalancheFujiChain && (
                   <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm">
                     <div className="flex items-center gap-1">
                       <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
@@ -513,19 +552,74 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
-                          {parseFloat(formatUnits(data.value, data.decimals)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'AVAX'}
-                        </span>
-                        <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
-                          {avalancheFujiChain.name}
-                        </span>
+                        {data ? (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              {parseFloat(formatUnits(data.value, data.decimals || 18)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'U2U'}
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                          </>
+                        ) : isLoading ? (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              Loading...
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                          </>
+                        ) : isCorsError ? (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              CORS Error
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
+                              Balance unavailable in dev mode
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
+                              (Works in production)
+                            </span>
+                          </>
+                        ) : isRpcError ? (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              RPC Error
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                          </>
+                        ) : balanceError ? (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              Error loading balance
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
+                              0.0000 {avalancheFujiChain.nativeCurrency?.symbol || 'U2U'}
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400 leading-none">
+                              {avalancheFujiChain.name}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
                 )}
                 
-                {/* Switch to Avalanche Fuji if not connected - Clean white design */}
-                {!isOnAvalancheFuji && isConnected && avalancheFujiChain && (
+                {/* Switch to Unicorn Ultra Nebulas Testnet if not connected - Clean white design */}
+                {!isOnCorrectChain && isConnected && avalancheFujiChain && (
                   <button
                     onClick={() => switchChain({ chainId: avalancheFujiChain.id })}
                     className="hidden sm:flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl shadow-sm hover:border-blue-300 hover:shadow-md transition-all duration-200"
@@ -533,7 +627,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                     <div className="flex items-center gap-1">
                       <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
                         <span className="text-white text-sm font-bold">
-                          {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
+                          {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'U'}
                         </span>
                       </div>
                       <div className="flex flex-col">
@@ -790,23 +884,78 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                   </Button>
                 </div>
 
-                {/* Mobile Balance Display */}
-                {isOnAvalancheFuji && data && avalancheFujiChain && (
+                {/* Mobile Balance Display - Updated for Unicorn Ultra Nebulas Testnet */}
+                {isOnCorrectChain && avalancheFujiChain && (
                   <div className="mt-4 p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl border border-blue-200/50 dark:border-blue-800/50">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
                           <span className="text-white text-sm font-bold">
-                            {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'A'}
+                            {avalancheFujiChain.nativeCurrency?.symbol?.charAt(0) || 'U'}
                           </span>
                         </div>
                         <div>
-                          <div className="font-semibold text-gray-900 dark:text-white">
-                            {parseFloat(formatUnits(data.value, data.decimals)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'AVAX'}
-                          </div>
-                          <div className="text-sm text-blue-600 dark:text-blue-400">
-                            {avalancheFujiChain.name}
-                          </div>
+                          {data ? (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                {parseFloat(formatUnits(data.value, data.decimals || 18)).toFixed(4)} {avalancheFujiChain.nativeCurrency?.symbol || 'U2U'}
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                            </>
+                          ) : isLoading ? (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                Loading...
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                            </>
+                          ) : isCorsError ? (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                CORS Error
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                Balance unavailable in dev mode
+                              </div>
+                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                (Works in production)
+                              </div>
+                            </>
+                          ) : isRpcError ? (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                RPC Error
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                            </>
+                          ) : balanceError ? (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                Error loading balance
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="font-semibold text-gray-900 dark:text-white">
+                                0.0000 {avalancheFujiChain.nativeCurrency?.symbol || 'U2U'}
+                              </div>
+                              <div className="text-sm text-blue-600 dark:text-blue-400">
+                                {avalancheFujiChain.name}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

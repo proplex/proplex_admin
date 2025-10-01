@@ -20,12 +20,13 @@ export const defaultPagination = {
   hasMore: false,
 };
 
-export const IncorporationType = [
-  { value: "llp", label: "LLP" },
-  { value: "partnership", label: "Partnership" },
-  { value: "private limited", label: "Private Limited" },
-  { value: "proprietorship", label: "Proprietorship" },
-];
+// export const IncorporationType = [
+//   { value: "llp", label: "LLP" },
+//   { value: "partnership", label: "Partnership" },
+//   { value: "private limited", label: "Private Limited" },
+//   { value: "proprietorship", label: "Proprietorship" },
+//   {value: "Society", label: "Society"}
+// ];
 
 export const shareType = [
   { value: "Partner Share Certificate", label: "Partner Share Certificate" },
@@ -328,6 +329,15 @@ export enum SPVType {
   PublicEntity = "public-entity",
   Partnership = "partnership",
 }
+
+export const IncorporationType = [
+  { value: SPVType.LLC, label: "LLC" },
+  { value: SPVType.PrivateLimited, label: "Private Limited" },
+  { value: SPVType.DAOLLC, label: "DAO LLC" },
+  { value: SPVType.Corporation, label: "Corporation" },
+  { value: SPVType.PublicEntity, label: "Public Entity" },
+  { value: SPVType.Partnership, label: "Partnership" },
+];
 
 export const SPV_TYPES = [
   { label: "LLC", value: SPVType.LLC },

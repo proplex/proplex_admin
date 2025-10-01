@@ -6,7 +6,6 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { store } from './store/store';
-import {MetaMaskProvider} from './providers/MetaMaskProvider';
 import web3AuthContextConfig from './web3authContext';
 
 // Web3Auth and Wagmi imports
@@ -23,9 +22,7 @@ createRoot(document.getElementById('root')!).render(
       <Web3AuthProvider config={web3AuthContextConfig}>
         <QueryClientProvider client={queryClient}>
           <WagmiProvider>
-      {/* <MetaMaskProvider> */}
         <App />
-      {/* </MetaMaskProvider> */}
       </WagmiProvider>
       </QueryClientProvider>
 
