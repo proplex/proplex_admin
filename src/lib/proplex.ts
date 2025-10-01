@@ -94,6 +94,7 @@ export class ProplexSDK {
     const txOverrides = overrides || {
       gasLimit: 5000000 // Set a reasonable default gas limit
     };
+    console.log("final proplex side paylaod is here:",companyType,nameBytes32,jurisdictionBytes32,txOverrides);
 
     try {
       const tx = await companyFactory.deployCompany(

@@ -75,6 +75,7 @@ const useCreateCompany = () => {
           
           // Deploy company on blockchain with improved error handling
           console.log('Attempting to deploy company to blockchain...');
+          console.log("company deploy params is here:",companyType,companyName,jurisdiction);
           const deployResult = await proplexSDK.deployCompany(
             companyType,
             companyName,
