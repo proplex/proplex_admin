@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Search, 
@@ -25,13 +25,20 @@ import {
   User,
   LogIn,
   Copy,
-  Check
+  Check,
+  Wallet
 } from "lucide-react";
 
 // Web3Auth imports
 import { useWeb3AuthConnect, useWeb3AuthDisconnect, useWeb3AuthUser } from "@web3auth/modal/react";
 import { useAccount,useBalance,useChainId,useSwitchChain } from "wagmi";
 import {formatUnits, type Chain} from "viem";
+
+// Login Modal
+import LoginModal from '../components/auth/LoginModal';
+import { useAuth } from '../hooks/useAuth';
+import api from '../lib/httpClient'; // Correct import path
+
 
 
 // Mock components for demonstration
@@ -241,7 +248,12 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   const [time, setTime] = useState<Date>(new Date());
   const [copied, setCopied] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { login,isAuthenticated  } = useAuth();
+  console.log("isAuthenticated",isAuthenticated);
+
+
 
   const handleMobileMenuToggle = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -257,19 +269,16 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
   const { disconnect, loading: disconnectLoading, error: disconnectError } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
   console.log("user info is here L:",userInfo);
+  console.log(":connecter name is here::",connectorName);
   const { address } = useAccount();
   console.log("address is here L:",address);
-  
-
 
   const [avalancheFujiChain, setAvalancheFujiChain] = useState<Chain | null>(null);
   
   const chainId = useChainId();
   const { chains, switchChain, error: switchChainError } = useSwitchChain();
   console.log("chains are here @####@@",chains);
-  
 
-  
   // Find Unicorn Ultra Nebulas Testnet chain dynamically from available chains
   useEffect(() => {
     console.log("=== CHAIN DETECTION USEEFFECT ===");
@@ -369,17 +378,27 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await disconnect();
-      // Redirect to home page after logout
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Still redirect to home page even if disconnect fails
-      navigate('/');
-    }
-  };
+
+const handleLogout = async () => {
+  try {
+    // Make logout request to backend
+    await api.post('/admin/logout');
+    
+    // Clear authentication state
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    
+    // Disconnect Web3Auth if connected
+    await disconnect();
+    
+    // Redirect to home page after logout
+    navigate('/');
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Still redirect to home page even if logout fails
+    navigate('/');
+  }
+};
 
   const handleCopyAddress = async () => {
     if (address) {
@@ -401,6 +420,27 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
       }
     }
   };
+
+  // Handle traditional login
+// In Navbar.tsx, replace the handleLogin function with this:
+const handleLogin = async (email: string, password: string) => {
+  try {
+    // Use the httpClient instance instead of direct fetch
+    const response = await api.post('/admin/login', { email, password });
+    
+    if (response.data.success) {
+      // Use the login function from useAuth hook
+      login(response.data.token, response.data.user);
+      // Close the modal
+      setIsLoginModalOpen(false);
+    } else {
+      throw new Error(response.data.message || 'Login failed');
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
 
   const navItems = [
     { 
@@ -450,6 +490,13 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
 
   return (
     <TooltipProvider delayDuration={100}>
+      {/* Login Modal */}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        onLogin={handleLogin} 
+      />
+      
       <nav className={`
         fixed  left-0 right-0 rounded-6xl border border-gray-200/20 drop-shadow-lg dark:border-gray-800/20 h-16 z-50 transition-all duration-500 ease-out
         ${isScrolled 
@@ -483,7 +530,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
             </div>
             
             {/* Desktop Navigation with enhanced effects - Only when connected */}
-            {isConnected && (
+            {isAuthenticated && (
               <div className="hidden lg:flex flex-wrap justify-center gap-2">
                 {navItems.map((item, index) => {
                 const isActive = item.exact 
@@ -648,7 +695,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
             ) : null}
 
             {/* Enhanced User Dropdown */}
-            {isConnected ? (
+            {isAuthenticated  ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
@@ -658,18 +705,19 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                     <div className="relative">
                       <Avatar className="h-10 w-10 ring-2 ring-transparent group-hover:ring-blue-500/30 transition-all duration-300">
                         <AvatarFallback className="bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-500 text-white font-semibold text-lg">
-                          {userInfo?.name ? userInfo.name.charAt(0) : 'U'}
+                           {localStorage.getItem('user') ? 
+                (JSON.parse(localStorage.getItem('user')!).firstName + JSON.parse(localStorage.getItem('user')!).lastName).charAt(0) : 'U'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse" />
                     </div>
                     <div className="hidden sm:flex flex-col items-start">
                       <span className="text-sm font-semibold text-gray-900 dark:text-white leading-none">
-                        {userInfo?.name || 'User'}
+                        {localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!).name : 'User'}
                       </span>
                       <div className="flex items-center gap-1 mt-0.5">
                         <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
-                          {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+                          {'Connected'}
                         </span>
                         {address && (
                           <button
@@ -749,6 +797,48 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
                       </div>
                     </div>
                   </DropdownMenuItem>
+
+{isConnected ? (
+  <DropdownMenuItem 
+    onClick={async () => {
+      await disconnect();
+      // Update UI state after disconnection
+    }}
+    className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group"
+  >
+    <div className="flex items-center gap-3">
+      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+        <Wallet className="h-5 w-5 text-white" />
+      </div>
+      <div>
+        <div className="font-medium text-gray-900 dark:text-white">Disconnect Wallet</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400">Disconnect your Web3 wallet</div>
+      </div>
+    </div>
+  </DropdownMenuItem>
+) : (
+  <DropdownMenuItem 
+    onClick={() => {
+      // Connect Web3 wallet
+      connect();
+    }}
+    className="rounded-lg p-3 transition-all duration-150 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 cursor-pointer group"
+  >
+    <div className="flex items-center gap-3">
+      <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+        <Wallet className="h-5 w-5 text-white" />
+      </div>
+      <div>
+        <div className="font-medium text-gray-900 dark:text-white">Wallet</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400">Connect Your Web3 wallet</div>
+      </div>
+    </div>
+  </DropdownMenuItem>
+)}
+
+
+                 
+                  
                   
                   
                   <DropdownMenuSeparator className="bg-gray-200/50 dark:bg-gray-800/50 my-2" />
@@ -774,15 +864,11 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
             ) : (
               // Sign in button when user is not connected
               <Button
-                onClick={() => connect()}
-                disabled={connectLoading}
-                className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-4 py-2 h-10 transition-all duration-200 hover:scale-105 active:scale-95"
+                onClick={() => setIsLoginModalOpen(true)}
+                className="gap-2 bg-gradient-to-r from-blue-600  to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-4 py-2 h-10 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 <LogIn className="h-5 w-5" />
                 <span className="hidden sm:inline">Sign In</span>
-                {connectLoading && (
-                  <div className="ml-2 h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                )}
               </Button>
             )}
           </div>
@@ -803,7 +889,7 @@ const Navbar = ({ onMenuToggle, className, isMobileMenuOpen = false, setIsMobile
         ) : null}
 
         {/* Mobile Navigation Menu - Full screen overlay when logged in */}
-        {isConnected && mobileMenuOpen && (
+        {isAuthenticated && mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 top-16 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl z-40 border-t border-gray-200/50 dark:border-gray-800/50">
             <div className="px-6 py-8 space-y-6 max-w-md mx-auto">
               {/* Mobile Navigation Header */}

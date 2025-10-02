@@ -1,14 +1,13 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { useLocation } from 'react-router-dom';
 
-interface ProtectProps {
+interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const Protect: React.FC<ProtectProps> = ({ children }) => {
-  // Check if user is authenticated
-  const isAuthenticated = Boolean(localStorage.getItem('authToken'));
-  const navigate = useNavigate();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   // Allow public access to the landing page
@@ -16,8 +15,18 @@ const Protect: React.FC<ProtectProps> = ({ children }) => {
     return <>{children}</>;
   }
 
-  // Instead of redirecting, we'll show a message
+  if (loading) {
+    // Show a loading indicator while checking auth status
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
+    // Instead of redirecting to /sign-in, we'll show a message
+    // In a real app, you might want to show a login button or modal
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
@@ -30,18 +39,13 @@ const Protect: React.FC<ProtectProps> = ({ children }) => {
           <p className="text-gray-600 text-center mb-6">
             Please use the "Sign In" button in the navigation bar to log in.
           </p>
-          <button
-            onClick={() => navigate('/')}
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Go to Home
-          </button>
         </div>
       </div>
     );
   }
 
+  // Render children if authenticated
   return <>{children}</>;
 };
 
-export default Protect;
+export default ProtectedRoute;

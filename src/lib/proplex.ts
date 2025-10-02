@@ -132,18 +132,18 @@ export class ProplexSDK {
    * @returns Promise with the deployed contract addresses
    */
   async deployProject(params: {
-    identityRegistry: string;
-    compliance: string;
-    onchainID: string;
+    identityRegistry: string; // this is the identityRegister 0x56bc000bb3393122B7ef68A372bf51d13EB1f25D
+    compliance: string; //0x67A80B12c3b7Eb8383ffe4e0494c8dE9C319487A
+    onchainID: string; //0x0000000000000000000000000000000000000000
     name: string;
     symbol: string;
-    decimals: number;
+    decimals: number; // 18
     maxSupply: string;
     tokenPrice: string;
     cancelDelay: number;
     projectOwner: string;
     assetId: string;
-    metadataCID: string;
+    metadataCID: string; // ipfs alrady integation 
     assetType: number; // 0 = Residential, 1 = Commercial, etc.
     legalMetadataCID: string;
     dividendPct: number;

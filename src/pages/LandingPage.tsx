@@ -25,6 +25,8 @@ import {
 import { KYBWizard } from '@/components/wizard/KYBWizard';
 import { useWeb3AuthConnect } from "@web3auth/modal/react";
 import { useNavigate } from 'react-router-dom';
+import Navbar from '@/layout/Navbar';
+
 
 // Counter Animation Component
 const AnimatedCounter = ({ end, duration = 2000, suffix = '', prefix = '' }: { 
@@ -193,6 +195,10 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/**navbar code is h3re */}
+      <Navbar />
+
       {/* Hero Section */}
       <motion.section
         className="relative overflow-hidden bg-white"

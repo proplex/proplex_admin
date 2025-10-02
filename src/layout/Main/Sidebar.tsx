@@ -104,9 +104,11 @@ export default function Sidebar({ className = '' }: CollapsibleSidebarProps) {
   }, [isCollapsed]);
 
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '/sign-in';
+    // Remove token and user from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    // Reload the page to reflect the logged out state
+    window.location.reload();
   };
 
   const toggleCollapse = () => {

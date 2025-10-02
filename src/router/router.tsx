@@ -12,7 +12,7 @@ const SpvDashboard = React.lazy(() => import('@/layout/SPV'));
 // Components
 import Loading from '@/components/ui/Loading';
 import ErrorPage from '@/components/ui/ErrorPage';
-import Protect from '@/middleware/Protect';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 // Type definitions
 type LazyComponent = LazyExoticComponent<ComponentType<any>>;
@@ -46,10 +46,6 @@ const authRoutes: RouteObject[] = [
  * Main dashboard routes organized by feature
  */
 const mainRoutes: RouteConfig[] = [
-  {
-    path: '/',
-    component: React.lazy(() => import('@/pages/LandingPage')),
-  },
   {
     path: '/assets',
     component: React.lazy(() => import('@/pages/asset/AssetList/index')),
@@ -265,7 +261,7 @@ const convertToRouteObjects = (routes: RouteConfig[]): RouteObject[] => {
 const mainDashboardRoute: RouteObject = {
   path: '/',
   element: (
-    <Protect>
+    <ProtectedRoute>
       <Suspense
         fallback={
           <div className='flex items-center justify-center w-full h-screen'>
@@ -275,7 +271,7 @@ const mainDashboardRoute: RouteObject = {
       >
         <MainDashboard />
       </Suspense>
-    </Protect>
+    </ProtectedRoute>
   ),
   errorElement: <ErrorPage />,
   children: convertToRouteObjects(mainRoutes),
@@ -287,7 +283,7 @@ const mainDashboardRoute: RouteObject = {
 const spvDashboardRoute: RouteObject = {
   path: '/spv/:id',
   element: (
-    <Protect>
+    <ProtectedRoute>
       <Suspense
         fallback={
           <div className='flex items-center justify-center w-full h-screen'>
@@ -297,16 +293,28 @@ const spvDashboardRoute: RouteObject = {
       >
         <SpvDashboard />
       </Suspense>
-    </Protect>
+    </ProtectedRoute>
   ),
   errorElement: <ErrorPage />,
   children: convertToRouteObjects(spvRoutes),
 };
 
 /**
+ * Public routes
+ */
+const publicRoutes: RouteObject[] = [
+  {
+    path: '/',
+    element: lazyLoad(React.lazy(() => import('@/pages/LandingPage'))),
+    errorElement: <ErrorPage />,
+  },
+];
+
+/**
  * Create and export the router with all routes
  */
 const router = createBrowserRouter([
+  ...publicRoutes,
   mainDashboardRoute,
   spvDashboardRoute,
   ...authRoutes,

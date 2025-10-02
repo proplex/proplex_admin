@@ -1,5 +1,3 @@
-
-
 import { useState, useEffect } from "react";
 import { CircleUserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,9 +24,11 @@ function Header() {
 
   // Logout Handler: Clear Storage and Redirect
   const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '/sign-in'; // Redirect to login page
+    // Remove token and user from localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    // Reload the page to reflect the logged out state
+    window.location.reload();
   };
 
   const handleConnectWallet = async () => {
