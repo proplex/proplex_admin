@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useSupabase } from './useSupabase';
+import api from '@/lib/httpClient'; // Import the httpClient instead of useSupabase
 import { ProplexSDK } from '@/lib/proplex';
 import { useWeb3AuthUser } from "@web3auth/modal/react";
 import { useAccount } from "wagmi";
@@ -9,7 +9,6 @@ import { useEthersSigner } from './useEthersSigner';
 
 const useCreateCompany = () => {
   const navigate = useNavigate();
-  const { createCompany: createCompanySupabase } = useSupabase();
   const { userInfo } = useWeb3AuthUser();
   const { isConnected } = useAccount();
   const ethersSigner = useEthersSigner();
@@ -23,8 +22,16 @@ const useCreateCompany = () => {
     setResponseData(null);
     
     try {
-      // First, create the company in Supabase
-     
+      // First, create the company via the API
+      const result = await api.post('/companies', data);
+      console.log('Company created in database:', result.data);
+      
+      if (!result.data) {
+        throw new Error('Failed to create company in database');
+      }
+      
+      setResponseData(result.data);
+      toast.success('Company created successfully in database!');
       
       // Then, register the company on the blockchain if wallet is connected
       if (isConnected && ethersSigner) {
@@ -110,21 +117,12 @@ const useCreateCompany = () => {
         toast.success('Company created in database. Connect wallet to register on blockchain.');
       }
 
-       const result = await createCompanySupabase(data);
-      
-      if (!result) {
-        throw new Error('Failed to create company in database');
-      }
-      
-      setResponseData(result.data);
-      toast.success('Company created successfully in database!');
-      
       // Navigate to the edit company page if an ID is available
       if (result.data && result.data.id) {
         navigate(`/edit-company/${result.data.id}`);
       }
     } catch (err: any) {
-      const message = err.message || 'Something went wrong';
+      const message = err.response?.data?.message || err.message || 'Something went wrong';
       setError(message);
       toast.error(message);
     } finally {
