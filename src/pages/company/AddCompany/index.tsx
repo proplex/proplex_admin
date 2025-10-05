@@ -1,7 +1,4 @@
-import { lazy } from 'react';
-
-// Re-export the enhanced component as the default
-const EnhancedAddCompany = lazy(() => import('./EnhancedAddCompany'));
+import EnhancedAddCompany from './EnhancedAddCompany';
 
 const AddCompany = () => (
   <EnhancedAddCompany />

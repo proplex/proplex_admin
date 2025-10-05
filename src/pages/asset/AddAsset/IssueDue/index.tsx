@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { lazy, Suspense, memo, useCallback, useMemo, JSX, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CustomTabs from '@/components/ui/custom-tab';
-import { ASSET_STEPS_TABS } from '@/constants/global';
+import { ASSET_STEPS_TABS } from '@/constants/asset';
 import Loading from '@/components/ui/Loading';
 import { Shield, FileSearch, Building2, CheckCircle2, Clock, AlertTriangle, TrendingUp, ChevronRight, Target } from 'lucide-react';
 import AssetHostedBy from './AssetHostedBy';

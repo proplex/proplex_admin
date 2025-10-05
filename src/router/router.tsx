@@ -6,13 +6,14 @@ import React, {
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 
 // Layouts
-const MainDashboard = React.lazy(() => import('@/layout/Main'));
-const SpvDashboard = React.lazy(() => import('@/layout/SPV'));
+const MainDashboard = React.lazy(() => import('../layout/Main'));
+const SpvDashboard = React.lazy(() => import('../layout/SPV'));
+const MainLayout = React.lazy(() => import('../layout/MainLayout'));
 
 // Components
-import Loading from '@/components/ui/Loading';
-import ErrorPage from '@/components/ui/ErrorPage';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import Loading from '../components/ui/Loading';
+import ErrorPage from '../components/ui/ErrorPage';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 // Type definitions
 type LazyComponent = LazyExoticComponent<ComponentType<any>>;
@@ -32,14 +33,21 @@ const lazyLoad = (Component: LazyComponent) => (
 );
 
 /**
+ * Helper function to wrap protected routes
+ */
+const protectedRoute = (Component: LazyComponent) => (
+  <ProtectedRoute>
+    <Suspense fallback={<Loading />}>
+      <Component />
+    </Suspense>
+  </ProtectedRoute>
+);
+
+/**
  * Auth routes
  */
 const authRoutes: RouteObject[] = [
-  {
-    path: '/web3login',
-    element: lazyLoad(React.lazy(() => import('@/pages/auth/Web3Login'))),
-    errorElement: <ErrorPage />,
-  },
+  // Authentication routes can be added here if needed
 ];
 
 /**
@@ -48,163 +56,63 @@ const authRoutes: RouteObject[] = [
 const mainRoutes: RouteConfig[] = [
   {
     path: '/assets',
-    component: React.lazy(() => import('@/pages/asset/AssetList/index')),
+    component: React.lazy(() => import('../pages/asset/AssetList/index')),
   },
   {
     path: '/add-asset',
-    component: React.lazy(() => import('@/pages/asset/AddAsset/index')),
+    component: React.lazy(() => import('../pages/asset/AddAsset/index')),
   },
   {
     path: '/edit-asset/:id',
-    component: React.lazy(() => import('@/pages/asset/AddAsset/index')),
+    component: React.lazy(() => import('../pages/asset/AddAsset/index')),
   },
   {
     path: '/dashboard-asset/:id',
-    component: React.lazy(() => import('@/pages/asset/Dashboard')),
+    component: React.lazy(() => import('../pages/asset/Dashboard')),
   },
   {
     path: '/dashboard',
-    component: React.lazy(() => import('@/pages/Dashboard/index')),
+    component: React.lazy(() => import('../pages/Dashboard/index')),
   },
   {
     path: '/amenities',
-    component: React.lazy(() => import('@/pages/amenities')),
+    component: React.lazy(() => import('../pages/amenities')),
   },
   {
     path: '/channel-assets-partner',
-    component: React.lazy(() => import('@/pages/channelAssetsPartner')),
+    component: React.lazy(() => import('../pages/channelAssetsPartner')),
   },
   {
     path: '/token-asset-partner',
-    component: React.lazy(() => import('@/pages/tokenAssetPartner')),
+    component: React.lazy(() => import('../pages/tokenAssetPartner')),
   },
   {
     path: '/company',
-    component: React.lazy(() => import('@/pages/company')),
+    component: React.lazy(() => import('../pages/company')),
+  },
+  {
+    path: '/company/:companyId',
+    component: React.lazy(() => import('../pages/company/CompanyDetail')),
   },
   {
     path: '/add-company',
-    component: React.lazy(() => import('@/pages/company/AddCompany/index')),
+    component: React.lazy(() => import('../pages/company/AddCompany/index')),
   },
   {
     path: '/edit-company/:id',
-    component: React.lazy(() => import('@/pages/company/AddCompany/index')),
+    component: React.lazy(() => import('../pages/company/AddCompany/index')),
   },
   {
     path: '/customers',
-    component: React.lazy(() => import('@/pages/customers')),
+    component: React.lazy(() => import('../pages/customers')),
   },
   {
     path: '/customers/new',
-    component: React.lazy(() => import('@/pages/customer/AddCustomer')),
+    component: React.lazy(() => import('../pages/customer/AddCustomer')),
   },
   {
-    path: '/add-customer',
-    component: React.lazy(() => import('@/pages/customer/AddCustomer')),
-  },
-  {
-    path: '/edit-customer/:id',
-    component: React.lazy(() => import('@/pages/customer/AddCustomer')),
-  },
-  {
-    path: '/employee',
-    component: React.lazy(() => import('@/pages/employee/EmployeeList')),
-  },
-  {
-    path: '/add-employee',
-    component: React.lazy(() => import('@/pages/employee/AddEmployee')),
-  },
-  {
-    path: '/edit-employee/:id',
-    component: React.lazy(() => import('@/pages/employee/AddEmployee')),
-  },
-  {
-    path: '/customer-profile/:id',
-    component: React.lazy(() => import('@/pages/customers/customer')),
-  },
-  {
-    path: '/customer-profile-fo/:id',
-    component: React.lazy(() => import('@/pages/customers/ForeginInverstors')),
-  },
-  {
-    path: '/orders',
-    component: React.lazy(() => import('@/pages/orders/index')),
-  },
-  {
-    path: '/investors',
-    component: React.lazy(() => import('@/pages/customers/index')),
-  },
-  {
-    path: '/orders/new',
-    component: React.lazy(() => import('@/pages/orders/AddOrder')),
-  },
-  {
-    path: '/order-details/:id',
-    component: React.lazy(() => import('@/pages/orders/OrderDetail')),
-  },
-  {
-    path: '/cancel',
-    component: React.lazy(() => import('@/pages/cancel')),
-  },
-  {
-    path: '/fee',
-    component: React.lazy(() => import('@/pages/fee')),
-  },
-  {
-    path: '/fee-management',
-    component: React.lazy(() => import('@/pages/feeManagement/FeeDashboard')),
-  },
-  {
-    path: '/super-admin-withdrawal',
-    component: React.lazy(() => import('@/pages/superAdminWithdrawal')),
-  },
-  {
-    path: '/spv-list',
-    component: React.lazy(() => import('@/pages/SPV/SpvList')),
-  },
-  {
-    path: '/add-spv',
-    component: React.lazy(() => import('@/pages/SPV/AddSpv')),
-  },
-  {
-    path: '/edit-spv/:id',
-    component: React.lazy(() => import('@/pages/SPV/AddSpv')),
-  },
-  {
-    path: '/blog',
-    component: React.lazy(() => import('@/pages/blog')),
-  },
-  {
-    path: '/review',
-    component: React.lazy(() => import('@/pages/review')),
-  },
-  {
-    path: '/config',
-    component: React.lazy(() => import('@/pages/configuration')),
-  },
-  {
-    path: '/roles',
-    component: React.lazy(() => import('@/pages/roles')),
-  },
-  {
-    path: '/roles/:id',
-    component: React.lazy(() => import('@/pages/roles/RoleForm')),
-  },
-  {
-    path: '/settings',
-    component: React.lazy(() => import('@/pages/setting')),
-  },
-  {
-    path: '/notification',
-    component: React.lazy(() => import('@/pages/notification')),
-  },
-  {
-    path: '/report',
-    component: React.lazy(() => import('@/pages/report')),
-  },
-  {
-    path: '/EOI',
-    component: React.lazy(() => import('@/pages/EOI')),
+    path: '/wallet',
+    component: React.lazy(() => import('../pages/wallet')),
   },
 ];
 
@@ -214,32 +122,12 @@ const mainRoutes: RouteConfig[] = [
 const spvRoutes: RouteConfig[] = [
   {
     path: '',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/overview')),
-  },
-  {
-    path: 'governance',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/governance')),
-  },
-  {
-    path: 'document',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/document')),
-  },
-  {
-    path: 'investors',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/Investor')),
-  },
-  {
-    path: 'orders',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/orders')),
-  },
-  {
-    path: 'documents',
-    component: React.lazy(() => import('@/pages/SPV/SpvDashBoard/document')),
+    component: React.lazy(() => import('../pages/SPV/SpvDashBoard/overview')),
   },
   {
     path: 'disturbution',
     component: React.lazy(
-      () => import('@/pages/SPV/SpvDashBoard/disturbution')
+      () => import('../pages/SPV/SpvDashBoard/disturbution')
     ),
   },
 ];
@@ -250,7 +138,7 @@ const spvRoutes: RouteConfig[] = [
 const convertToRouteObjects = (routes: RouteConfig[]): RouteObject[] => {
   return routes.map(({ path, component, children }) => ({
     path,
-    element: lazyLoad(component),
+    element: protectedRoute(component),
     ...(children && { children: convertToRouteObjects(children) }),
   }));
 };
@@ -269,7 +157,7 @@ const mainDashboardRoute: RouteObject = {
           </div>
         }
       >
-        <MainDashboard />
+        <MainLayout />
       </Suspense>
     </ProtectedRoute>
   ),
@@ -305,7 +193,7 @@ const spvDashboardRoute: RouteObject = {
 const publicRoutes: RouteObject[] = [
   {
     path: '/',
-    element: lazyLoad(React.lazy(() => import('@/pages/LandingPage'))),
+    element: lazyLoad(React.lazy(() => import('../pages/LandingPage'))),
     errorElement: <ErrorPage />,
   },
 ];

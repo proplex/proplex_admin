@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { lazy, Suspense, useCallback, useMemo, JSX, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CustomTabs from '@/components/ui/custom-tab';
-import { ASSET_STEPS_TABS } from '@/constants/global';
+import { ASSET_STEPS_TABS } from '@/constants/asset';
 import Loading from '@/components/ui/Loading';
 import { Building2, TrendingUp, FileText, Users, Sparkles, CheckCircle2, Clock, AlertCircle, Info, ChevronRight, Target } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';

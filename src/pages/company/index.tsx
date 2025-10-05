@@ -601,11 +601,11 @@ function Index() {
                             <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center">
                               <Building2 className="h-5 w-5 text-blue-600" />
                             </div>
-                            <div>
-                              <div className="font-medium text-gray-900">{company.name}</div>
-                              <div className="text-sm text-gray-500">{company.industry}</div>
-                            </div>
+                            <div className="font-medium text-gray-900">{company.name}</div>
                           </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-gray-600">{company.industry}</span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
@@ -630,23 +630,26 @@ function Index() {
                             <span className="text-sm font-medium text-gray-900">{company.total_property}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-semibold text-gray-900">{formatRevenue(company.revenue)}</span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-gray-400" />
                             <span className="text-sm text-gray-900">{company.employees}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <StatusBadge status={company.status} />
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                            <button className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200">
+                            <Link 
+                              to={`/company/${company.registrationNumber}`}
+                              className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
+                            >
                               <Eye className="w-4 h-4" />
-                            </button>
+                            </Link>
                             <button className="p-2 rounded-lg text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all duration-200">
                               <Pencil className="w-4 h-4" />
                             </button>

@@ -1,33 +1,40 @@
-import { Buffer } from "buffer";
-window.Buffer = Buffer;
 import { StrictMode } from 'react';
-import { Provider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
-import './index.css';
+import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 import { store } from './store/store';
-import web3AuthContextConfig from './web3authContext';
+import { AuthProvider } from './contexts/AuthContext';
+import './index.css';
 
-// Web3Auth and Wagmi imports
-import { Web3AuthProvider } from "@web3auth/modal/react";
-import { WagmiProvider } from "@web3auth/modal/react/wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// Ensure the root element exists
+const container = document.getElementById('root');
+if (!container) {
+  throw new Error('Failed to find the root element');
+}
 
+const root = createRoot(container);
 
-const queryClient = new QueryClient();
-
-createRoot(document.getElementById('root')!).render(
+// Render the app with all providers
+root.render(
   <StrictMode>
     <Provider store={store}>
-      <Web3AuthProvider config={web3AuthContextConfig}>
-        <QueryClientProvider client={queryClient}>
-          <WagmiProvider>
+      <AuthProvider>
         <App />
-      </WagmiProvider>
-      </QueryClientProvider>
-
-      </Web3AuthProvider>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </AuthProvider>
     </Provider>
-
   </StrictMode>
 );
